@@ -69,6 +69,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-public/*
-!public/favicon.ico
-!public/locale
+frontend/public/*
+!frontend/public/favicon.ico
+!frontend/public/locale

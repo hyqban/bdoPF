@@ -1,0 +1,41 @@
+<div class="titleBar" style="widows: 1">
+    <div class="left-part">
+        <div class="app-icon">iocn</div>
+        <div class="app-name">bdoPF</div>
+    </div>
+    <div class="right-part">
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="beach_access"
+            (click)="enterWidgetMode()"
+        ></mat-icon>
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="remove"
+            (click)="windowMinimise()"
+        ></mat-icon>
+        @if (!isFullscreen()) {
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="fullscreen"
+            (click)="windowFullscreen()"
+        ></mat-icon>
+        } @if (isFullscreen()){
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="fullscreen_exit"
+            (click)="windowUnfullscreen()"
+        ></mat-icon>
+        }
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="close"
+            (click)="windowClose()"
+        ></mat-icon>
+    </div>
+</div>

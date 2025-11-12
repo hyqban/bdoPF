@@ -1,0 +1,13 @@
+@if(!isWidgetMode()){
+<div id="app">
+    <app-custome-title-bar></app-custome-title-bar>
+    <div id="body">
+        <router-outlet />
+    </div>
+</div>
+} @else {
+<div style="widows: 1">
+    <span>widget mode</span>
+    <button (click)="exitWidgetMode()">exit Widget</button>
+</div>
+}

@@ -1,0 +1,13 @@
+{
+    "$schema": "https://wails.io/schemas/config.v2.json",
+    "name": "bdoPF",
+    "outputfilename": "bdoPF",
+    "frontend:build": "npx ng build",
+    "frontend:install": "npm install",
+    "frontend:dev:watcher": "npx ng serve",
+    "frontend:dev:serverUrl": "http://localhost:4200",
+    "author": {
+        "name": "lucas",
+        "email": "onlyuzard@gmail.com"
+    }
+}
