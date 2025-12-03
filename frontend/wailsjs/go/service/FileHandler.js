@@ -6,22 +6,30 @@ export function EnsureDir(arg1) {
   return window['go']['service']['FileHandler']['EnsureDir'](arg1);
 }
 
-export function Exists(arg1) {
-  return window['go']['service']['FileHandler']['Exists'](arg1);
+export function GetWindowSize() {
+  return window['go']['service']['FileHandler']['GetWindowSize']();
 }
 
-export function GetRourcePath() {
-  return window['go']['service']['FileHandler']['GetRourcePath']();
+export function ListDir(arg1) {
+  return window['go']['service']['FileHandler']['ListDir'](arg1);
 }
 
-export function JoinPaths(arg1) {
-  return window['go']['service']['FileHandler']['JoinPaths'](arg1);
+export function PathJoin(arg1) {
+  return window['go']['service']['FileHandler']['PathJoin'](arg1);
 }
 
-export function ReadFile() {
-  return window['go']['service']['FileHandler']['ReadFile']();
+export function ReadFile(arg1, arg2) {
+  return window['go']['service']['FileHandler']['ReadFile'](arg1, arg2);
 }
 
 export function ReadFileById() {
   return window['go']['service']['FileHandler']['ReadFileById']();
+}
+
+export function ReadLocales() {
+  return window['go']['service']['FileHandler']['ReadLocales']();
+}
+
+export function ReadSearchIndexJson(arg1, arg2) {
+  return window['go']['service']['FileHandler']['ReadSearchIndexJson'](arg1, arg2);
 }

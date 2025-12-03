@@ -1,6 +1,7 @@
 package main
 
 import (
+	// hs "bdoPF/internal/httpserver"
 	service "bdoPF/internal/service"
 	"embed"
 
@@ -14,11 +15,32 @@ var assets embed.FS
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
-	window := service.NewWindow(app)
-	fileHandler := service.NewFileHandler(app.rootPath, app.assetsPath)
+	di := service.NewDiContainer()
 
-	// app.window = window
+	app := NewApp(di)
+	di.Register("app", app)
+	// di.SetAppCtx(&app.ctx)
+	// di.SetAssetsPath()
+
+	// httpserver := service.NewHttpServer(di)
+	// addr := httpserver.Start()
+	// app.SetHttpSercer(addr, "httpserver", httpserver)
+	// di.SetAddr(addr)
+	// di.Register("httpserver", httpserver)
+
+	window := service.NewWindow(di)
+	di.Register("window", window)
+
+	fileHandler := service.NewFileHandler(di)
+	di.Register("fileHandler", fileHandler)
+
+	// app.ReceivePoints(fileHandler)
+
+	config := service.NewConfig(di, fileHandler)
+	di.Register("config", config)
+
+	gameData := service.NewGameData(di)
+	di.Register("gameData", gameData)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -38,8 +60,11 @@ func main() {
 		CSSDragValue:    "1",
 		Bind: []interface{}{
 			// app,
+			di,
 			window,
 			fileHandler,
+			config,
+			gameData,
 		},
 	})
 

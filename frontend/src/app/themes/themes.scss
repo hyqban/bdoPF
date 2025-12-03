@@ -1,0 +1,81 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use './lightskyblue_theme-colors.scss' as ls-theme;
+@use './gainsboro_theme-colors.scss' as gs-theme;
+
+$app-themes: (
+    'lightskyblue': (
+        primary: ls-theme.$primary-palette,
+        tertiary: ls-theme.$tertiary-palette,
+        type: light,
+    ),
+    'gainsboro': (
+      primary: gs-theme.$primary-palette,
+      tertiary: gs-theme.$tertiary-palette,
+      type: light
+    ),
+);
+
+@each $name, $config in $app-themes {
+    .theme-#{$name} {
+        @include mat.theme(
+            (
+                color: (
+                    primary: map.get($config, primary),
+                    tertiary: map.get($config, tertiary),
+                    theme-type: map.get($config, type),
+                ),
+                typography: Roboto,
+                density: 0,
+            )
+        );
+    }
+}
+
+// :root.theme-light {
+//     @include mat.theme(
+//         (
+//             color: (
+//                 theme-type: lightskyblue,
+//                 palettes: (
+//                     primary: colors.$primary-palette,
+//                     tertiary: colors.$tertiary-palette,
+//                 ),
+//             ),
+//             typography: Roboto,
+//             density: 0,
+//         )
+//     );
+// }
+
+// :root.theme-dark {
+//     @include mat.theme(
+//         (
+//             color: (
+//                 theme-type: lightskyblue,
+//                 palettes: (
+//                     primary: colors.$primary-palette,
+//                     tertiary: colors.$tertiary-palette,
+//                 ),
+//             ),
+//             typography: Roboto,
+//             density: 0,
+//         )
+//     );
+// }
+
+// :root.theme-lightskyblue {
+//     @include mat.theme(
+//         (
+//             color: (
+//                 theme-type: lightskyblue,
+//                 palettes: (
+//                     primary: colors.$primary-palette,
+//                     tertiary: colors.$tertiary-palette,
+//                 ),
+//             ),
+//             typography: Roboto,
+//             density: 0,
+//         )
+//     );
+// }

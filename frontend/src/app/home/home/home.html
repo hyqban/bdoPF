@@ -1,1 +1,28 @@
-<p>home works!</p>
+<div class="section">
+    <app-bread-crumbs></app-bread-crumbs>
+    <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+        <mat-label>Item</mat-label>
+        <input matInput placeholder="Placeholder" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field> -->
+    <p>home works!</p>
+    <button (click)="changeTheme('lightskyblue')">天蓝色 (默认)</button>
+
+    <button (click)="changeTheme('gainsboro')">深紫色</button>
+    <button matButton (click)="onFIlesSelected()">Open Folder</button>
+    <button matButton (click)="xmlToJson()">XML covert JSON</button>
+    <button matButton (click)="search()">Read SearchIndex</button>
+
+    <div>{{ rootPath() }}</div>
+    <div>{{ assetPath() }}</div>
+
+    <img
+        [src]="this.searchService.imgPathJoin(this.searchService.imgPath['png'], '00000874.png')"
+        alt=""
+        style="border: red 1px solid; width: 50px; height: 50px;"
+    />
+
+    <div>
+        {{ this.searchService.imgPathJoin(this.searchService.imgPath['png'], '00000874.png') }}
+    </div>
+</div>

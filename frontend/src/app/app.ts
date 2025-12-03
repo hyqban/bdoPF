@@ -1,7 +1,7 @@
 import { Component, Signal, signal, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CustomeTitleBar } from './home/custome-title-bar/custome-title-bar';
 import { WindowServicee } from './services/window-servicee';
+import { CustomeTitleBar } from './layout/custome-title-bar/custome-title-bar';
 
 @Component({
     selector: 'app-root',
@@ -15,8 +15,11 @@ export class App {
 
     app: any = {};
 
-    constructor(private windowService: WindowServicee) {
+    constructor(protected windowService: WindowServicee) {
         this.isWidgetMode = this.windowService.getIsWidgetMode();
+        console.log('isWidgetMode: ', this.isWidgetMode());
+
+        // i18n.init().then(() => {});
     }
 
     protected exitWidgetMode() {

@@ -6,7 +6,11 @@ import {
     WindowUnfullscreen,
     IsWindowFullscreen,
     WindowSetSize,
+    WindowGetSize,
 } from '../../../wailsjs/go/service/Window';
+import { WindowSize } from '../shared/models/model';
+import { W } from '@angular/cdk/keycodes';
+import { CurrencyPipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root',
@@ -14,6 +18,20 @@ import {
 export class WindowServicee {
     private isFullscreen: WritableSignal<boolean> = signal(false);
     private isWidgetMode: WritableSignal<boolean> = signal(false);
+    private windowSize: WritableSignal<WindowSize> = signal<WindowSize>({
+        w: 0,
+        h: 0,
+    });
+
+    getWindowSize() {
+        WindowGetSize().then((res) => {
+            this.windowSize.update((currentSize) => ({
+                ...currentSize,
+                w: res['w'],
+                h: res['h'],
+            }));
+        });
+    }
 
     getIsFullscreen() {
         IsWindowFullscreen().then((res) => {
@@ -37,21 +55,45 @@ export class WindowServicee {
     }
 
     enterWidgetMode() {
+        if (!this.isFullscreen()) {
+            this.getWindowSize();
+        }
         // this.isWidgetMode.set(true);
         this.isWidgetMode.update((value) => !value);
         WindowSetSize(200, 100).then(() => {});
         console.log('enter widget mode.', this.isWidgetMode());
     }
 
+    // exitWidgetMode() {
+    //     this.isWidgetMode.set(false);
+
+    //     if (this.isFullscreen()) {
+    //         this.windowFullscreen();
+    //         return;
+    //     }
+
+    //     WindowSetSize(500, 784).then(() => {});
+    // }
+
     exitWidgetMode() {
         this.isWidgetMode.set(false);
 
+        console.log('isFullscreen', this.isFullscreen());
+
         if (this.isFullscreen()) {
-            this.windowFullscreen();
+            this.isFullscreen.set(false);
+
+            WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});
+            console.log('exitWidgetMode');
+            console.log(this.windowSize());
+            // this.windowFullscreen();
+            console.log('enter widget mode.', this.isWidgetMode());
             return;
         }
+        console.log('11111111');
 
-        WindowSetSize(500, 784).then(() => {});
+        // WindowSetSize(500, 784).then(() => {});
+        WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});
     }
 
     windowClose() {
@@ -59,6 +101,7 @@ export class WindowServicee {
     }
 
     windowFullscreen() {
+        this.getWindowSize();
         WindowFullscreen().then(() => {});
         this.isFullscreen.set(true);
     }

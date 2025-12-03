@@ -1,15 +1,20 @@
 package service
 
 type Config struct {
-	AppName string `json:"appName"`
-	Version string `json:"version"`
-	Window  Window `json:"window"`
+	DI          *DIContainer
+	fileHandler *FileHandler
+	AppName     string `json:"appName"`
+	Version     string `json:"version"`
+	Window      Window `json:"window"`
 }
 
-func NewConfig() *Config {
-	return &Config{}
+func NewConfig(di *DIContainer, fh *FileHandler) *Config {
+	return &Config{
+		DI: di,
+		fileHandler: fh,
+	}
 }
 
 func (c *Config) ReadConfig() {
-	
+
 }

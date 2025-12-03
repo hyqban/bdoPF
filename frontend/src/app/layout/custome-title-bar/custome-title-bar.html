@@ -1,0 +1,90 @@
+<div class="titleBar" style="widows: 1">
+    <app-sidebar
+        id="sidebar"
+        [class.open]="isSidebarVisible"
+        (mouseenter)="showSidebar()"
+        (mouseleave)="hideSidebar()"
+    ></app-sidebar>
+    <div class="left-part">
+        <mat-icon
+            fontIcon="menu"
+            class="menu"
+            (mouseenter)="showSidebar()"
+            (mouseleave)="hideSidebar()"
+        ></mat-icon>
+        <!-- <div class="app-icon">iocn</div> -->
+        <div class="app-name">bdoPF</div>
+    </div>
+
+    <div class="search-field">
+        <div class="search">
+            <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
+            @if (this.search.searchResults().length > 0) {
+            <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible">
+                @for (el of this.search.searchResults(); track el.id) {
+                <div class="searchResult">
+                    <img
+                        [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
+                        alt=""
+                    />
+                    <!-- <img src="product_icon_png/00820117.png" alt="" /> -->
+                    <div>{{ el.name }}</div>
+                </div>
+                }
+            </mat-card>
+            }
+            <!-- <mat-icon fontIcon="search" (click)="search()"></mat-icon> -->
+        </div>
+        <!-- @if (data.length > 0) {
+        <div>
+            @for (el of data; track el?.id) {
+            <div>
+                <img src="" alt="" />
+                <div>{{ el?.itemName }}</div>
+            </div>
+            }
+        </div>
+        } -->
+    </div>
+    <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+        <mat-label>Item</mat-label>
+        <input matInput placeholder="Placeholder" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field> -->
+
+    <div class="right-part">
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="beach_access"
+            (click)="enterWidgetMode()"
+        ></mat-icon>
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="remove"
+            (click)="windowMinimise()"
+        ></mat-icon>
+        @if (!isFullscreen()) {
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="fullscreen"
+            (click)="windowFullscreen()"
+        ></mat-icon>
+        } @if (isFullscreen()){
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="fullscreen_exit"
+            (click)="windowUnfullscreen()"
+        ></mat-icon>
+        }
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="close"
+            (click)="windowClose()"
+        ></mat-icon>
+    </div>
+</div>
