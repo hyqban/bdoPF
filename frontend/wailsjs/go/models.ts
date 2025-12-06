@@ -1,5 +1,144 @@
 export namespace model {
 	
+	export class ItemDetail {
+	    id: string;
+	    name: string;
+	    icon: string;
+	    desc: string;
+	    count?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ItemDetail(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.icon = source["icon"];
+	        this.desc = source["desc"];
+	        this.count = source["count"];
+	    }
+	}
+	export class HouseItem {
+	    type: string;
+	    item: ItemDetail[];
+	
+	    static createFrom(source: any = {}) {
+	        return new HouseItem(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
+	        this.item = this.convertValues(source["item"], ItemDetail);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	export class ManufactureItem {
+	    item: ItemDetail[];
+	    action: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ManufactureItem(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.item = this.convertValues(source["item"], ItemDetail);
+	        this.action = source["action"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class ItemInfo {
+	    itemKey: string;
+	    itemName: string;
+	    itemIcon: string;
+	    itemDesc: string;
+	    fishing?: string;
+	    node?: string[];
+	    shop?: string[];
+	    house?: HouseItem[];
+	    gathering?: string[];
+	    processing?: ManufactureItem[];
+	    cooking?: ItemDetail[][];
+	    alchemy?: ItemDetail[][];
+	    makelist?: ItemDetail[];
+	
+	    static createFrom(source: any = {}) {
+	        return new ItemInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.itemKey = source["itemKey"];
+	        this.itemName = source["itemName"];
+	        this.itemIcon = source["itemIcon"];
+	        this.itemDesc = source["itemDesc"];
+	        this.fishing = source["fishing"];
+	        this.node = source["node"];
+	        this.shop = source["shop"];
+	        this.house = this.convertValues(source["house"], HouseItem);
+	        this.gathering = source["gathering"];
+	        this.processing = this.convertValues(source["processing"], ManufactureItem);
+	        this.cooking = this.convertValues(source["cooking"], ItemDetail);
+	        this.alchemy = this.convertValues(source["alchemy"], ItemDetail);
+	        this.makelist = this.convertValues(source["makelist"], ItemDetail);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class ItemRaw {
 	    id: string;
 	    name: string;
@@ -16,6 +155,7 @@ export namespace model {
 	        this.icon = source["icon"];
 	    }
 	}
+	
 	export class ResourcePath {
 	    RootPath: string;
 	    AssetsPath: string;
@@ -47,7 +187,7 @@ export namespace service {
 	    AppCtx?: any;
 	    Addr: string;
 	    Env: string;
-	    ResourcePath?: model.ResourcePath;
+	    ResourcePath: model.ResourcePath;
 	    Independencies: Record<string, any>;
 	
 	    static createFrom(source: any = {}) {
@@ -113,7 +253,6 @@ export namespace service {
 	}
 	export class HttpServer {
 	    DI?: DIContainer;
-	    Listener: any;
 	    Addr: string;
 	
 	    static createFrom(source: any = {}) {
@@ -123,7 +262,6 @@ export namespace service {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.DI = this.convertValues(source["DI"], DIContainer);
-	        this.Listener = source["Listener"];
 	        this.Addr = source["Addr"];
 	    }
 	

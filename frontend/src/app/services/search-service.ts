@@ -1,6 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GetAddr, GetImgPath } from '../../../wailsjs/go/service/DIContainer';
 import { SearchResultItem, ItemInfo, BreadCrumbs } from '../shared/models/model';
+import { ReadFileById, ReadDynamicStrings } from '../../../wailsjs/go/service/FileHandler';
+import { DynamicStrings } from '../shared/models/model';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +14,13 @@ export class SearchService {
     addr = '';
     query = signal('');
     searchResults = signal<SearchResultItem[]>([]);
-    currentItem = signal<ItemInfo>;
+    currentItem: WritableSignal<ItemInfo> = signal<ItemInfo>({
+        itemKey: '',
+        itemName: '',
+        itemIcon: '',
+        itemDesc: '',
+        gathering: [],
+    });
     breadCrumbs = signal<BreadCrumbs>({
         data: [],
         amount: [1],
@@ -19,6 +28,13 @@ export class SearchService {
         length: 0,
     });
     imgPath: Record<string, string> = {};
+    dynamicStrings: DynamicStrings = {
+        apporach: {},
+        manufacture: {},
+        workshop: {},
+    };
+
+    constructor(private sanitizer: DomSanitizer) {}
 
     ngOnInit() {
         this.getAddr();
@@ -59,12 +75,40 @@ export class SearchService {
         return '';
     }
 
+    setCurrentItem(el: ItemInfo) {
+        console.log(el);
+    }
+
     addSearchResults(searchResults: SearchResultItem[]) {
         this.searchResults.set(searchResults);
     }
 
     cleanSearchHistory() {
         this.searchResults.set([]);
+    }
+
+    async selectItem(ele: SearchResultItem): Promise<Record<string, any>> {
+        this.cleanBreadCrumbs();
+
+        if (
+            this.isEmpty(this.dynamicStrings.apporach) ||
+            this.isEmpty(this.dynamicStrings.manufacture) ||
+            this.isEmpty(this.dynamicStrings.workshop)
+        ) {
+            this.getDynamicStrings();
+        }
+
+        this.breadCrumbs.update((el) => {
+            el.data.push(ele);
+            el.length += 1;
+
+            return { ...el };
+        });
+
+        let itemInfo: Record<string, any> = await ReadFileById(ele.id);
+        console.log(itemInfo);
+
+        return itemInfo;
     }
 
     addBreadCrumb(bd: SearchResultItem, amount: string) {
@@ -117,5 +161,38 @@ export class SearchService {
 
             return { ...el };
         });
+    }
+
+    isEmpty(obj: any): boolean {
+        for (const prop in obj) {
+            return false;
+        }
+        return true;
+    }
+    getDynamicStrings() {
+        this.dynamicStrings = {
+            apporach: {},
+            manufacture: {},
+            workshop: {},
+        };
+
+        ReadDynamicStrings().then((res) => {
+            if (res['msg'] === '') {
+                this.dynamicStrings = { ...res } as DynamicStrings;
+                console.log(this.dynamicStrings);
+            }
+        });
+    }
+
+    getDinamicString(key: string, feild: string) {
+        if (key === 'apporach') {
+            return this.dynamicStrings.apporach[feild] ?? '';
+        } else if (key === 'manufacture') {
+            return this.dynamicStrings.manufacture[feild] ?? '';
+        } else if (key === 'workshop') {
+            return this.dynamicStrings.workshop['90' + feild] ?? '';
+        } else {
+            return '';
+        }
     }
 }

@@ -4,5 +4,25 @@
     @extend %flex-column;
     width: 100vw;
     height: 100vh;
-    overflow-y: auto;
+
+    & > :first-child {
+        // position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        z-index: 10;
+    }
+    #body {
+        height: auto;
+        flex-grow: 1;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+}
+
+#widget {
+    .exit-widget{
+        -webkit-app-region: no-drag;
+    }
 }

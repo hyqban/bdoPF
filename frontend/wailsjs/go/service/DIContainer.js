@@ -22,6 +22,10 @@ export function GetImgPath() {
   return window['go']['service']['DIContainer']['GetImgPath']();
 }
 
+export function GetLocale() {
+  return window['go']['service']['DIContainer']['GetLocale']();
+}
+
 export function GetResourcePath() {
   return window['go']['service']['DIContainer']['GetResourcePath']();
 }
@@ -48,4 +52,8 @@ export function SetAppCtx(arg1) {
 
 export function SetAssetsPath() {
   return window['go']['service']['DIContainer']['SetAssetsPath']();
+}
+
+export function SetLocale(arg1) {
+  return window['go']['service']['DIContainer']['SetLocale'](arg1);
 }

@@ -14,6 +14,7 @@
         border-bottom: 1px solid var(--mat-sys-outline-variant);
 
         #sidebar {
+            z-index: 9;
             position: absolute;
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
@@ -28,17 +29,26 @@
             @extend %flex-row-2c;
             justify-content: space-between;
             width: fit-content;
+            margin-left: 0.5em;
+
+            .app-name {
+                margin-left: 0.5em;
+            }
         }
 
         .search-field {
             @extend %flex-column;
             justify-content: center;
+            -webkit-app-region: no-drag;
+            user-select: none;
+            // cursor: pointer;
             // width: 200px;
             // height: 20px;
             // @include mat.form-field-density(-5);
 
             .search {
                 @extend %flex-column;
+                -webkit-app-region: no-drag;
 
                 & > :first-child {
                     box-sizing: border-box;
@@ -61,32 +71,35 @@
 
                 & > :nth-child(2).hide {
                     display: none;
+                    -webkit-app-region: no-drag;
                 }
 
                 & > :nth-child(2) {
+                    -webkit-app-region: no-drag;
                     position: absolute;
                     top: 2em;
-                    z-index: 999;
+                    z-index: 9;
                     background-color: var(--mat-sys-surface-container-high);
                     font-size: 14px;
                     overflow-y: auto;
                     scrollbar-width: none;
-                    width: 13em;
+                    // width: 13em;
                     max-width: 20em;
                     max-height: 20em;
-                    // width: 14px;
-                    // height: 15px;
                     border: 1px solid #b0c4de;
-                    // border: 1px solid red;
-                    border-left: 0px;
 
+                    .searchResult:hover {
+                        background-color: var(--mat-sys-secondary-fixed-dim);
+                    }
                     .searchResult {
                         @extend %flex-row;
+                        padding: 0.5em 1em;
+                        align-items: center;
+                        gap: 1em;
 
                         & > :first-child {
                             width: 25px;
                             height: 25px;
-                            border: red 1px solid;
                         }
                     }
                 }
@@ -137,21 +150,23 @@
         & > .right-part {
             @extend %flex-row-2c;
             width: fit-content;
-        }
 
-        mat-icon:hover {
-            // border: rgba(0, 0, 0, 0.1) 2px solid;
-            background-color: rgba(41, 39, 39, 0.1);
-            // box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.2);
-        }
-        mat-icon {
-            width: 20px;
-            font-size: 18px;
-            padding: 5px 10px 0 10px;
-            border: rgba(255, 255, 255, 0) 2px solid;
-            box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0);
-            -webkit-app-region: no-drag;
-            cursor: pointer;
+            mat-icon:hover {
+                // border: rgba(0, 0, 0, 0.1) 2px solid;
+                background-color: rgba(41, 39, 39, 0.1);
+                // box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.2);
+            }
+            mat-icon {
+                width: 20px;
+                font-size: 18px;
+                padding: 5px 10px 0 10px;
+                border: rgba(255, 255, 255, 0) 2px solid;
+                box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0);
+                -webkit-app-region: no-drag;
+                user-select: none;
+                // cursor: default;
+                cursor: pointer;
+            }
         }
     }
 }

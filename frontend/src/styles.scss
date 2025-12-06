@@ -7,6 +7,12 @@
 @use './app/themes/themes.scss' as theme-manager;
 
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --bg-color: #f3f4f6;
+    --border: #e5e7eb;
+    --border-hover: #3b82f6;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,11 +25,14 @@ body {
 body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
-    background-color: var(--mat-sys-surface);
+    // background-color: var(--mat-sys-surface);
+    background-color: var(--bg-color);
     color: var(--mat-sys-on-surface);
 
     margin: 0;
 }
+
+// $bg-color: #f3f4f6;
 
 // Custome scss
 %flex-row {
@@ -47,6 +56,13 @@ body {
     align-items: center;
 }
 
+@mixin div-bg($bgc: var(--bg-color), $pad: 1rem, $bd: var(--border)) {
+    background-color: $bgc;
+    padding: $pad;
+    // border: var(--boder) 1px solid;
+    border: $bd 1px solid;
+}
+
 @mixin modern_div(
     $border: (
         rgba(0, 0, 0, 0.1) 2px solid,
@@ -65,15 +81,18 @@ body {
     padding: $padding;
 }
 
-@mixin grid-columns(
-    $gap: 0.3rem,
-    $col: repeat(auto, 1fr),
-    $justify-items: center,
-    $align-items: center
-) {
+@mixin grid-columns($gap: 0.3rem, $col: auto 1fr, $justify-items: center, $align-items: center) {
     display: grid;
     grid-template-columns: $col;
     gap: $gap;
     justify-content: $justify-items;
+    align-content: $align-items;
+}
+
+@mixin grid-rows($gap: 0.3rem, $row: auto 1fr, $justify-items: center, $align-items: center) {
+    display: grid;
+    grid-template-rows: $row;
+    gap: $gap;
+    // justify-content: $justify-items;
     align-content: $align-items;
 }

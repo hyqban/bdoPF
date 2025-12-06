@@ -4,16 +4,16 @@ import {model} from '../models';
 
 export function EnsureDir(arg1:string):Promise<void>;
 
-export function GetWindowSize():Promise<void>;
-
 export function ListDir(arg1:string):Promise<Record<string, Array<string>>>;
 
 export function PathJoin(arg1:Array<string>):Promise<string>;
 
-export function ReadFile(arg1:string,arg2:string):Promise<Record<string, any>|boolean>;
+export function QueryByName(arg1:string):Promise<Array<model.ItemRaw>>;
 
-export function ReadFileById():Promise<void>;
+export function ReadDynamicStrings():Promise<Record<string, any>>;
+
+export function ReadFile(arg1:string):Promise<Record<string, any>|boolean>;
+
+export function ReadFileById(arg1:string):Promise<model.ItemInfo>;
 
 export function ReadLocales():Promise<Record<string, any>>;
-
-export function ReadSearchIndexJson(arg1:string,arg2:string):Promise<Array<model.ItemRaw>>;

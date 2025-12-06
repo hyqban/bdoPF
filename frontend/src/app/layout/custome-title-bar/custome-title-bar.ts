@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ReadSearchIndexJson } from '../../../../wailsjs/go/service/FileHandler';
+import { QueryByName } from '../../../../wailsjs/go/service/FileHandler';
 import {
     catchError,
     debounceTime,
@@ -27,7 +27,7 @@ import {
     of,
 } from 'rxjs';
 import { SearchService } from '../../services/search-service';
-import { SearchResult, SearchResultItem } from '../../shared/models/model';
+import { ItemInfo, SearchResultItem } from '../../shared/models/model';
 
 @Component({
     selector: 'app-custome-title-bar',
@@ -48,7 +48,7 @@ export class CustomeTitleBar {
     protected isFullscreen!: WritableSignal<boolean>;
     @ViewChild('autoComplete') autoCompleteResult!: ElementRef;
     isSidebarVisible: boolean = false;
-    isResultVisible: boolean = false;
+    isResultVisible = signal<boolean>(false);
 
     query = signal('');
     isLoading = signal(false);
@@ -72,15 +72,19 @@ export class CustomeTitleBar {
         const isInsideComponent = this.elementRef.nativeElement.contains(event.target);
 
         if (!isInsideComponent) {
-            this.isResultVisible = true;
+            this.isResultVisible.set(true);
         }
     }
 
     showAuto() {
-        this.isResultVisible = false;
+        this.isResultVisible.set(false);
     }
 
     ngOnInit(): void {
+        if (this.search.query()) {
+            this.searchControl.setValue(this.search.query(), { emitEvent: false});
+        }
+
         this.searchControl.valueChanges
             .pipe(
                 debounceTime(this.DEBOUNCE_TIME),
@@ -96,20 +100,21 @@ export class CustomeTitleBar {
                         // this.searchResults.set([]);
                         this.search.addSearchResults([]);
                         this.debouncedQuery.set('');
-                        this.isResultVisible = true;
+                        this.isResultVisible.set(true);
                         this.isLoading.set(false);
                         return of(this.search.searchResults());
                     }
 
                     if (query === this.query()) {
-                        this.isResultVisible = true;
+                        this.isResultVisible.set(true);
                         // return of(this.searchResults());
                         return of(this.search.searchResults());
                     }
 
+                    this.search.query.set(query as string);
                     this.isLoading.set(true);
                     this.debouncedQuery.set(query);
-                    return from(ReadSearchIndexJson(query, 'en')).pipe(
+                    return from(QueryByName(query)).pipe(
                         catchError((error) => {
                             this.isLoading.set(true);
                             console.error('Search API Error:', error);
@@ -121,15 +126,18 @@ export class CustomeTitleBar {
             )
             .subscribe((results: SearchResultItem[]) => {
                 this.search.addSearchResults(results);
+
                 // this.searchResults.set(results);
-                this.isResultVisible = false;
+                this.isResultVisible.set(false);
                 this.isLoading.set(false);
                 console.log(this.search.searchResults());
             });
     }
 
-    searchItem(event: any) {
-        console.log(event?.target?.value);
+    async searchItemById(el: SearchResultItem) {
+        const itemData = await this.search.selectItem(el);
+        this.search.currentItem.set(itemData as ItemInfo);
+        this.isResultVisible.set(true);
     }
 
     showSidebar() {

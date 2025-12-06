@@ -1,0 +1,10 @@
+Features:
+    ☐ 1. Query item by itemKey when click the item.
+    ☐ 2. Show icons in breadCrumbs.
+    ☐ 3. Some func with breadCrumbs.
+    ☐ 4. Amount
+
+Issues:
+    ☐ 1. Mat-card will changed width when scroll is appear.
+    ☐ 2. The input can be dragged.
+    ☐ 3. The color of the amount

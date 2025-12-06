@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -50,7 +48,6 @@ func (window *Window) IsWindowFullscreen() bool {
 }
 
 func (window *Window) WindowFullscreen() {
-	fmt.Println("fullScreen.")
 	runtime.WindowFullscreen(*window.DI.GetAppCtx())
 }
 

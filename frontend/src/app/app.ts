@@ -17,19 +17,9 @@ export class App {
 
     constructor(protected windowService: WindowServicee) {
         this.isWidgetMode = this.windowService.getIsWidgetMode();
-        console.log('isWidgetMode: ', this.isWidgetMode());
-
-        // i18n.init().then(() => {});
     }
 
     protected exitWidgetMode() {
         this.windowService.exitWidgetMode();
     }
-
-    // protected appDir() {
-    //     AppPath().then((res) => {
-    //         this.app = res;
-    //         console.log(res);
-    //     });
-    // }
 }

@@ -3,7 +3,6 @@ package service
 import (
 	model "bdoPF/internal/model"
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -42,51 +41,17 @@ type Locale struct {
 }
 
 type FileHandler struct {
-	DI *DIContainer
-	// RootPath     string
-	// AssetsPath   string
-	// ResourcePath *model.ResourcePath
+	DI                 *DIContainer
+	searchIndex        map[string]model.ItemRaw
+	isSearchIndexEmpty bool
 }
 
 func NewFileHandler(di *DIContainer) *FileHandler {
 	fh := FileHandler{}
 
 	fh.DI = di
+	fh.isSearchIndexEmpty = true
 	return &fh
-}
-
-// func (fh *FileHandler) GetAppPAthandAssetsPath(rootPath string, AssetsPath string) {
-// 	fh.rootPath = rootPath
-// 	fh.AssetsPath = AssetsPath
-// 	fh.ResourcePath = make(map[string]string)
-
-// 	fh.ResourcePath["file"] = "gamecommondata"
-// 	fh.ResourcePath["icon"] = "icons"
-// 	fh.ResourcePath["locale"] = "locales"
-// 	fh.ResourcePath["png"] = "product_icon_png"
-
-// 	// rsPath := map[string]string{
-// 	// 	"file":   "gamecommondata",
-// 	// 	"icon":   "icons",
-// 	// 	"locale": "locales",
-// 	// 	"png":    "product_icon_png",
-// 	// }
-
-//		// for k, v := range rsPath {
-//		// 	fh.ResourcePath[k] = v
-//		// }
-//	}
-func (fh *FileHandler) GetWindowSize() {
-	windowInterface, ok := fh.DI.Resolve("window")
-
-	window := windowInterface.(*Window)
-
-	if !ok {
-		fmt.Println("Call window from di is failed.")
-	}
-
-	size := window.WindowGetSize()
-	fmt.Printf("%+v", size)
 }
 
 func (fh *FileHandler) ListDir(path string) (map[string][]string, error) {
@@ -148,7 +113,8 @@ func (fh *FileHandler) ReadLocales() map[string]interface{} {
 	}
 
 	for _, v := range dir["file"] {
-		content, ok := fh.ReadFile(localePath, v)
+		// content, ok := fh.ReadFile(localePath, v)
+		content, ok := fh.ReadFile(fh.PathJoin(localePath, v))
 
 		if !ok {
 			return data
@@ -172,16 +138,16 @@ func (fh *FileHandler) ReadLocales() map[string]interface{} {
 	return data
 }
 
-func (fh *FileHandler) ReadFile(path string, fileName string) (map[string]interface{}, bool) {
+func (fh *FileHandler) ReadFile(path string) (map[string]interface{}, bool) {
 	data := make(map[string]interface{})
 
-	_, err := os.Stat(filepath.Join(path, fileName))
+	_, err := os.Stat(path)
 
 	if err != nil {
 		return data, false
 	}
 
-	file, err := os.Open(filepath.Join(path, fileName))
+	file, err := os.Open(path)
 
 	if err != nil {
 		return data, false
@@ -200,31 +166,37 @@ func (fh *FileHandler) ReadFile(path string, fileName string) (map[string]interf
 	return data, true
 }
 
-func (fh *FileHandler) ReadFileById() {
+func (fh *FileHandler) ReadFileById(id string) model.ItemInfo {
+	var itemInfo model.ItemInfo
 
+	returnData, found := fh.ReadFile(fh.PathJoin(fh.DI.GetResourcePath().AssetsPath, fh.DI.GetResourcePath().File, fh.DI.locale, id+".json"))
+
+	if !found {
+		return itemInfo
+	}
+
+	bytes, err := json.Marshal(returnData)
+
+	if err != nil {
+		return itemInfo
+	}
+
+	err = json.Unmarshal(bytes, &itemInfo)
+
+	if err != nil {
+		return itemInfo
+	}
+
+	return itemInfo
 }
 
-func (fh *FileHandler) ReadSearchIndexJson(item string, lang string) []model.ItemRaw {
+func (fh *FileHandler) QueryByName(item string) []model.ItemRaw {
+	if fh.isSearchIndexEmpty {
+		fh.readSearchIndexJson()
+	}
+
 	var itemToSearch SearchableItems
-	// matchData := []model.ItemRaw{}
-
-	siPath := fh.PathJoin(fh.DI.GetResourcePath().RootPath, fh.DI.GetResourcePath().AssetsPath, fh.DI.GetResourcePath().File, lang)
-
-	data, _ := fh.ReadFile(siPath, "search_index.json")
-	jsonBytes, err := json.Marshal(data)
-
-	// fmt.Printf("%T", jsonBytes)
-
-	if err != nil {
-	}
-
-	targetMap := make(map[string]model.ItemRaw)
-
-	err = json.Unmarshal(jsonBytes, &targetMap)
-	if err != nil {
-	}
-
-	for _, v := range targetMap {
+	for _, v := range fh.searchIndex {
 		itemToSearch = append(itemToSearch, v)
 	}
 
@@ -242,6 +214,90 @@ func (fh *FileHandler) ReadSearchIndexJson(item string, lang string) []model.Ite
 			})
 		}
 	}
-
 	return results
+}
+
+func (fh *FileHandler) readSearchIndexJson() {
+	siPath := fh.PathJoin(fh.DI.GetResourcePath().RootPath, fh.DI.GetResourcePath().AssetsPath, fh.DI.GetResourcePath().File, fh.DI.GetLocale())
+
+	data, _ := fh.ReadFile(fh.PathJoin(siPath, "search_index.json"))
+	jsonBytes, err := json.Marshal(data)
+
+	if err != nil {
+	}
+
+	targetMap := make(map[string]model.ItemRaw)
+
+	err = json.Unmarshal(jsonBytes, &targetMap)
+	if err != nil {
+	}
+	fh.searchIndex = targetMap
+	fh.isSearchIndexEmpty = false
+}
+
+func (fh *FileHandler) ReadDynamicStrings() map[string]interface{} {
+	data := map[string]interface{}{
+		"apporach":    map[string]string{},
+		"manufacture": map[string]string{},
+		"workshop":    map[string]string{},
+		"msg":         "",
+	}
+
+	var dynamic_strings model.DynamicStrings
+	tempDynamicStrings, empty := fh.ReadFile(fh.PathJoin(fh.DI.ResourcePath.AssetsPath, "dynamic_strings.json"))
+
+	if !empty {
+		data["msg"] = "Failed to Read dynamic_strings.json: File is empty or not found"
+		return data
+	}
+
+	bytes, err := json.Marshal(tempDynamicStrings)
+
+	if err != nil {
+		data["msg"] = "json.Marshal failed for dynamic_strings.json"
+		return data
+	}
+
+	err = json.Unmarshal(bytes, &dynamic_strings)
+
+	if err != nil {
+		data["msg"] = "json.Unmarshal failed to convert to DynamicStrings"
+		return data
+	}
+
+	var str map[string]string
+	tempStrings, empty := fh.ReadFile(fh.PathJoin(fh.DI.ResourcePath.AssetsPath, fh.DI.ResourcePath.File, fh.DI.locale, "string.json"))
+
+	if !empty {
+		data["msg"] = "Failed to Read string.json: File is empty or not found"
+		return data
+	}
+
+	bytes, err = json.Marshal(tempStrings)
+
+	if err != nil {
+		data["msg"] = "json.Marshal failed for string.json"
+		return data
+	}
+
+	err = json.Unmarshal(bytes, &str)
+
+	if err != nil {
+		data["msg"] = "json.Unmarshal failed to convert to string"
+		return data
+	}
+
+	for k, v := range dynamic_strings.Approach {
+		data["apporach"].(map[string]string)[k] = str[v]
+	}
+	for k, v := range dynamic_strings.Manufacture {
+		data["manufacture"].(map[string]string)[k] = str[v]
+	}
+	for k, v := range str {
+		
+		if strings.HasPrefix(k, "90") {
+			data["workshop"].(map[string]string)[k] = v
+		}
+	}
+	return data
 }

@@ -6,6 +6,8 @@ import { providerI18n } from './app/services/i18n-service';
 
 async function loadInitialLocales() {
     const data = await ReadLocales();
+    console.log(data);
+
     return data;
 }
 

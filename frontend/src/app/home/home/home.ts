@@ -7,14 +7,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 
-import { GetWindowSize, ReadSearchIndexJson } from '../../../../wailsjs/go/service/FileHandler';
 import { GetResourcePath } from '../../../../wailsjs/go/service/DIContainer';
 import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
 import { SearchService } from '../../services/search-service';
+import { ItemDetails } from '../../layout/item-details/item-details';
 
 @Component({
     selector: 'app-home',
     imports: [
+        ItemDetails,
         BreadCrumbs,
         MatFormFieldModule,
         MatInputModule,
@@ -45,7 +46,6 @@ export class Home {
     onFIlesSelected() {
         OpenFolderDialog().then((res) => {
             this.folderPath = res['folderPath'];
-            console.log(this.folderPath);
         });
     }
 
@@ -54,19 +54,4 @@ export class Home {
             console.log(res);
         });
     }
-
-    search() {
-        ReadSearchIndexJson('rice', 'en').then((res) => {
-            console.log(res);
-        });
-    }
-    // ngAfterViewInit() {
-    //     this.getWindowSize();
-    // }
-
-    // getWindowSize() {
-    //     GetWindowSize().then((res) => {
-    //         console.log(res);
-    //     });
-    // }
 }

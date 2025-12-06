@@ -9,8 +9,6 @@ import {
     WindowGetSize,
 } from '../../../wailsjs/go/service/Window';
 import { WindowSize } from '../shared/models/model';
-import { W } from '@angular/cdk/keycodes';
-import { CurrencyPipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root',
@@ -61,7 +59,6 @@ export class WindowServicee {
         // this.isWidgetMode.set(true);
         this.isWidgetMode.update((value) => !value);
         WindowSetSize(200, 100).then(() => {});
-        console.log('enter widget mode.', this.isWidgetMode());
     }
 
     // exitWidgetMode() {
@@ -78,19 +75,13 @@ export class WindowServicee {
     exitWidgetMode() {
         this.isWidgetMode.set(false);
 
-        console.log('isFullscreen', this.isFullscreen());
-
         if (this.isFullscreen()) {
             this.isFullscreen.set(false);
 
             WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});
-            console.log('exitWidgetMode');
-            console.log(this.windowSize());
             // this.windowFullscreen();
-            console.log('enter widget mode.', this.isWidgetMode());
             return;
         }
-        console.log('11111111');
 
         // WindowSetSize(500, 784).then(() => {});
         WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});

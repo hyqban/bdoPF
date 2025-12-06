@@ -14,6 +14,8 @@ export function GetHttpServer():Promise<service.HttpServer>;
 
 export function GetImgPath():Promise<Record<string, string>>;
 
+export function GetLocale():Promise<string>;
+
 export function GetResourcePath():Promise<model.ResourcePath>;
 
 export function ListIndependencies():Promise<Record<string, any>>;
@@ -27,3 +29,5 @@ export function SetAddr(arg1:string):Promise<void>;
 export function SetAppCtx(arg1:context.Context):Promise<void>;
 
 export function SetAssetsPath():Promise<void>;
+
+export function SetLocale(arg1:string):Promise<void>;

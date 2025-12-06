@@ -3,7 +3,7 @@ package model
 type ItemDetail struct {
 	Id    string `json:"id"`
 	Name  string `json:"name"`
-	Icon  string `json:"icono"`
+	Icon  string `json:"icon"`
 	Desc  string `json:"desc"`
 	Count string `json:"count,omitempty"`
 }
@@ -27,7 +27,7 @@ type ItemInfo struct {
 	Node       []string          `json:"node,omitempty"`
 	Shop       []string          `json:"shop,omitempty"`
 	House      []HouseItem       `json:"house,omitempty"`
-	Gathering  []string          `json:"garthering,omitempty"`
+	Gathering  []string          `json:"gathering,omitempty"`
 	Processing []ManufactureItem `json:"processing,omitempty"`
 	Cooking    [][]ItemDetail    `json:"cooking,omitempty"`
 	Alchemy    [][]ItemDetail    `json:"alchemy,omitempty"`
@@ -59,4 +59,10 @@ type SearchIndexItem struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Icon string `json:"icon"`
+}
+
+type DynamicStrings struct {
+	Approach    map[string]string `json:"approach"`
+	Manufacture map[string]string `json:"manufacture"`
+	Workshop    []string          `json:"workshop"`
 }

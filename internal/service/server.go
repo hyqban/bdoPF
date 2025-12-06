@@ -12,7 +12,7 @@ import (
 type HttpServer struct {
 	DI       *DIContainer
 	server   *http.Server
-	Listener net.Listener
+	listener net.Listener
 	mux      *http.ServeMux
 	Addr     string
 }
@@ -45,7 +45,7 @@ func (hs *HttpServer) Start() string {
 	if err != nil {
 		log.Fatalf("[HTTP] Failed to listen: %v", err)
 	}
-	hs.Listener = ln
+	hs.listener = ln
 	hs.Addr = ln.Addr().String()
 
 	hs.mux.HandleFunc("/api/data", func(w http.ResponseWriter, r *http.Request) {

@@ -42,7 +42,7 @@ export interface Item {
 
 export interface HouseItem {
     type: string;
-    item: Item;
+    item: Item[];
 }
 
 export interface processingItem {
@@ -55,13 +55,19 @@ export interface ItemInfo {
     itemName: string;
     itemIcon: string;
     itemDesc: string;
-    shop: [string];
-    node: [string];
-    house: [HouseItem];
-    gathering: [string];
-    cook: [Item];
-    alchemy: [Item];
-    processing: [processingItem];
-    fishing: string;
-    makelist: [Item];
+    shop?: string[];
+    node?: string[];
+    house?: HouseItem[];
+    gathering?: string[];
+    cooking?: Item[][];
+    alchemy?: Item[][];
+    processing?: processingItem[];
+    fishing?: string;
+    makelist?: Item[];
+}
+
+export interface DynamicStrings {
+    apporach: Record<string, string>;
+    manufacture: Record<string, string>;
+    workshop: Record<string, string>;
 }

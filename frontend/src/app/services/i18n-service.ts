@@ -1,4 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { SetLocale } from '../../../wailsjs/go/service/DIContainer';
 
 export interface Locale {
     locale: string;
@@ -100,12 +101,12 @@ export class I18nService {
     }
 }
 export function providerI18n(initialData: Record<string, any>) {
-    // console.log(initialData);
-
     const service = new I18nService();
     service.setLocales(initialData['locales']);
     service.setLangs(initialData['langs'] ?? {});
     service.choiceLang();
+
+    SetLocale(service.currentLang()).then(() => {});
 
     return {
         provide: I18nService,

@@ -3,7 +3,6 @@ package service
 import (
 	model "bdoPF/internal/model"
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -14,7 +13,8 @@ type DIContainer struct {
 	AppCtx         *context.Context
 	Addr           string
 	Env            string
-	ResourcePath   *model.ResourcePath
+	locale         string
+	ResourcePath   model.ResourcePath
 	Independencies map[string]interface{}
 }
 
@@ -36,12 +36,19 @@ func (di *DIContainer) Resolve(name string) (ind interface{}, exist bool) {
 	return instance, true
 }
 
+func (di *DIContainer) SetLocale(locale string) {
+	di.locale = locale
+}
+
+func (di *DIContainer) GetLocale() string {
+	return di.locale
+}
+
 func (di *DIContainer) SetAddr(addr string) {
 	di.Addr = addr
 }
 
 func (di *DIContainer) GetAddr() string {
-	fmt.Println("Addr: ", di.Addr)
 	return di.Addr
 }
 
@@ -70,7 +77,6 @@ func (di *DIContainer) ListIndependencies() map[string]interface{} {
 	for k, v := range di.Independencies {
 		temp[k] = v
 	}
-	fmt.Printf("%+v", temp)
 	return temp
 }
 
@@ -83,7 +89,7 @@ func (di *DIContainer) GetAppCtx() *context.Context {
 }
 
 func (di *DIContainer) GetResourcePath() *model.ResourcePath {
-	return di.ResourcePath
+	return &di.ResourcePath
 }
 
 func (di *DIContainer) SetAssetsPath() {
@@ -109,7 +115,7 @@ func (di *DIContainer) SetAssetsPath() {
 	resourcePath.Icon = "icons"
 	resourcePath.Locale = "locales"
 	resourcePath.Png = "product_icon_png"
-	di.ResourcePath = &resourcePath
+	di.ResourcePath = resourcePath
 }
 
 func (di *DIContainer) GetFileHandler() *FileHandler {
