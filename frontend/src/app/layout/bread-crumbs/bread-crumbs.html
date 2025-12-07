@@ -1,1 +1,13 @@
-<p>bread-crumbs works!</p>
+@if (search.breadCrumbs().data.length > 0) {
+<div class="bread-crumbs">
+    @for (el of search.breadCrumbs().data; track $index) {
+    <img
+        class="icon"
+        [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
+        (click)="this.search.selectBreadCrumb($index)"
+        alt=""
+    />
+    <mat-icon fontIcon="trending_flat"></mat-icon>
+    }
+</div>
+}

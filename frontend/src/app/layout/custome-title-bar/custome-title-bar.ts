@@ -27,7 +27,7 @@ import {
     of,
 } from 'rxjs';
 import { SearchService } from '../../services/search-service';
-import { ItemInfo, SearchResultItem } from '../../shared/models/model';
+import { Item, ItemInfo, SearchResultItem } from '../../shared/models/model';
 
 @Component({
     selector: 'app-custome-title-bar',
@@ -58,7 +58,7 @@ export class CustomeTitleBar {
     // searchResults = signal<SearchResult[]>([]);
 
     constructor(
-        private windowService: WindowServicee,
+        protected windowService: WindowServicee,
         private elementRef: ElementRef,
         protected search: SearchService
     ) {
@@ -81,9 +81,9 @@ export class CustomeTitleBar {
     }
 
     ngOnInit(): void {
-        if (this.search.query()) {
-            this.searchControl.setValue(this.search.query(), { emitEvent: false});
-        }
+        // if (this.search.query()) {
+        //     this.searchControl.setValue(this.search.query(), { emitEvent: false});
+        // }
 
         this.searchControl.valueChanges
             .pipe(
@@ -124,17 +124,16 @@ export class CustomeTitleBar {
                     );
                 })
             )
-            .subscribe((results: SearchResultItem[]) => {
+            .subscribe((results: Item[]) => {
                 this.search.addSearchResults(results);
 
                 // this.searchResults.set(results);
                 this.isResultVisible.set(false);
                 this.isLoading.set(false);
-                console.log(this.search.searchResults());
             });
     }
 
-    async searchItemById(el: SearchResultItem) {
+    async searchItemById(el: Item) {
         const itemData = await this.search.selectItem(el);
         this.search.currentItem.set(itemData as ItemInfo);
         this.isResultVisible.set(true);

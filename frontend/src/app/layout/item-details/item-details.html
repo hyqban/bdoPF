@@ -30,8 +30,8 @@
             <mat-tab class="tab1" label="{{ this.search.getDinamicString('apporach', 'fishing') }}">
                 <div class="mat-tab">
                     <div class="tab1">
-                        <div class="item">
-                            <div class="item-name">Fishing</div>
+                        <div class="item-1">
+                            <div class="item-name">{{ this.search.getDinamicString('apporach', 'fishing') }}</div>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().shop; track $index) {
-                        <div class="item">
+                        <div class="item-1">
                             <div class="item-name">{{ item }}</div>
                         </div>
                         }
@@ -77,7 +77,7 @@
                             {{ search.getDinamicString('workshop', el.type) }}
                         </div>
                         @for (item of el.item; track item.id) {
-                        <div class="item">
+                        <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
                                 <div style="color: blue">x {{ item.count }}</div>
@@ -104,7 +104,7 @@
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().gathering; track $index) {
-                        <div class="item">
+                        <div class="item-1">
                             <div class="item-name">{{ item }}</div>
                         </div>
                         }
@@ -118,9 +118,9 @@
                 <div class="mat-tab">
                     @for (el of search.currentItem().cooking; track $index) {
                     <div class="tab1">
-                        <div class="action">{{ i18n.t('craft.receipt') }} {{ $index + 1 }}</div>
+                        <div class="action">{{ i18n.t('craft.recipe') }} {{ $index + 1 }}</div>
                         @for (item of el; track item.id) {
-                        <div class="item">
+                        <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
                                 <div style="color: blue">x {{ item.count }}</div>
@@ -148,9 +148,9 @@
                     @for (el of search.currentItem().alchemy; track $index) {
                     <!-- <div>{{ el }}</div> -->
                     <div class="tab1">
-                        <div class="action">{{ i18n.t('craft.receipt') }} {{ $index + 1 }}</div>
+                        <div class="action">{{ i18n.t('craft.recipe') }} {{ $index + 1 }}</div>
                         @for (item of el; track item.id) {
-                        <div class="item">
+                        <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
                                 <div style="color: blue">x {{ item.count }}</div>
@@ -178,12 +178,12 @@
                     @for (el of search.currentItem().processing; track $index) {
                     <div class="tab1">
                         <div class="action">
-                            {{ i18n.t('craft.receipt') }}
+                            {{ i18n.t('craft.recipe') }}
                             {{ $index + 1 }} -
                             {{ search.getDinamicString('manufacture', el.action) }}
                         </div>
                         @for (item of el.item; track item.id) {
-                        <div class="item">
+                        <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
                                 <div style="color: blue">x {{ item.count }}</div>
@@ -210,7 +210,7 @@
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().makelist; track $index) {
-                        <div class="item1">
+                        <div class="item-2">
                             <img
                                 class="icon"
                                 [src]="

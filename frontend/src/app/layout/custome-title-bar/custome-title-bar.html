@@ -61,6 +61,12 @@
         <mat-icon
             aria-hidden="false"
             aria-label="Example home icon"
+            fontIcon="pin_drop"
+            (click)="windowService.setWindowOnTop()"
+        ></mat-icon>
+        <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
             fontIcon="remove"
             (click)="windowMinimise()"
         ></mat-icon>

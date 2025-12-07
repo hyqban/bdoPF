@@ -1,13 +1,15 @@
-@if(!isWidgetMode()){
-<div id="app">
+<div id="app" [class.hide]="isWidgetMode()">
     <app-custome-title-bar></app-custome-title-bar>
+    @if (currentUrl() === "/home") {
+    <app-bread-crumbs></app-bread-crumbs>
+    }
+    <!-- <div>{{ currentUrl() }}</div> -->
     <div id="body">
         <router-outlet />
     </div>
 </div>
-} @else {
-<div style="widows: 1" id="widget">
+
+<div style="widows: 1" id="widget" [class.hide]="!isWidgetMode()">
     <span>widget mode</span>
     <button class="exit-widget" (click)="exitWidgetMode()">exit Widget</button>
 </div>
-}

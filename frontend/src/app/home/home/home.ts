@@ -1,6 +1,5 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { ThemeService } from '../../services/theme-service';
-import { BreadCrumbs } from '../../layout/bread-crumbs/bread-crumbs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +15,6 @@ import { ItemDetails } from '../../layout/item-details/item-details';
     selector: 'app-home',
     imports: [
         ItemDetails,
-        BreadCrumbs,
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,

@@ -3,7 +3,7 @@
     max-width: 80%;
     min-width: 400px;
     padding: 2em 2.5rem;
-    margin: auto;
+    margin: 1em auto;
     background-color: var(--mat-sys-on-secondary);
 
     .header {
@@ -77,16 +77,20 @@
                     // background: linear-gradient(to right, skyblue, blue);
                 }
 
-                .item:hover {
+                .item-3:hover {
                     border: var(--border-hover) 1px solid;
                     transform: scale(0.98);
                 }
-                .item1:hover {
+                .item-2:hover {
+                    border: var(--border-hover) 1px solid;
+                    transform: scale(0.98);
+                }
+                .item-1:hover {
                     border: var(--border-hover) 1px solid;
                     transform: scale(0.98);
                 }
 
-                .item {
+                .item-3 {
                     @include grid-columns($col: 3rem 35px 1fr);
                     align-items: center;
                     background-color: var(--mat-sys-on-secondary);
@@ -95,14 +99,21 @@
                     padding: 0.6em 0.8em;
                     // margin: 0 1em;
                 }
-                .item1 {
+                .item-2 {
                     @include grid-columns($col: 35px 1fr);
                     align-items: center;
                     background-color: var(--mat-sys-on-secondary);
                     border: var(--border) 1px solid;
                     border-radius: 0.5rem;
                     padding: 0.6em 0.8em;
-                    // margin: 0 1em;
+                }
+                .item-1 {
+                    @include grid-columns($col: 1fr);
+                    align-items: center;
+                    background-color: var(--mat-sys-on-secondary);
+                    border: var(--border) 1px solid;
+                    border-radius: 0.5rem;
+                    padding: 0.6em 0.8em;
                 }
 
                 .count {

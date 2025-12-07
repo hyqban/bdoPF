@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GetAddr, GetImgPath } from '../../../wailsjs/go/service/DIContainer';
-import { SearchResultItem, ItemInfo, BreadCrumbs } from '../shared/models/model';
+import { SearchResultItem, ItemInfo, BreadCrumbs, Item } from '../shared/models/model';
 import { ReadFileById, ReadDynamicStrings } from '../../../wailsjs/go/service/FileHandler';
 import { DynamicStrings } from '../shared/models/model';
 
@@ -13,7 +13,7 @@ export class SearchService {
     env = '';
     addr = '';
     query = signal('');
-    searchResults = signal<SearchResultItem[]>([]);
+    searchResults = signal<Item[]>([]);
     currentItem: WritableSignal<ItemInfo> = signal<ItemInfo>({
         itemKey: '',
         itemName: '',
@@ -87,7 +87,7 @@ export class SearchService {
         this.searchResults.set([]);
     }
 
-    async selectItem(ele: SearchResultItem): Promise<Record<string, any>> {
+    async selectItem(ele: Item): Promise<Record<string, any>> {
         this.cleanBreadCrumbs();
 
         if (
@@ -106,9 +106,26 @@ export class SearchService {
         });
 
         let itemInfo: Record<string, any> = await ReadFileById(ele.id);
-        console.log(itemInfo);
-
         return itemInfo;
+    }
+
+    nextQueryAndSetCurrentItem(id: string) {
+        ReadFileById(id).then((res) => {
+            if (res.itemKey) {
+                this.currentItem.set(res as ItemInfo);
+            }
+        });
+    }
+
+    nextQuery(ele: Item) {
+        this.breadCrumbs.update((el) => {
+            el.amount.push(Number(ele.count));
+            el.data.push(ele);
+            el.index += 1;
+            el.length += 1;
+            return { ...el };
+        });
+        this.nextQueryAndSetCurrentItem(ele.id);
     }
 
     addBreadCrumb(bd: SearchResultItem, amount: string) {
@@ -127,21 +144,32 @@ export class SearchService {
     }
 
     selectBreadCrumb(index: number) {
+        if (index + 1 === this.breadCrumbs().length) {
+            return;
+        }
+
         this.breadCrumbs.update((el) => {
             if (index === 0) {
                 el.data.length = 1;
                 el.amount.length = 1;
                 el.index = 0;
                 el.length = 1;
+
+                this.nextQueryAndSetCurrentItem(
+                    this.breadCrumbs().data[this.breadCrumbs().index].id
+                );
                 return { ...el };
             }
 
-            if (index + 1 <= el.length) {
+            if (index + 1 < el.length) {
                 const newData = el.data.slice(0, index + 1);
                 const newAmout = el.amount.slice(1, index + 1);
                 el.index = index;
                 el.length = index + 1;
 
+                this.nextQueryAndSetCurrentItem(
+                    this.breadCrumbs().data[this.breadCrumbs().index].id
+                );
                 return {
                     ...el,
                     data: newData,
@@ -179,7 +207,6 @@ export class SearchService {
         ReadDynamicStrings().then((res) => {
             if (res['msg'] === '') {
                 this.dynamicStrings = { ...res } as DynamicStrings;
-                console.log(this.dynamicStrings);
             }
         });
     }

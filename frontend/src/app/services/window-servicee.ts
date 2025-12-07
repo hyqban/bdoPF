@@ -7,6 +7,7 @@ import {
     IsWindowFullscreen,
     WindowSetSize,
     WindowGetSize,
+    WindowSetAlwaysOnTop,
 } from '../../../wailsjs/go/service/Window';
 import { WindowSize } from '../shared/models/model';
 
@@ -20,6 +21,14 @@ export class WindowServicee {
         w: 0,
         h: 0,
     });
+    private onTop: boolean = false;
+
+    setWindowOnTop() {
+        this.onTop = !this.onTop;
+        console.log('onTop: ', this.onTop);
+
+        WindowSetAlwaysOnTop(this.onTop);
+    }
 
     getWindowSize() {
         WindowGetSize().then((res) => {

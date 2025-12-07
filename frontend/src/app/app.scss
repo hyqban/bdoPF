@@ -1,5 +1,9 @@
 @use '../styles.scss' as *;
 
+#app.hide {
+    display: none;
+}
+
 #app {
     @extend %flex-column;
     width: 100vw;
@@ -21,8 +25,12 @@
     }
 }
 
+#widget.hide {
+    display: none;
+}
+
 #widget {
-    .exit-widget{
+    .exit-widget {
         -webkit-app-region: no-drag;
     }
 }

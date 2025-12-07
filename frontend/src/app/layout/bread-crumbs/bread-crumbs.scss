@@ -1,0 +1,21 @@
+@use '../../../styles.scss' as *;
+
+.bread-crumbs {
+    background-color: var(--mat-sys-primary-container);
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0.5em .8em;
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        border: var(--mat-sys-outline-variant) 2px solid;
+        border-radius: .5rem;
+        padding: .2rem;
+    }
+
+    & > :last-child {
+        display: none;
+    }
+}

@@ -11,9 +11,9 @@ export interface SearchResult {
 
 export interface SearchHistory {
     query: string;
-    searchResult: SearchResultItem[];
+    searchResult: Item[];
     currentItem: ItemInfo;
-    breadCrumbs: SearchResultItem[];
+    breadCrumbs: Item[];
     breadCrumbsIndex: number;
     breadCrumbsLength: number;
     amount: number[];
@@ -26,7 +26,7 @@ export interface SearchResultItem {
 }
 
 export interface BreadCrumbs {
-    data: SearchResultItem[];
+    data: Item[];
     amount: number[];
     index: number;
     length: number;
@@ -36,8 +36,8 @@ export interface Item {
     id: string;
     name: string;
     icon: string;
-    desc: string;
-    count: string;
+    desc?: string;
+    count?: string;
 }
 
 export interface HouseItem {

@@ -41,6 +41,7 @@
             justify-content: center;
             -webkit-app-region: no-drag;
             user-select: none;
+            margin-right: -5em;
             // cursor: pointer;
             // width: 200px;
             // height: 20px;
@@ -66,7 +67,8 @@
                 }
 
                 & > :nth-child(2):hover {
-                    background-color: var(--mat-sys-surface-container-highest);
+                    // background-color: var(--mat-sys-surface-container-highest);
+                    background-color: var(--bg-color);
                 }
 
                 & > :nth-child(2).hide {
