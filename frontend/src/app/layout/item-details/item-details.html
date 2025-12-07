@@ -31,7 +31,9 @@
                 <div class="mat-tab">
                     <div class="tab1">
                         <div class="item-1">
-                            <div class="item-name">{{ this.search.getDinamicString('apporach', 'fishing') }}</div>
+                            <div class="item-name">
+                                {{ this.search.getDinamicString('apporach', 'fishing') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,8 +82,17 @@
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
-                                <div style="color: red">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div>
                             </div>
                             <img
                                 class="icon"
@@ -123,8 +134,17 @@
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
-                                <div style="color: red">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div>
                             </div>
                             <img
                                 class="icon"
@@ -153,8 +173,17 @@
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
-                                <div style="color: red">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div>
                             </div>
                             <img
                                 class="icon"
@@ -186,8 +215,17 @@
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
                                 <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
-                                <div style="color: red">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div>
                             </div>
                             <img
                                 class="icon"

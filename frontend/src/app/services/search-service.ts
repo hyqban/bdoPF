@@ -144,6 +144,7 @@ export class SearchService {
     }
 
     selectBreadCrumb(index: number) {
+        // last icon
         if (index + 1 === this.breadCrumbs().length) {
             return;
         }
@@ -163,7 +164,7 @@ export class SearchService {
 
             if (index + 1 < el.length) {
                 const newData = el.data.slice(0, index + 1);
-                const newAmout = el.amount.slice(1, index + 1);
+                const newAmout = el.amount.slice(0, index + 1);
                 el.index = index;
                 el.length = index + 1;
 
@@ -178,6 +179,37 @@ export class SearchService {
             }
             return { ...el };
         });
+    }
+
+    calculateDeltaAmount(count: string): number {
+        console.log('count: ', count, this.breadCrumbs());
+
+        const len = this.breadCrumbs().length;
+        let total: number = 1;
+
+        if (len === 1) {
+            return Number(count);
+        }
+        if (len > 1) {
+            total = this.breadCrumbs().amount[len - 1] * Number(count);
+        }
+        return total;
+    }
+
+    totalAmout(count: string): number {
+        const len = this.breadCrumbs().length;
+        let total: number = 1;
+
+        if (len === 1) {
+            return Number(count);
+        }
+        if (len > 1) {
+            this.breadCrumbs().amount.forEach((el) => {
+                total *= Number(el);
+            });
+            total *= Number(count);
+        }
+        return total;
     }
 
     cleanBreadCrumbs() {
