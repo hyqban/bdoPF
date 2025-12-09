@@ -118,14 +118,21 @@ export class SearchService {
     }
 
     nextQuery(ele: Item) {
-        this.breadCrumbs.update((el) => {
-            el.amount.push(Number(ele.count));
-            el.data.push(ele);
-            el.index += 1;
-            el.length += 1;
-            return { ...el };
+        ReadFileById(ele.id).then((res) => {
+            if (res.itemKey) {
+                this.currentItem.set(res as ItemInfo);
+
+                this.breadCrumbs.update((el) => {
+                    el.amount.push(Number(ele.count));
+                    el.data.push(ele);
+                    el.index += 1;
+                    el.length += 1;
+                    return { ...el };
+                });
+            }
         });
-        this.nextQueryAndSetCurrentItem(ele.id);
+
+        // this.nextQueryAndSetCurrentItem(ele.id);
     }
 
     addBreadCrumb(bd: SearchResultItem, amount: string) {
@@ -182,8 +189,6 @@ export class SearchService {
     }
 
     calculateDeltaAmount(count: string): number {
-        console.log('count: ', count, this.breadCrumbs());
-
         const len = this.breadCrumbs().length;
         let total: number = 1;
 
