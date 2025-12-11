@@ -3,9 +3,11 @@ Features:
     ✔ 2. Show icons in breadCrumbs. @done(25-12-08 01:43)
     ✔ 3. Some func with breadCrumbs. @done(25-12-08 01:43)
     ✔ 4. Amount @done(25-12-08 01:43)
+    ☐ 5. SWitch Language.
 
 Issues:
     ☐ 1. Mat-card will changed width when scroll is appear.
     ☐ 2. The input can be dragged.
     ☐ 3. The color of the amount
     ✔ 4. BreadCrumb was appeared after build. @done(25-12-08 02:19)
+    ✔ 5. The search results didn't show below 50, and remove match.score > 50. @done(25-12-10 20:55)

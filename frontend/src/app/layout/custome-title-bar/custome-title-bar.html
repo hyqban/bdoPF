@@ -13,43 +13,27 @@
             (mouseleave)="hideSidebar()"
         ></mat-icon>
         <!-- <div class="app-icon">iocn</div> -->
-        <div class="app-name">bdoPF</div>
+        <!-- <div class="app-name">bdoPF</div> -->
     </div>
 
-    <div class="search-field">
-        <div class="search">
-            <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
-            @if (this.search.searchResults().length > 0) {
-            <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible()">
-                @for (el of this.search.searchResults(); track el.id) {
-                <div class="searchResult" (click)="searchItemById(el)">
-                    <img
-                        [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
-                        alt=""
-                    />
-                    <div>{{ el.name }}</div>
-                </div>
-                }
-            </mat-card>
-            }
-            <!-- <mat-icon fontIcon="search" (click)="search()"></mat-icon> -->
-        </div>
-        <!-- @if (data.length > 0) {
-        <div>
-            @for (el of data; track el?.id) {
-            <div>
-                <img src="" alt="" />
-                <div>{{ el?.itemName }}</div>
+    @if (currentUrl() === "/home") {
+
+    <!-- <div class="search-field"></div> -->
+    <div class="search">
+        <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
+        @if (this.search.searchResults().length > 0) {
+        <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible()">
+            @for (el of this.search.searchResults(); track el.id) {
+            <div class="searchResult" (click)="searchItemById(el)">
+                <img [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)" alt="" />
+                <div>{{ el.name }}</div>
             </div>
             }
-        </div>
-        } -->
+        </mat-card>
+        }
+        <!-- <mat-icon fontIcon="search" (click)="search()"></mat-icon> -->
     </div>
-    <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-        <mat-label>Item</mat-label>
-        <input matInput placeholder="Placeholder" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field> -->
+    }
 
     <div class="right-part">
         <mat-icon

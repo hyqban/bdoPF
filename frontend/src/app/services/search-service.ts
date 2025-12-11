@@ -3,7 +3,22 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GetAddr, GetImgPath } from '../../../wailsjs/go/service/DIContainer';
 import { SearchResultItem, ItemInfo, BreadCrumbs, Item } from '../shared/models/model';
 import { ReadFileById, ReadDynamicStrings } from '../../../wailsjs/go/service/FileHandler';
-import { DynamicStrings } from '../shared/models/model';
+
+const DEFAULT_ITEM_INFO: ItemInfo = {
+    itemKey: '',
+    itemName: '',
+    itemDesc: '',
+    itemIcon: '',
+    shop: [],
+    node: [],
+    house: [],
+    gathering: [],
+    cooking: [],
+    alchemy: [],
+    processing: [],
+    fishing: '',
+    makelist: [],
+};
 
 @Injectable({
     providedIn: 'root',
@@ -28,11 +43,11 @@ export class SearchService {
         length: 0,
     });
     imgPath: Record<string, string> = {};
-    dynamicStrings: DynamicStrings = {
-        apporach: {},
-        manufacture: {},
-        workshop: {},
-    };
+    // dynamicStrings: DynamicStrings = {
+    //     apporach: {},
+    //     manufacture: {},
+    //     workshop: {},
+    // };
 
     constructor(private sanitizer: DomSanitizer) {}
 
@@ -90,13 +105,13 @@ export class SearchService {
     async selectItem(ele: Item): Promise<Record<string, any>> {
         this.cleanBreadCrumbs();
 
-        if (
-            this.isEmpty(this.dynamicStrings.apporach) ||
-            this.isEmpty(this.dynamicStrings.manufacture) ||
-            this.isEmpty(this.dynamicStrings.workshop)
-        ) {
-            this.getDynamicStrings();
-        }
+        // if (
+        //     this.isEmpty(this.dynamicStrings.apporach) ||
+        //     this.isEmpty(this.dynamicStrings.manufacture) ||
+        //     this.isEmpty(this.dynamicStrings.workshop)
+        // ) {
+        //     this.getDynamicStrings();
+        // }
 
         this.breadCrumbs.update((el) => {
             el.data.push(ele);
@@ -234,29 +249,11 @@ export class SearchService {
         }
         return true;
     }
-    getDynamicStrings() {
-        this.dynamicStrings = {
-            apporach: {},
-            manufacture: {},
-            workshop: {},
-        };
 
-        ReadDynamicStrings().then((res) => {
-            if (res['msg'] === '') {
-                this.dynamicStrings = { ...res } as DynamicStrings;
-            }
-        });
-    }
-
-    getDinamicString(key: string, feild: string) {
-        if (key === 'apporach') {
-            return this.dynamicStrings.apporach[feild] ?? '';
-        } else if (key === 'manufacture') {
-            return this.dynamicStrings.manufacture[feild] ?? '';
-        } else if (key === 'workshop') {
-            return this.dynamicStrings.workshop['90' + feild] ?? '';
-        } else {
-            return '';
-        }
+    cleanAllCache() {
+        this.query.set('');
+        this.searchResults.set([]);
+        this.currentItem.set(DEFAULT_ITEM_INFO)
+        this.cleanBreadCrumbs();
     }
 }

@@ -61,6 +61,11 @@ type SearchIndexItem struct {
 	Icon string `json:"icon"`
 }
 
+type SearchIndex struct {
+	Locale string
+	Data   map[string]ItemRaw
+}
+
 type DynamicStrings struct {
 	Approach    map[string]string `json:"approach"`
 	Manufacture map[string]string `json:"manufacture"`

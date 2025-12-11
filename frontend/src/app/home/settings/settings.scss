@@ -1,0 +1,92 @@
+@use '../../../styles.scss' as *;
+
+.mat-card {
+    max-width: 80%;
+    min-width: 400px;
+    padding: 2em 2.5rem;
+    margin: 1em auto;
+    background-color: var(--mat-sys-on-secondary);
+
+    .header {
+        @extend %flex-row;
+        justify-content: space-between;
+
+        .header-left {
+            width: fit-content;
+            // border: aqua 1px solid;
+            // @extend %flex-column;
+
+            & > :first-child {
+                font-size: 2.2rem;
+                color: var(--mat-sys-inverse-primary);
+            }
+
+            .update {
+                @extend %flex-column;
+                gap: 0.5rem;
+                margin-top: 0.4rem;
+
+                & > :first-child {
+                    color: var(--mat-sys-outline-variant);
+                }
+
+                mat-icon {
+                    padding-right: 0.3rem;
+                    width: 1.2rem;
+                    height: 1.2rem;
+                    font-size: 1.2rem;
+                    // border: red 1px solid;
+                }
+                button:hover {
+                    background-color: var(--mat-sys-secondary-container);
+                    border: var(--mat-sys-secondary-container) 1px solid;
+                }
+
+                button {
+                    @extend %flex-row-2c;
+                    background-color: var(--mat-sys-inverse-primary);
+                    width: fit-content;
+                    margin-top: 0.5rem;
+                    padding: 0.5rem;
+                    border-radius: 0.6rem;
+                    border: var(--mat-sys-inverse-primary) 1px solid;
+                }
+            }
+        }
+
+        .header-right {
+            @extend %flex-column;
+            gap: 0.8em;
+            width: fit-content;
+            // background-color: antiquewhite;
+
+            .link:hover {
+                // border: var(--border) 1px solid;
+                cursor: pointer;
+            }
+
+            .link {
+                // border: var(--mat-sys-on-secondary) 1px solid;
+
+                & > :first-child {
+                }
+
+                & > :nth-child(2) {
+                    font-size: 0.8rem;
+                    color: var(--mat-sys-outline-variant);
+                }
+            }
+        }
+    }
+
+    .app-settings {
+        margin-top: 1.5em;
+
+        .row {
+            // border: red 1px solid;
+            @extend %flex-row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+}

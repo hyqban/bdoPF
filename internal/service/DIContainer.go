@@ -3,6 +3,7 @@ package service
 import (
 	model "bdoPF/internal/model"
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -37,7 +38,9 @@ func (di *DIContainer) Resolve(name string) (ind interface{}, exist bool) {
 }
 
 func (di *DIContainer) SetLocale(locale string) {
+	fmt.Println("before: ", di.locale)
 	di.locale = locale
+	fmt.Println("after: ", di.locale)
 }
 
 func (di *DIContainer) GetLocale() string {

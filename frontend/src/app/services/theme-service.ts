@@ -1,11 +1,11 @@
-import { DOCUMENT, Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { DOCUMENT, Inject, Injectable, Renderer2, RendererFactory2, signal } from '@angular/core';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ThemeService {
     private renderer: Renderer2;
-    private currentTheme = 'lightskyblue';
+    private currentTheme = signal('lightskyblue');
 
     constructor(@Inject(DOCUMENT) private document: Document, rendererFactory: RendererFactory2) {
         this.renderer = rendererFactory.createRenderer(null, null);
@@ -14,7 +14,7 @@ export class ThemeService {
         if (savedTheme) {
             this.setTheme(savedTheme);
         } else {
-            this.setTheme(this.currentTheme);
+            this.setTheme(this.currentTheme());
         }
     }
 
@@ -28,9 +28,10 @@ export class ThemeService {
         const themeClass = `theme-${themeName}`;
         this.renderer.addClass(this.document.body, themeClass);
         localStorage.setItem('app-theme', themeName);
+        this.currentTheme.set(themeName);
     }
 
     getCurrentTheme() {
-        return this.currentTheme;
+        return this.currentTheme();
     }
 }

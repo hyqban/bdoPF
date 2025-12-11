@@ -67,7 +67,7 @@
                 // border: red 1px solid;
 
                 .action {
-                    margin: 0 .4em;
+                    margin: 0 0.4em;
                     font-weight: 600;
                     background: linear-gradient(to right, red, blue);
                     color: transparent;
@@ -128,7 +128,7 @@
                 }
 
                 .item-name {
-                    margin-left: .5rem;
+                    margin-left: 0.5rem;
                     // width: fit-content;
                     // background-color: aqua;
                 }
@@ -136,3 +136,9 @@
         }
     }
 }
+
+// @media (min-width: 550px) {
+//     .mat-card {
+//         max-width: 450px;
+//     }
+// }

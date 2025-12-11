@@ -27,12 +27,12 @@
 
         <mat-tab-group class="mat-tab-group">
             @if (search.currentItem().fishing) {
-            <mat-tab class="tab1" label="{{ this.search.getDinamicString('apporach', 'fishing') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'fishing') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         <div class="item-1">
                             <div class="item-name">
-                                {{ this.search.getDinamicString('apporach', 'fishing') }}
+                                {{ this.i18n.getDinamicString('apporach', 'fishing') }}
                             </div>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
             }
             <!-- shop -->
             @if (search.currentItem().shop) {
-            <mat-tab class="tab1" label="{{ this.search.getDinamicString('apporach', 'shop') }}">
+            <mat-tab class="tab1" label="{{ this.i18n.getDinamicString('apporach', 'shop') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().shop; track $index) {
@@ -55,7 +55,7 @@
             }
             <!-- node -->
             @if (search.currentItem().node) {
-            <mat-tab label="{{ this.search.getDinamicString('apporach', 'node') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'node') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().node; track $index) {
@@ -69,14 +69,14 @@
             }
             <!-- houseCraft -->
             @if (search.currentItem().house) {
-            <mat-tab class="tab1" label="{{ this.search.getDinamicString('apporach', 'house') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'house') }}">
                 <div class="mat-tab">
                     @for (el of search.currentItem().house; track $index) {
                     <div class="tab1">
                         <div class="action">
                             {{ i18n.t('craft.recipe') }}
                             {{ $index + 1 }} -
-                            {{ search.getDinamicString('workshop', el.type) }}
+                            {{ i18n.getDinamicString('workshop', el.type) }}
                         </div>
                         @for (item of el.item; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
@@ -111,7 +111,7 @@
             }
             <!-- gathering -->
             @if (search.currentItem().gathering) {
-            <mat-tab label="{{ this.search.getDinamicString('apporach', 'gathering') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'gathering') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().gathering; track $index) {
@@ -125,7 +125,7 @@
             }
             <!-- cooking -->
             @if (search.currentItem().cooking) {
-            <mat-tab class="tab1" label="{{ this.search.getDinamicString('apporach', 'cooking') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'cooking') }}">
                 <div class="mat-tab">
                     @for (el of search.currentItem().cooking; track $index) {
                     <div class="tab1">
@@ -163,7 +163,7 @@
             }
             <!-- alchemy -->
             @if (search.currentItem().alchemy) {
-            <mat-tab label="{{ this.search.getDinamicString('apporach', 'alchemy') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'alchemy') }}">
                 <div class="mat-tab">
                     @for (el of search.currentItem().alchemy; track $index) {
                     <!-- <div>{{ el }}</div> -->
@@ -202,14 +202,14 @@
             }
             <!-- processing -->
             @if (search.currentItem().processing) {
-            <mat-tab label="{{ this.search.getDinamicString('apporach', 'processing') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'processing') }}">
                 <div class="mat-tab">
                     @for (el of search.currentItem().processing; track $index) {
                     <div class="tab1">
                         <div class="action">
                             {{ i18n.t('craft.recipe') }}
                             {{ $index + 1 }} -
-                            {{ search.getDinamicString('manufacture', el.action) }}
+                            {{ i18n.getDinamicString('manufacture', el.action) }}
                         </div>
                         @for (item of el.item; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
@@ -244,7 +244,7 @@
             }
             <!-- makelist -->
             @if (search.currentItem().makelist) {
-            <mat-tab label="{{ this.search.getDinamicString('apporach', 'makelist') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'makelist') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().makelist; track $index) {

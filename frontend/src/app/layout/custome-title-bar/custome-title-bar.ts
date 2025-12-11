@@ -1,7 +1,12 @@
 import {
     Component,
+    computed,
+    effect,
     ElementRef,
     HostListener,
+    inject,
+    Injector,
+    OnInit,
     signal,
     ViewChild,
     viewChild,
@@ -25,9 +30,11 @@ import {
     switchMap,
     tap,
     of,
+    map,
 } from 'rxjs';
 import { SearchService } from '../../services/search-service';
-import { Item, ItemInfo, SearchResultItem } from '../../shared/models/model';
+import { Item, ItemInfo } from '../../shared/models/model';
+import { useCurrentUrl } from '../../shared/router/route';
 
 @Component({
     selector: 'app-custome-title-bar',
@@ -44,7 +51,7 @@ import { Item, ItemInfo, SearchResultItem } from '../../shared/models/model';
     templateUrl: './custome-title-bar.html',
     styleUrl: './custome-title-bar.scss',
 })
-export class CustomeTitleBar {
+export class CustomeTitleBar implements OnInit {
     protected isFullscreen!: WritableSignal<boolean>;
     @ViewChild('autoComplete') autoCompleteResult!: ElementRef;
     isSidebarVisible: boolean = false;
@@ -57,7 +64,10 @@ export class CustomeTitleBar {
     searchControl = new FormControl('');
     // searchResults = signal<SearchResult[]>([]);
 
+    currentUrl = useCurrentUrl();
+
     constructor(
+        private injector: Injector,
         protected windowService: WindowServicee,
         private elementRef: ElementRef,
         protected search: SearchService
@@ -81,9 +91,17 @@ export class CustomeTitleBar {
     }
 
     ngOnInit(): void {
-        // if (this.search.query()) {
-        //     this.searchControl.setValue(this.search.query(), { emitEvent: false});
-        // }
+        effect(
+            () => {
+                // const currentQuery = this.search.query();
+                // console.log('currentQuery: ', currentQuery);
+
+                if (this.search.query() !== this.searchControl.value) {
+                    this.searchControl.setValue('', { emitEvent: false });
+                }
+            },
+            { injector: this.injector }
+        );
 
         this.searchControl.valueChanges
             .pipe(

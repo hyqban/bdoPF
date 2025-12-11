@@ -41,16 +41,14 @@ type Locale struct {
 }
 
 type FileHandler struct {
-	DI                 *DIContainer
-	searchIndex        map[string]model.ItemRaw
-	isSearchIndexEmpty bool
+	DI          *DIContainer
+	searchIndex model.SearchIndex
 }
 
 func NewFileHandler(di *DIContainer) *FileHandler {
 	fh := FileHandler{}
 
 	fh.DI = di
-	fh.isSearchIndexEmpty = true
 	return &fh
 }
 
@@ -191,12 +189,12 @@ func (fh *FileHandler) ReadFileById(id string) model.ItemInfo {
 }
 
 func (fh *FileHandler) QueryByName(item string) []model.ItemRaw {
-	if fh.isSearchIndexEmpty {
+	if fh.DI.locale == "" || fh.searchIndex.Locale == "" || fh.searchIndex.Locale != fh.DI.locale {
 		fh.readSearchIndexJson()
 	}
 
 	var itemToSearch SearchableItems
-	for _, v := range fh.searchIndex {
+	for _, v := range fh.searchIndex.Data {
 		itemToSearch = append(itemToSearch, v)
 	}
 
@@ -204,15 +202,15 @@ func (fh *FileHandler) QueryByName(item string) []model.ItemRaw {
 	results := []model.ItemRaw{}
 
 	for _, match := range matches {
-		if match.Score >= 50 {
-			originalItem := itemToSearch[match.Index]
+		originalItem := itemToSearch[match.Index]
 
-			results = append(results, model.ItemRaw{
-				Id:   originalItem.Id,
-				Name: originalItem.Name,
-				Icon: originalItem.Icon,
-			})
-		}
+		results = append(results, model.ItemRaw{
+			Id:   originalItem.Id,
+			Name: originalItem.Name,
+			Icon: originalItem.Icon,
+		})
+		// if match.Score >= 50 {
+		// }
 	}
 	return results
 }
@@ -231,8 +229,9 @@ func (fh *FileHandler) readSearchIndexJson() {
 	err = json.Unmarshal(jsonBytes, &targetMap)
 	if err != nil {
 	}
-	fh.searchIndex = targetMap
-	fh.isSearchIndexEmpty = false
+
+	fh.searchIndex.Locale = fh.DI.locale
+	fh.searchIndex.Data = targetMap
 }
 
 func (fh *FileHandler) ReadDynamicStrings() map[string]interface{} {
@@ -294,7 +293,7 @@ func (fh *FileHandler) ReadDynamicStrings() map[string]interface{} {
 		data["manufacture"].(map[string]string)[k] = str[v]
 	}
 	for k, v := range str {
-		
+
 		if strings.HasPrefix(k, "90") {
 			data["workshop"].(map[string]string)[k] = v
 		}

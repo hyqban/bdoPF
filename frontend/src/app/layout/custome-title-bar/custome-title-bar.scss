@@ -6,7 +6,7 @@
         width: 100vw;
         height: 2em;
         display: flex;
-        flex: 1 1 auto;
+        flex: 1 1 1;
         flex-direction: row;
         justify-content: space-between;
         -webkit-app-region: drag;
@@ -37,117 +37,77 @@
         }
 
         .search-field {
+            align-self: center;
             @extend %flex-column;
-            justify-content: center;
             -webkit-app-region: no-drag;
             user-select: none;
-            margin-right: -5em;
+            // margin-right: -5em;
             // cursor: pointer;
             // width: 200px;
             // height: 20px;
             // @include mat.form-field-density(-5);
+        }
+        .search {
+            @extend %flex-column;
+            justify-content: center;
+            -webkit-app-region: no-drag;
 
-            .search {
-                @extend %flex-column;
+            & > :first-child {
+                box-sizing: border-box;
+                // width: 165px;
+                width: 10rem;
+                border-radius: 1%;
+                height: 20px;
+                border: 0px;
+                padding: 0 10px;
                 -webkit-app-region: no-drag;
+            }
 
-                & > :first-child {
-                    box-sizing: border-box;
-                    width: 155px;
-                    border-radius: 1%;
-                    height: 20px;
-                    border: 0px;
-                    padding: 0 10px;
-                    -webkit-app-region: no-drag;
+            & > :first-child:focus {
+                // border: 1px solid var(--mat-sys-surface-container-highest);
+                outline: none;
+            }
+
+            & > :nth-child(2):hover {
+                // background-color: var(--mat-sys-surface-container-highest);
+                background-color: var(--bg-color);
+            }
+
+            & > :nth-child(2).hide {
+                display: none;
+                -webkit-app-region: no-drag;
+            }
+
+            & > :nth-child(2) {
+                -webkit-app-region: no-drag;
+                position: absolute;
+                top: 2em;
+                z-index: 9;
+                background-color: var(--mat-sys-surface-container-high);
+                font-size: 14px;
+                overflow-y: auto;
+                scrollbar-width: none;
+                // width: 13em;
+                max-width: 20em;
+                max-height: 20em;
+                border: 1px solid #b0c4de;
+
+                .searchResult:hover {
+                    background-color: var(--mat-sys-secondary-fixed-dim);
                 }
+                .searchResult {
+                    @extend %flex-row;
+                    padding: 0.5em 1em;
+                    align-items: center;
+                    gap: 1em;
 
-                & > :first-child:focus {
-                    // border: 1px solid var(--mat-sys-surface-container-highest);
-                    outline: none;
-                }
-
-                & > :nth-child(2):hover {
-                    // background-color: var(--mat-sys-surface-container-highest);
-                    background-color: var(--bg-color);
-                }
-
-                & > :nth-child(2).hide {
-                    display: none;
-                    -webkit-app-region: no-drag;
-                }
-
-                & > :nth-child(2) {
-                    -webkit-app-region: no-drag;
-                    position: absolute;
-                    top: 2em;
-                    z-index: 9;
-                    background-color: var(--mat-sys-surface-container-high);
-                    font-size: 14px;
-                    overflow-y: auto;
-                    scrollbar-width: none;
-                    // width: 13em;
-                    max-width: 20em;
-                    max-height: 20em;
-                    border: 1px solid #b0c4de;
-
-                    .searchResult:hover {
-                        background-color: var(--mat-sys-secondary-fixed-dim);
-                    }
-                    .searchResult {
-                        @extend %flex-row;
-                        padding: 0.5em 1em;
-                        align-items: center;
-                        gap: 1em;
-
-                        & > :first-child {
-                            width: 25px;
-                            height: 25px;
-                        }
+                    & > :first-child {
+                        width: 25px;
+                        height: 25px;
                     }
                 }
             }
         }
-
-        // //mat-mdc-input-element mat-mdc-form-field-input-control mdc-text-field__input cdk-text-field-autofill-monitored
-        // ::ng-deep .mat-mdc-input-element {
-        //     height: 20px !important;
-        //     // background-color: purple;
-        //     margin-top: -27px !important;
-        //     padding-top: -17px !important;
-        //     transform: translateY(-5px);
-        // }
-
-        // // mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched
-        // ::ng-deep mdc-notched-outline {
-        //     height: 20px !important;
-        // }
-        // ::ng-deep .mat-mdc-form-field {
-        //     // .search-field
-        //     // .mat-mdc-form-field-type-mat-input
-        //     // .mat-mdc-form-field-has-icon-suffix
-        //     // .mat-form-field-appearance-outline
-        //     // .mat-primary
-        //     // .mat-form-field-animations-enabled
-        //     // .mat-form-field-hide-placeholder {
-        //     height: 20px !important;
-        // }
-
-        // ::ng-deep .mat-mdc-form-field-infix{
-        //     font-size: .8rem;
-        //     background-color: aqua;
-        //     height: 20px !important;
-        // }
-        // // ::ng-deep .mat-mdc-text-field-wrapper .mdc-text-field .mdc-text-field--outlined {
-        // ::ng-deep .mat-mdc-text-field-wrapper {
-        //     height: 20px;
-        //     // background-color: red !important;
-        //     // padding: 0 !important;
-        // }
-
-        // ::ng-deep .mat-mdc-form-field-flex {
-        //     // background-color: aqua;
-        //     height: 24px !important;
-        // }
 
         & > .right-part {
             @extend %flex-row-2c;
@@ -171,4 +131,7 @@
             }
         }
     }
+}
+
+@media (min-width: 450px) {
 }

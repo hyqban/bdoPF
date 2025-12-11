@@ -1,1 +1,59 @@
-<p>settings works!</p>
+<mat-card appearance="outlined" class="mat-card">
+    <div class="header">
+        <div class="header-left">
+            <div>bdoPF</div>
+            <div class="update">
+                <div>1.0</div>
+                <button>
+                    <mat-icon>refresh</mat-icon>
+                    {{ i18nService.t('settings.update')}}
+                </button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="link">
+                <div>Report a problem</div>
+                <div>Source Code</div>
+            </div>
+            <div class="link">
+                <div>Github</div>
+                <div>Source code</div>
+            </div>
+            <div class="link">
+                <div>Community</div>
+                <div>On discord</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-settings">
+        <div style="font-size: 1.3rem; margin-bottom: 0.5em">Application settings</div>
+
+        <!-- theme -->
+        <div class="row">
+            <div class="row-1">Theme</div>
+            <div class="row-2">
+                <button matButton [matMenuTriggerFor]="themeMenu">{{ currentTheme() }}</button>
+                <mat-menu #themeMenu="matMenu">
+                    <button mat-menu-item (click)="changeTheme('lightskyblue')">
+                        lightskyblue
+                    </button>
+                    <button mat-menu-item (click)="changeTheme('gainsboro')">gainsboro</button>
+                </mat-menu>
+            </div>
+        </div>
+        <!-- Language -->
+        <div class="row">
+            <div class="row-1">Language</div>
+            <div class="row-2">
+                <button matButton [matMenuTriggerFor]="languageMenu">{{ currentLang() }}</button>
+                <mat-menu #languageMenu="matMenu">
+                    @for (el of langs(); track $index) {
+                    <button mat-menu-item (click)="changeLocale(el, 0)">{{ spliteLang(el, 1) }}</button>
+                    }
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+</mat-card>

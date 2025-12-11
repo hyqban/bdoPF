@@ -1,5 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { SetLocale } from '../../../wailsjs/go/service/DIContainer';
+import { DynamicStrings } from '../shared/models/model';
+import { ReadDynamicStrings } from '../../../wailsjs/go/service/FileHandler';
 
 export interface Locale {
     locale: string;
@@ -15,37 +17,8 @@ export class I18nService {
     //     "sp": { ...},
     // ]
     // langs = [ { "en": "English"}, ... ]
-    // current_locale = { locale: "en", name: "English"}
-    // locales: WritableSignal<Record<string, any>> = signal<Record<string, any>>({});
-    // // langs: Array<Record<string, string>> = [];
-    // current_lang: WritableSignal<string> = signal('en');
-    // // current_locale: WritableSignal<Locale> = signal({ locale: '', name: '' });
-    // current_locale = computed(() => {
-    //     const lang = this.current_lang();
-    //     return this.locales()[lang] ?? {};
-    // });
-    // langs = computed(() => {
-    //     const data: Record<string, string> = {};
-    //     Object.keys(this.locales()).forEach((k) => {
-    //         data[k] = this.locales()[k]?.name ?? k;
-    //     });
-    //     return data;
-    // });
+    // current_locale = ("en")
 
-    // async init() {
-    //     ReadLocales().then((res: any) => {
-    //         if (Object.keys(res?.locales).length > 0 && Object.keys(res?.langs).length > 0) {
-    //             this.locales.set(res.locales);
-    //             this.langs = res?.langs;
-    //         }
-    //     });
-    // }
-
-    // setLanguage(lang: string) {
-    //     if (this.locales()[lang]) {
-    //         this.current_lang.set(lang);
-    //     }
-    // }
     private _locales = signal<Record<string, any>>({});
     private _langs = signal<Record<string, string>>({});
     private _currentLang = signal<string>('en');
@@ -53,15 +26,19 @@ export class I18nService {
     locales = this._locales.asReadonly();
     langs = this._langs.asReadonly();
     currentLang = this._currentLang.asReadonly();
+    dynamicStrings: DynamicStrings = {
+        apporach: {},
+        manufacture: {},
+        workshop: {},
+    };
 
     currentLocale = computed(() => {
         const lang = this._currentLang();
+        this.getDynamicStrings();
         return this._locales()[lang] ?? {};
     });
 
-    constructor() {
-        console.log('running...');
-    }
+    constructor() {}
 
     setLocales(data: Record<string, any>) {
         this._locales.set(data);
@@ -98,6 +75,32 @@ export class I18nService {
             }
         }
         return val;
+    }
+
+    getDynamicStrings() {
+        this.dynamicStrings = {
+            apporach: {},
+            manufacture: {},
+            workshop: {},
+        };
+
+        ReadDynamicStrings().then((res) => {
+            if (res['msg'] === '') {
+                this.dynamicStrings = { ...res } as DynamicStrings;
+            }
+        });
+    }
+
+    getDinamicString(key: string, feild: string) {
+        if (key === 'apporach') {
+            return this.dynamicStrings.apporach[feild] ?? '';
+        } else if (key === 'manufacture') {
+            return this.dynamicStrings.manufacture[feild] ?? '';
+        } else if (key === 'workshop') {
+            return this.dynamicStrings.workshop['90' + feild] ?? '';
+        } else {
+            return '';
+        }
     }
 }
 export function providerI18n(initialData: Record<string, any>) {

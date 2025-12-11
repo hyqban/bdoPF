@@ -45,6 +45,7 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:     "bdoPF",
+		MinWidth: 420,
 		Width:     600,
 		Height:    768,
 		Frameless: true,
