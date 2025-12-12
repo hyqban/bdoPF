@@ -29,6 +29,7 @@ export class SearchService {
     addr = '';
     query = signal('');
     searchResults = signal<Item[]>([]);
+    searchHistoryes: WritableSignal<Item[]> = signal<Item[]>([]);
     currentItem: WritableSignal<ItemInfo> = signal<ItemInfo>({
         itemKey: '',
         itemName: '',
@@ -98,20 +99,25 @@ export class SearchService {
         this.searchResults.set(searchResults);
     }
 
-    cleanSearchHistory() {
+    cleanSearchResult() {
         this.searchResults.set([]);
+    }
+
+    addItemToSearchHistory(ele: Item) {
+        for (let i = 0; i < this.searchHistoryes().length; i++) {
+            if (this.searchHistoryes()[i].name === ele.name) {
+                return;
+            }
+        }
+        this.searchHistoryes.update((el) => [ele, ...el]);
+    }
+
+    cleanSearchHistory() {
+        this.searchHistoryes.set([]);
     }
 
     async selectItem(ele: Item): Promise<Record<string, any>> {
         this.cleanBreadCrumbs();
-
-        // if (
-        //     this.isEmpty(this.dynamicStrings.apporach) ||
-        //     this.isEmpty(this.dynamicStrings.manufacture) ||
-        //     this.isEmpty(this.dynamicStrings.workshop)
-        // ) {
-        //     this.getDynamicStrings();
-        // }
 
         this.breadCrumbs.update((el) => {
             el.data.push(ele);
@@ -121,6 +127,7 @@ export class SearchService {
         });
 
         let itemInfo: Record<string, any> = await ReadFileById(ele.id);
+        this.addItemToSearchHistory(ele);
         return itemInfo;
     }
 
@@ -252,8 +259,9 @@ export class SearchService {
 
     cleanAllCache() {
         this.query.set('');
-        this.searchResults.set([]);
-        this.currentItem.set(DEFAULT_ITEM_INFO)
+        this.cleanSearchHistory();
+        this.cleanSearchResult();
+        this.currentItem.set(DEFAULT_ITEM_INFO);
         this.cleanBreadCrumbs();
     }
 }

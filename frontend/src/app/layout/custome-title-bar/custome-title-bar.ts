@@ -62,7 +62,7 @@ export class CustomeTitleBar implements OnInit {
     debouncedQuery = signal('');
     readonly DEBOUNCE_TIME = 500;
     searchControl = new FormControl('');
-    // searchResults = signal<SearchResult[]>([]);
+    itemSearchResults: WritableSignal<Item[]> = signal<Item[]>([]);
 
     currentUrl = useCurrentUrl();
 
@@ -93,11 +93,10 @@ export class CustomeTitleBar implements OnInit {
     ngOnInit(): void {
         effect(
             () => {
-                // const currentQuery = this.search.query();
-                // console.log('currentQuery: ', currentQuery);
-
+                // Switchd language
                 if (this.search.query() !== this.searchControl.value) {
                     this.searchControl.setValue('', { emitEvent: false });
+                    this.itemSearchResults.set([]);
                 }
             },
             { injector: this.injector }
@@ -114,12 +113,18 @@ export class CustomeTitleBar implements OnInit {
                 //     this.debouncedQuery.set(query);
                 // }),
                 switchMap((query) => {
+                    if (this.searchControl.value === '' && this.search.searchHistoryes()) {
+                        this.itemSearchResults.set(this.search.searchHistoryes());
+                        return of(this.itemSearchResults());
+                    }
                     if (!query || query.length == 0) {
                         // this.searchResults.set([]);
                         this.search.addSearchResults([]);
                         this.debouncedQuery.set('');
                         this.isResultVisible.set(true);
                         this.isLoading.set(false);
+                        console.log('--------------');
+
                         return of(this.search.searchResults());
                     }
 
@@ -144,8 +149,8 @@ export class CustomeTitleBar implements OnInit {
             )
             .subscribe((results: Item[]) => {
                 this.search.addSearchResults(results);
+                this.itemSearchResults.set(this.search.searchResults());
 
-                // this.searchResults.set(results);
                 this.isResultVisible.set(false);
                 this.isLoading.set(false);
             });

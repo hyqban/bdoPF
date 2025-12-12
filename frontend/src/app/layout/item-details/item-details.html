@@ -41,7 +41,7 @@
             }
             <!-- shop -->
             @if (search.currentItem().shop) {
-            <mat-tab class="tab1" label="{{ this.i18n.getDinamicString('apporach', 'shop') }}">
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'shop') }}">
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().shop; track $index) {
@@ -59,7 +59,7 @@
                 <div class="mat-tab">
                     <div class="tab1">
                         @for (item of search.currentItem().node; track $index) {
-                        <div class="item">
+                        <div class="item-1">
                             <div class="item-name">{{ item }}</div>
                         </div>
                         }

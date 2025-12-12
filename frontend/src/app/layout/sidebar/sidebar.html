@@ -1,5 +1,10 @@
 <div class="sidebar">
-    <div class="row" routerLink="/home" routerLinkActive="active-item" [routerLinkActiveOptions]="{ exact: true }">
+    <div
+        class="row"
+        routerLink="/home"
+        routerLinkActive="active-item"
+        [routerLinkActiveOptions]="{ exact: true }"
+    >
         <mat-icon fontIcon="find_in_page"></mat-icon>{{ i18n.t('nav.crafting') }}
     </div>
     <div class="row" routerLink="/home/boss" routerLinkActive="active-item">
@@ -12,10 +17,6 @@
     <div class="row">
         <mat-icon fontIcon="public" routerLinkActive="active-item"></mat-icon
         >{{ i18n.t('nav.sites') }}
-    </div>
-    <div class="row">
-        <mat-icon fontIcon="money" routerLinkActive="active-item"></mat-icon
-        >{{ i18n.t('nav.donate') }}
     </div>
     <div class="row" routerLink="/home/settings" routerLinkActive="active-item">
         <mat-icon fontIcon="settings"></mat-icon>{{ i18n.t('nav.settings') }}

@@ -23,7 +23,7 @@
         <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
         @if (this.search.searchResults().length > 0) {
         <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible()">
-            @for (el of this.search.searchResults(); track el.id) {
+            @for (el of this.itemSearchResults(); track el.id) {
             <div class="searchResult" (click)="searchItemById(el)">
                 <img [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)" alt="" />
                 <div>{{ el.name }}</div>
