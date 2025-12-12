@@ -274,7 +274,7 @@ func (gd *GameData) itemInfoParser(root *etree.Element) *model.ItemInfo {
 			itemInfo.ItemDesc = gd.NormalizeWhitespace(child.Text())
 		case "fishing":
 			itemInfo.Fishing = "1"
-		case "nodee":
+		case "node":
 			itemInfo.Node = append(itemInfo.Node, gd.node(child))
 		case "shop":
 			itemInfo.Shop = append(itemInfo.Shop, gd.getCharacterName(child))
