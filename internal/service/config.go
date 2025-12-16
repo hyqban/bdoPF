@@ -1,30 +1,10 @@
 package service
 
-import "fmt"
-
-var APPLICATION_VERSION = "1.0"
-
-var DEFAULT_CONFIG = Config{
-	AppName: "bdoPF",
-	Version: APPLICATION_VERSION,
-	Theme:   "lightskyblue",
-	Locale:  "en",
-	Window: Window{
-		OnTop:               false,
-		Width:               600,
-		Height:              768,
-		MaxWidth:            1920,
-		MaxHeight:           1080,
-		MinWidth:            300,
-		MinHeight:           768,
-		IsFullScreen:        false,
-		IsWidgetMode:        false,
-		DefaultWidgetWidth:  200,
-		DefaultWidgetHeight: 200,
-		WidgetWidth:         200,
-		WidgetHeight:        100,
-	},
-}
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
 
 type Config struct {
 	DI      *DIContainer `json:"-"`
@@ -37,45 +17,84 @@ type Config struct {
 
 func NewConfig(di *DIContainer) *Config {
 
-	config := Config{
-		DI: di,
+	config, err := loadAndValidateConfig("config.json")
+
+	if err != nil {
+		panic(fmt.Sprintf("Fatal: failed to load configuration: %v", err))
 	}
-
-	fh := config.DI.GetFileHandler()
-
-	if fh != nil {
-		fmt.Print("Not found fileHandler point.")
-		return &config
-	}
-
-	isExist := fh.pathExists("config.json")
-
-	if !isExist {
-		config.createDefaultConfigJson()
-	}
-
-	config.ReadConfig()
-	return &config
+	config.DI = di
+	return config
 }
 
-func (cf *Config) createDefaultConfigJson() {
-	cf.Version = DEFAULT_CONFIG.Version
-	cf.Theme = DEFAULT_CONFIG.Theme
-	cf.Locale = DEFAULT_CONFIG.Locale
-	cf.Window.OnTop = DEFAULT_CONFIG.Window.OnTop
-	cf.Window.Width = DEFAULT_CONFIG.Window.Width
-	cf.Window.Height = DEFAULT_CONFIG.Window.Height
-	cf.Window.MaxWidth = DEFAULT_CONFIG.Window.MaxWidth
-	cf.Window.MaxHeight = DEFAULT_CONFIG.Window.MaxHeight
-	cf.Window.MinWidth = DEFAULT_CONFIG.Window.MinWidth
-	cf.Window.MinHeight = DEFAULT_CONFIG.Window.MinHeight
-	cf.Window.IsFullScreen = DEFAULT_CONFIG.Window.IsFullScreen
-	cf.Window.DefaultWidgetWidth = DEFAULT_CONFIG.Window.DefaultWidgetWidth
-	cf.Window.DefaultWidgetHeight = DEFAULT_CONFIG.Window.DefaultWidgetHeight
-	cf.Window.WidgetWidth = DEFAULT_CONFIG.Window.WidgetWidth
-	cf.Window.WidgetHeight = DEFAULT_CONFIG.Window.WidgetHeight
+func getDefaultConfig() *Config {
+	return &Config{
+		AppName: "bdoPF",
+		Version: "1.0",
+		Theme:   "lightskyblue",
+		Locale:  "en",
+		Window: Window{
+			OnTop:               false,
+			Width:               600,
+			Height:              768,
+			MaxWidth:            1920,
+			MaxHeight:           1080,
+			MinWidth:            300,
+			MinHeight:           768,
+			IsFullScreen:        false,
+			IsWidgetMode:        false,
+			DefaultWidgetWidth:  200,
+			DefaultWidgetHeight: 100,
+			WidgetWidth:         200,
+			WidgetHeight:        100,
+		},
+	}
 }
 
-func (cf *Config) ReadConfig() {
+func enforceSystemFields(cfg *Config) {
+	cfg.Version = "1.0"
+}
 
+func writeConfigToFile(cfg *Config, filePath string) error {
+	data, err := json.MarshalIndent(cfg, "", "    ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal config: %w", err)
+	}
+
+	if err := os.WriteFile(filePath, data, 0644); err != nil {
+		return fmt.Errorf("failed to write config file to %s: %w", filePath, err)
+	}
+	return nil
+}
+
+func loadAndValidateConfig(filePath string) (*Config, error) {
+	cfg := getDefaultConfig()
+
+	data, err := os.ReadFile(filePath)
+
+	if os.IsNotExist(err) {
+		fmt.Printf("Config file does not exist, creating default: %s\n", filePath)
+
+		if err := writeConfigToFile(cfg, filePath); err != nil {
+			return nil, fmt.Errorf("failed to create default config file: %w", err)
+		}
+		return cfg, nil
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to read config file: %w", err)
+	}
+
+	err = json.Unmarshal(data, cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse config JSON or invalid format: %w", err)
+	}
+
+	enforceSystemFields(cfg)
+
+	err = writeConfigToFile(cfg, filePath)
+	if err != nil {
+		fmt.Printf("Warning: failed to update config file with missing fields: %v\n", err)
+	}
+
+	return cfg, nil
 }

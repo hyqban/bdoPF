@@ -15,6 +15,7 @@ wails.buildlog
 *.test
 
 tasks.todo
+config.json
 
 # ============================
 # Angular / Node Ignore Rules
