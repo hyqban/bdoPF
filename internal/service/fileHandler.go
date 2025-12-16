@@ -300,3 +300,8 @@ func (fh *FileHandler) ReadDynamicStrings() map[string]interface{} {
 	}
 	return data
 }
+
+// func (fh *FileHandler) createJsonFile(data interface{}, fileName string, path string) {
+// 	flag := os.O_WRONLY | os.O_CREATE | 
+
+// }

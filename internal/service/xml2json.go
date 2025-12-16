@@ -304,12 +304,25 @@ func (gd *GameData) StripDataPlaceholders(desc string) string {
 	// \s*\(\{.*?\}\)    ({data})
 	// \s*\{\{.*?\}\}    {{text}}
 	// \s*\{.*?\}        {data}
-	pattern := `\s*-\s*\{.*?\}|\s*\(\{.*?\}\)|\s*\{\{.*?\}\}|\s*\{.*?\} `
+	// processedText := strings.ReplaceAll(desc, "\\n", "\n")
 
-	cleanedText := gd.NormalizeWhitespace(desc) // 调用新名字
+	// patternA := `\s*\(\{.*?\}\)`
+	// reA := regexp.MustCompile(patternA)
+	// result := reA.ReplaceAllString(processedText, "")
+
+	// patternB := `\s*-\s*\{.*?\}|\s*\(\{.*?\}\)|\s*\{\{.*?\}\}|\s*\{.*?\}`
+	// reB := regexp.MustCompile(patternB)
+
+	// result = reB.ReplaceAllString(result, "")
+	// fmt.Println(result)
+	// return result
+	pattern := `\s*-\s*\{.*?\}|\s*\(\{.*?\}\)|\s*\{\{.*?\}\}|\s*\{.*?\}`
+
+	cleanedText := gd.NormalizeWhitespace(desc)
 	re := regexp.MustCompile(pattern)
 	result := re.ReplaceAllString(cleanedText, "")
 	return result
+
 }
 
 func (gd *GameData) safeExtracText(parent *etree.Element, tag string) string {
@@ -333,7 +346,7 @@ func (gd *GameData) parseItem(item []*etree.Element) []model.ItemDetail {
 			Id:    gd.safeExtracText(el, "id"),
 			Name:  gd.safeExtracText(el, "name"),
 			Icon:  gd.safeExtracText(el, "icon"),
-			Desc:  gd.safeExtracText(el, "desc"),
+			Desc:  gd.StripDataPlaceholders(gd.safeExtracText(el, "desc")),
 			Count: gd.safeExtracText(el, "count"),
 		})
 	}

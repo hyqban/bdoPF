@@ -128,9 +128,34 @@
                 }
 
                 .item-name {
+                    width: fit-content;
                     margin-left: 0.5rem;
                     // width: fit-content;
-                    // background-color: aqua;
+                }
+
+                .item-desc {
+                    display: none;
+                    background-color: var(--mat-sys-secondary-container);
+                    border: var(--border) 1px solid;
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                    font-size: .9rem;
+                }
+
+                .item-name:hover .item-desc {
+                    overflow-y: auto;
+                    scrollbar-width: thin;
+                    position: absolute;
+                    display: block;
+                    // transform: translateX(-20%);
+                    padding: 0.8em;
+                    max-height: 15em;
+                }
+
+                &:last-child {
+                    .item-name:hover .item-desc {
+                        transform: translateY(-100%);
+                    }
                 }
             }
         }

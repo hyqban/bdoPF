@@ -3,7 +3,10 @@ Features:
     ✔ 2. Show icons in breadCrumbs. @done(25-12-08 01:43)
     ✔ 3. Some func with breadCrumbs. @done(25-12-08 01:43)
     ✔ 4. Amount @done(25-12-08 01:43)
-    ☐ 5. SWitch Language.
+    ✔ 5. SWitch Language. @done(25-12-12 17:01)
+    ☐ 6. add minwidth, minheight about nomal window and widget window.
+    ☐ 7. add config service
+    ☐ 8. add update and download the latest version from github.
 
 Issues:
     ☐ 1. Mat-card will changed width when scroll is appear.

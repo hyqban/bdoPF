@@ -6,10 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 
-import { GetResourcePath } from '../../../../wailsjs/go/service/DIContainer';
 import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
 import { SearchService } from '../../services/search-service';
 import { ItemDetails } from '../../layout/item-details/item-details';
+import { GetResourcePath } from '../../../../wailsjs/go/service/DIContainer';
+import { WindowResolution } from '../../../../wailsjs/go/service/Window';
 
 @Component({
     selector: 'app-home',
@@ -51,5 +52,9 @@ export class Home {
         XmlToJson(this.folderPath, 'en').then((res) => {
             console.log(res);
         });
+    }
+
+    getDiplayResolution() {
+        WindowResolution().then(() => {});
     }
 }

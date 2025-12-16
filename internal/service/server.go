@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -28,7 +27,6 @@ func (hs *HttpServer) CreateMutex() {
 	mux := http.NewServeMux()
 
 	publicPath := hs.DI.GetResourcePath().AssetsPath
-	fmt.Println("publicPath: ", publicPath)
 	mux.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir(publicPath))))
 
 	hs.mux = mux

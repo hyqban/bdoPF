@@ -8,3 +8,20 @@ type ResourcePath struct {
 	Locale     string
 	Png        string
 }
+
+type DisplaySize struct {
+	Width  int
+	Height int
+}
+type DisplayResolution struct {
+	IsCurrent    bool
+	IsPrimary    bool
+	Width        int
+	Height       int
+	Size         DisplaySize
+	PhysicalSize DisplaySize
+}
+
+type Monitors struct {
+	Monitors []DisplayResolution
+}

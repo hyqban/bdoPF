@@ -36,7 +36,7 @@ func main() {
 
 	// app.ReceivePoints(fileHandler)
 
-	config := service.NewConfig(di, fileHandler)
+	config := service.NewConfig(di)
 	di.Register("config", config)
 
 	gameData := service.NewGameData(di)
