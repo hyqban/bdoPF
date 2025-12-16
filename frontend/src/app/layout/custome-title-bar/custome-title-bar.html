@@ -46,7 +46,8 @@
             aria-hidden="false"
             aria-label="Example home icon"
             fontIcon="pin_drop"
-            (click)="windowService.setWindowOnTop()"
+            (click)="OnTop()"
+            [class.top]="this.isOnTop()"
         ></mat-icon>
         <mat-icon
             aria-hidden="false"

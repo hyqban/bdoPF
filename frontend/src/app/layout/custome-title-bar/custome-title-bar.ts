@@ -57,6 +57,7 @@ export class CustomeTitleBar implements OnInit {
     isSidebarVisible: boolean = false;
     isResultVisible = signal<boolean>(false);
 
+    isOnTop = signal(false);
     query = signal('');
     isLoading = signal(false);
     debouncedQuery = signal('');
@@ -88,6 +89,14 @@ export class CustomeTitleBar implements OnInit {
 
     showAuto() {
         this.isResultVisible.set(false);
+    }
+
+    OnTop() {
+        this.isOnTop.set(!this.isOnTop());
+
+        if (this.isOnTop()) {
+            this.windowService.setWindowOnTop();
+        }
     }
 
     ngOnInit(): void {
