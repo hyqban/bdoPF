@@ -1,7 +1,7 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, provideAppInitializer, signal } from '@angular/core';
 import { SetLocale } from '../../../wailsjs/go/service/DIContainer';
 import { DynamicStrings } from '../shared/models/model';
-import { ReadDynamicStrings } from '../../../wailsjs/go/service/FileHandler';
+import { ReadDynamicStrings, ReadLocales } from '../../../wailsjs/go/service/FileHandler';
 
 export interface Locale {
     locale: string;
@@ -39,6 +39,16 @@ export class I18nService {
     });
 
     constructor() {}
+
+    loadLocales() {
+        ReadLocales().then((res) => {
+            this.setLocales(res['locales']);
+            this.setLangs(res['langs']);
+            this.choiceLang();
+
+            SetLocale(this.currentLang()).then(() => {});
+        });
+    }
 
     setLocales(data: Record<string, any>) {
         this._locales.set(data);
@@ -103,16 +113,10 @@ export class I18nService {
         }
     }
 }
-export function providerI18n(initialData: Record<string, any>) {
-    const service = new I18nService();
-    service.setLocales(initialData['locales']);
-    service.setLangs(initialData['langs'] ?? {});
-    service.choiceLang();
 
-    SetLocale(service.currentLang()).then(() => {});
-
-    return {
-        provide: I18nService,
-        useValue: service,
-    };
+export function providerI18n() {
+    return provideAppInitializer(() => {
+        const i18n = inject(I18nService);
+        return i18n.loadLocales();
+    });
 }

@@ -139,7 +139,7 @@
                     border: var(--border) 1px solid;
                     word-wrap: break-word;
                     white-space: pre-wrap;
-                    font-size: .9rem;
+                    font-size: 0.9rem;
                 }
 
                 .item-name:hover .item-desc {
@@ -149,12 +149,33 @@
                     display: block;
                     // transform: translateX(-20%);
                     padding: 0.8em;
-                    max-height: 15em;
+                    max-height: 10em;
                 }
 
                 &:last-child {
-                    .item-name:hover .item-desc {
-                        transform: translateY(-100%);
+                    // .item-name:hover .item-desc {
+                    //     transform: translateY(-110%);
+                    // }
+
+                    .tab1,
+                    .item-3:last-child,
+                    .item-2:last-child {
+                        .item-name:hover .item-desc {
+                            transform: translateY(-110%);
+                        }
+                    }
+
+                    .tab1:first-child,
+                    .item-2:first-child {
+                        .item-name:hover .item-desc {
+                            max-height: 10rem;
+                            overflow-y: auto;
+                            scrollbar-width: thin;
+                            position: absolute;
+                            display: block;
+                            transform: translateY(1px);
+                            padding: 0.8em;
+                        }
                     }
                 }
             }

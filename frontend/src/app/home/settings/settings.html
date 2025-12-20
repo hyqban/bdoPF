@@ -1,12 +1,12 @@
 <mat-card appearance="outlined" class="mat-card">
     <div class="header">
         <div class="header-left">
-            <div>bdoPF</div>
+            <div>{{ config.appName() }}</div>
             <div class="update">
-                <div>1.0</div>
+                <div>{{ config.version() }}</div>
                 <button>
                     <mat-icon>refresh</mat-icon>
-                    {{ i18nService.t('settings.update')}}
+                    {{ i18nService.t('settings.update') }}
                 </button>
             </div>
         </div>
@@ -50,7 +50,9 @@
                 <button matButton [matMenuTriggerFor]="languageMenu">{{ currentLang() }}</button>
                 <mat-menu #languageMenu="matMenu">
                     @for (el of langs(); track $index) {
-                    <button mat-menu-item (click)="changeLocale(el, 0)">{{ spliteLang(el, 1) }}</button>
+                    <button mat-menu-item (click)="changeLocale(el, 0)">
+                        {{ spliteLang(el, 1) }}
+                    </button>
                     }
                 </mat-menu>
             </div>

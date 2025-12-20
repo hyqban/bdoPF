@@ -71,3 +71,27 @@ export interface DynamicStrings {
     manufacture: Record<string, string>;
     workshop: Record<string, string>;
 }
+
+export interface AppWindow {
+    onTop: boolean;
+    width: number;
+    height: number;
+    maxWidth: number;
+    maxHeight: number;
+    minWidth: number;
+    minHeight: number;
+    isFullScreen: boolean;
+    isWidgetMode: boolean;
+    defaultWidgetWidth: number;
+    defaultWidgetHeight: number;
+    widgetWidth: number;
+    widgetHeight: number;
+}
+
+export interface Config {
+    appName: string;
+    version: string;
+    theme: string;
+    locale: string;
+    window: AppWindow;
+}

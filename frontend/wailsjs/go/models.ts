@@ -183,6 +183,80 @@ export namespace model {
 
 export namespace service {
 	
+	export class Window {
+	    onTop: boolean;
+	    width: number;
+	    height: number;
+	    maxWidth: number;
+	    maxHeight: number;
+	    minWidth: number;
+	    minHeight: number;
+	    isFullScreen: boolean;
+	    isWidgetMode: boolean;
+	    defaultWidgetWidth: number;
+	    defaultWidgetHeight: number;
+	    widgetWidth: number;
+	    widgetHeight: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Window(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.onTop = source["onTop"];
+	        this.width = source["width"];
+	        this.height = source["height"];
+	        this.maxWidth = source["maxWidth"];
+	        this.maxHeight = source["maxHeight"];
+	        this.minWidth = source["minWidth"];
+	        this.minHeight = source["minHeight"];
+	        this.isFullScreen = source["isFullScreen"];
+	        this.isWidgetMode = source["isWidgetMode"];
+	        this.defaultWidgetWidth = source["defaultWidgetWidth"];
+	        this.defaultWidgetHeight = source["defaultWidgetHeight"];
+	        this.widgetWidth = source["widgetWidth"];
+	        this.widgetHeight = source["widgetHeight"];
+	    }
+	}
+	export class Config {
+	    appName: string;
+	    version: string;
+	    window: Window;
+	    theme: string;
+	    locale: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Config(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.appName = source["appName"];
+	        this.version = source["version"];
+	        this.window = this.convertValues(source["window"], Window);
+	        this.theme = source["theme"];
+	        this.locale = source["locale"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class DIContainer {
 	    AppCtx?: any;
 	    Addr: string;

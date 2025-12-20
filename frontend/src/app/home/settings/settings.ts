@@ -7,6 +7,7 @@ import { ThemeService } from '../../services/theme-service';
 import { I18nService } from '../../services/i18n-service';
 import { SetLocale } from '../../../../wailsjs/go/service/DIContainer';
 import { SearchService } from '../../services/search-service';
+import { ConfigService } from '../../services/config-service';
 
 type KeyValueComparator = (a: { key: any; value: any }, b: { key: any; value: any }) => number;
 
@@ -20,7 +21,8 @@ export class Settings {
     constructor(
         private themeService: ThemeService,
         protected i18nService: I18nService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        protected config: ConfigService
     ) {}
 
     @ViewChild(MatMenuTrigger) trigger!: MatMenuTrigger;

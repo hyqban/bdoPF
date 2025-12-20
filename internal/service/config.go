@@ -26,6 +26,10 @@ func NewConfig(di *DIContainer) *Config {
 	return config
 }
 
+func (cf *Config) ReadConfig() Config{
+	return *cf
+}
+
 func getDefaultConfig() *Config {
 	return &Config{
 		AppName: "bdoPF",
