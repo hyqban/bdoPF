@@ -92,11 +92,8 @@ export class CustomeTitleBar implements OnInit {
     }
 
     OnTop() {
+        this.windowService.setWindowOnTop();
         this.isOnTop.set(!this.isOnTop());
-
-        if (this.isOnTop()) {
-            this.windowService.setWindowOnTop();
-        }
     }
 
     ngOnInit(): void {

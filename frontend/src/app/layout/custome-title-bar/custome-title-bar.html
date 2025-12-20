@@ -1,4 +1,4 @@
-<div class="titleBar" style="widows: 1">
+<div class="titleBar">
     <app-sidebar
         id="sidebar"
         [class.open]="isSidebarVisible"
@@ -19,7 +19,7 @@
     @if (currentUrl() === "/home") {
 
     <!-- <div class="search-field"></div> -->
-    <div class="search">
+    <div class="search" style="widows: 1">
         <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
         @if (this.search.searchResults().length > 0) {
         <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible()">
