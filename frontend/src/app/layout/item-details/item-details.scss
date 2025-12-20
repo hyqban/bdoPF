@@ -52,6 +52,8 @@
             flex-wrap: wrap;
             gap: 1rem;
             padding: 1em 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
             // background-color: aqua;
 
             .tab1 {
@@ -133,6 +135,7 @@
                     // width: fit-content;
                 }
 
+                .item-desc-usage,
                 .item-desc {
                     display: none;
                     background-color: var(--mat-sys-secondary-container);
@@ -142,39 +145,44 @@
                     font-size: 0.9rem;
                 }
 
+                .item-name:hover .item-desc-usage,
                 .item-name:hover .item-desc {
                     overflow-y: auto;
                     scrollbar-width: thin;
                     position: absolute;
                     display: block;
-                    // transform: translateX(-20%);
+                    transform: translateX(-20%);
+                    transform: translateY(1px);
                     padding: 0.8em;
                     max-height: 10em;
                 }
 
                 &:last-child {
-                    // .item-name:hover .item-desc {
-                    //     transform: translateY(-110%);
-                    // }
-
-                    .tab1,
-                    .item-3:last-child,
-                    .item-2:last-child {
-                        .item-name:hover .item-desc {
-                            transform: translateY(-110%);
+                    // makelist
+                    .item-2:nth-last-child(-n + 2) {
+                        .item-name:hover .item-desc-usage {
+                            max-height: 5rem;
+                            transform: translateY(-80%);
                         }
                     }
 
-                    .tab1:first-child,
+                    // makelist
                     .item-2:first-child {
+                        .item-name:hover .item-desc-usage {
+                            max-height: 3rem;
+                            transform: translateY(-50%);
+                        }
+                    }
+
+                    .item-3:first-child {
                         .item-name:hover .item-desc {
-                            max-height: 10rem;
-                            overflow-y: auto;
-                            scrollbar-width: thin;
-                            position: absolute;
-                            display: block;
                             transform: translateY(1px);
-                            padding: 0.8em;
+                        }
+                    }
+
+                    .item-3:nth-last-child(-n + 2) {
+                        .item-name:hover .item-desc {
+                            transform: translateY(-110%);
                         }
                     }
                 }
