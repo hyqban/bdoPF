@@ -15,6 +15,8 @@ export function WindowResolution():Promise<void>;
 
 export function WindowSetAlwaysOnTop(arg1:boolean):Promise<void>;
 
+export function WindowSetMinSize(arg1:number,arg2:number):Promise<void>;
+
 export function WindowSetSize(arg1:number,arg2:number):Promise<void>;
 
 export function WindowUnfullscreen():Promise<void>;

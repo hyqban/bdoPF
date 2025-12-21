@@ -1,26 +1,28 @@
 package service
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Window struct {
-	DI                  *DIContainer `json:"-"`
-	OnTop               bool         `json:"onTop"`
-	Width               int          `json:"width"`
-	Height              int          `json:"height"`
-	MaxWidth            int          `json:"maxWidth"`
-	MaxHeight           int          `json:"maxHeight"`
-	MinWidth            int          `json:"minWidth"`
-	MinHeight           int          `json:"minHeight"`
-	IsFullScreen        bool         `json:"isFullScreen"`
-	IsWidgetMode        bool         `json:"isWidgetMode"`
-	DefaultWidgetWidth  int          `json:"defaultWidgetWidth"`
-	DefaultWidgetHeight int          `json:"defaultWidgetHeight"`
-	WidgetWidth         int          `json:"widgetWidth"`
-	WidgetHeight        int          `json:"widgetHeight"`
+	ctx                 context.Context `json:"-"`
+	DI                  *DIContainer    `json:"-"`
+	OnTop               bool            `json:"onTop"`
+	Width               int             `json:"width"`
+	Height              int             `json:"height"`
+	MaxWidth            int             `json:"maxWidth"`
+	MaxHeight           int             `json:"maxHeight"`
+	MinWidth            int             `json:"minWidth"`
+	MinHeight           int             `json:"minHeight"`
+	IsFullScreen        bool            `json:"isFullScreen"`
+	IsWidgetMode        bool            `json:"isWidgetMode"`
+	DefaultWidgetWidth  int             `json:"defaultWidgetWidth"`
+	DefaultWidgetHeight int             `json:"defaultWidgetHeight"`
+	WidgetWidth         int             `json:"widgetWidth"`
+	WidgetHeight        int             `json:"widgetHeight"`
 }
 
 func NewWindow(di *DIContainer) *Window {
@@ -34,6 +36,7 @@ func (window *Window) WindwoClose() {
 	hs := window.DI.GetHttpServer()
 
 	if hs == nil {
+
 	}
 
 	hs.Stop()
@@ -70,6 +73,10 @@ func (window *Window) WindowSetSize(w int, h int) {
 	runtime.WindowSetSize(*window.DI.GetAppCtx(), w, h)
 }
 
+func (window *Window) WindowSetMinSize(w int, h int) {
+	runtime.WindowSetMinSize(*window.DI.GetAppCtx(), w, h)
+}
+
 func (window *Window) WindowGetPosition() map[string]int {
 	x, y := runtime.WindowGetPosition(*window.DI.GetAppCtx())
 	return map[string]int{"x": x, "y": y}
@@ -79,7 +86,7 @@ func (window *Window) WindowResolution() {
 	screens, err := runtime.ScreenGetAll(*window.DI.AppCtx)
 
 	if err != nil {
-		fmt.Printf("获取屏幕信息失败: %v", err)
+		fmt.Printf("Failed to retrieve screen information: %v", err)
 	}
 
 	fmt.Printf("Resolution: %+v", screens)

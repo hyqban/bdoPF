@@ -26,7 +26,7 @@ func NewConfig(di *DIContainer) *Config {
 	return config
 }
 
-func (cf *Config) ReadConfig() Config{
+func (cf *Config) ReadConfig() Config {
 	return *cf
 }
 
@@ -42,8 +42,8 @@ func getDefaultConfig() *Config {
 			Height:              768,
 			MaxWidth:            1920,
 			MaxHeight:           1080,
-			MinWidth:            300,
-			MinHeight:           768,
+			MinWidth:            420,
+			MinHeight:           560,
 			IsFullScreen:        false,
 			IsWidgetMode:        false,
 			DefaultWidgetWidth:  200,

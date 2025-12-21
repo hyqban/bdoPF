@@ -28,6 +28,9 @@ func main() {
 	// di.SetAddr(addr)
 	// di.Register("httpserver", httpserver)
 
+	config := service.NewConfig(di)
+	di.Register("config", config)
+	
 	window := service.NewWindow(di)
 	di.Register("window", window)
 
@@ -36,18 +39,17 @@ func main() {
 
 	// app.ReceivePoints(fileHandler)
 
-	config := service.NewConfig(di)
-	di.Register("config", config)
 
 	gameData := service.NewGameData(di)
 	di.Register("gameData", gameData)
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title: "bdoPF",
-		// MinWidth: 420,
-		Width:     600,
-		Height:    768,
+		Title:     "bdoPF",
+		MinWidth:  config.Window.MinWidth,
+		MinHeight: config.Window.MinHeight,
+		Width:     config.Window.Width,
+		Height:    config.Window.Height,
 		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,

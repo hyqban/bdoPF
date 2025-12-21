@@ -7,21 +7,26 @@ import {
     IsWindowFullscreen,
     WindowSetSize,
     WindowGetSize,
+    WindowSetMinSize,
     WindowSetAlwaysOnTop,
 } from '../../../wailsjs/go/service/Window';
-import { WindowSize } from '../shared/models/model';
+import { WindowSize, WindowSizeChange } from '../shared/models/model';
+import { ConfigService } from './config-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class WindowServicee {
+    constructor(private config: ConfigService) {}
     private isFullscreen: WritableSignal<boolean> = signal(false);
     private isWidgetMode: WritableSignal<boolean> = signal(false);
-    private windowSize: WritableSignal<WindowSize> = signal<WindowSize>({
-        w: 0,
-        h: 0,
-    });
     private onTop: boolean = false;
+    private windowSizeChange: WritableSignal<WindowSizeChange> = signal<WindowSizeChange>({
+        widthBeforeEnterWidget: 0,
+        heightBeforeEnterWidget: 0,
+        minWidthBeforeEnterWidget: 0,
+        minHeightBeforeEnterWidget: 0,
+    });
 
     setWindowOnTop() {
         this.onTop = !this.onTop;
@@ -30,13 +35,12 @@ export class WindowServicee {
         WindowSetAlwaysOnTop(this.onTop);
     }
 
-    getWindowSize() {
-        WindowGetSize().then((res) => {
-            this.windowSize.update((currentSize) => ({
-                ...currentSize,
-                w: res['w'],
-                h: res['h'],
-            }));
+    async getWindowSize() {
+        const res = await WindowGetSize();
+        this.windowSizeChange.update((el) => {
+            el.widthBeforeEnterWidget = res['w'];
+            el.heightBeforeEnterWidget = res['h'];
+            return el;
         });
     }
 
@@ -61,48 +65,81 @@ export class WindowServicee {
         this.isWidgetMode.set(value);
     }
 
-    enterWidgetMode() {
+    storeWindowSize() {
+        WindowGetSize().then((res) => {
+            this.windowSizeChange.update((el) => {
+                el.widthBeforeEnterWidget = res['w'];
+                el.heightBeforeEnterWidget = res['h'];
+                el.minWidthBeforeEnterWidget = this.config.window().minWidth;
+                el.minHeightBeforeEnterWidget = this.config.window().minHeight;
+
+                return el;
+            });
+        });
+
+        // WindowSetMinSize().then(() => {})
+    }
+
+    async enterWidgetMode() {
         if (!this.isFullscreen()) {
             this.getWindowSize();
         }
         // this.isWidgetMode.set(true);
+        const res1 = await WindowGetSize();
+        // console.log(res1);
+
+        this.windowSizeChange.update((el) => {
+            el.widthBeforeEnterWidget = res1['w'];
+            el.heightBeforeEnterWidget = res1['h'];
+            el.minWidthBeforeEnterWidget = this.config.window().minWidth;
+            el.minHeightBeforeEnterWidget = this.config.window().minWidth;
+
+            return el;
+        });
         this.isWidgetMode.update((value) => !value);
-        WindowSetSize(200, 100).then(() => {});
+        await WindowSetMinSize(this.config.window().widgetWidth, this.config.window().widgetHeight);
+        await WindowSetSize(this.config.window().widgetWidth, this.config.window().widgetHeight);
     }
 
-    // exitWidgetMode() {
-    //     this.isWidgetMode.set(false);
-
-    //     if (this.isFullscreen()) {
-    //         this.windowFullscreen();
-    //         return;
-    //     }
-
-    //     WindowSetSize(500, 784).then(() => {});
-    // }
-
-    exitWidgetMode() {
+    async exitWidgetMode() {
         this.isWidgetMode.set(false);
 
         if (this.isFullscreen()) {
-            this.isFullscreen.set(false);
+            // console.log('----', this.isFullscreen());
 
-            WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});
+            this.isFullscreen.set(this.isFullscreen());
+
+            await WindowSetSize(
+                this.windowSizeChange().widthBeforeEnterWidget,
+                this.windowSizeChange().heightBeforeEnterWidget
+            );
+            await WindowSetMinSize(
+                this.windowSizeChange().minWidthBeforeEnterWidget,
+                this.windowSizeChange().minHeightBeforeEnterWidget
+            );
             // this.windowFullscreen();
             return;
         }
 
+        // console.log('++++', this.isFullscreen());
         // WindowSetSize(500, 784).then(() => {});
-        WindowSetSize(this.windowSize()['w'], this.windowSize()['h']).then(() => {});
+        await WindowSetSize(
+            this.windowSizeChange().widthBeforeEnterWidget,
+            this.windowSizeChange().heightBeforeEnterWidget
+        );
+        await WindowSetMinSize(
+            this.windowSizeChange().minWidthBeforeEnterWidget,
+            this.windowSizeChange().minHeightBeforeEnterWidget
+        );
     }
 
     windowClose() {
         WindwoClose().then(() => {});
     }
 
-    windowFullscreen() {
-        this.getWindowSize();
-        WindowFullscreen().then(() => {});
+    async windowFullscreen() {
+        await this.getWindowSize();
+        await WindowFullscreen();
         this.isFullscreen.set(true);
     }
 
@@ -113,7 +150,7 @@ export class WindowServicee {
             this.isFullscreen.set(true);
         }
 
-        WindowUnfullscreen().then(() => {});
+        await WindowUnfullscreen();
         this.isFullscreen.set(false);
     }
 

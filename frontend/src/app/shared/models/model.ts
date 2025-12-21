@@ -95,3 +95,10 @@ export interface Config {
     locale: string;
     window: AppWindow;
 }
+
+export interface WindowSizeChange {
+    widthBeforeEnterWidget: number;
+    heightBeforeEnterWidget: number;
+    minWidthBeforeEnterWidget: number;
+    minHeightBeforeEnterWidget: number;
+}

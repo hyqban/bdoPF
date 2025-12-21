@@ -30,6 +30,10 @@ export function WindowSetAlwaysOnTop(arg1) {
   return window['go']['service']['Window']['WindowSetAlwaysOnTop'](arg1);
 }
 
+export function WindowSetMinSize(arg1, arg2) {
+  return window['go']['service']['Window']['WindowSetMinSize'](arg1, arg2);
+}
+
 export function WindowSetSize(arg1, arg2) {
   return window['go']['service']['Window']['WindowSetSize'](arg1, arg2);
 }
