@@ -3,3 +3,5 @@
 import {service} from '../models';
 
 export function ReadConfig():Promise<service.Config>;
+
+export function ReeiveConfigUpdate(arg1:Record<string, any>):Promise<void>;

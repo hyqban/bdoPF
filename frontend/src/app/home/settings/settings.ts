@@ -6,6 +6,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ThemeService } from '../../services/theme-service';
 import { I18nService } from '../../services/i18n-service';
 import { SetLocale } from '../../../../wailsjs/go/service/DIContainer';
+import { ReeiveConfigUpdate } from '../../../../wailsjs/go/service/Config';
 import { SearchService } from '../../services/search-service';
 import { ConfigService } from '../../services/config-service';
 
@@ -22,7 +23,7 @@ export class Settings {
         private themeService: ThemeService,
         protected i18nService: I18nService,
         private searchService: SearchService,
-        protected config: ConfigService
+        protected configService: ConfigService
     ) {}
 
     @ViewChild(MatMenuTrigger) trigger!: MatMenuTrigger;
@@ -55,12 +56,19 @@ export class Settings {
         return str[idx];
     }
 
-    changeLocale(str: string[], idx: number) {
+    async changeLocale(str: string[], idx: number) {
         // str: ['de', 'Deutsch'];
-        console.log(str);
         this.i18nService.setCurrentLang(str[idx]);
         this.searchService.cleanAllCache();
-        // Notice go that langugae has changed
-        SetLocale(str[idx]).then(() => {});
+        // Notify Go that the app language has changed.
+        await SetLocale(str[idx]);
+        // this.config.locale.set(str[idx]);
+        this.configService.config.update((el) => {
+            el.locale = str[idx];
+            return { ...el };
+        });
+
+        await ReeiveConfigUpdate(this.configService.submitFieldUpdate());
+        localStorage.setItem('locale', str[idx]);
     }
 }

@@ -63,6 +63,13 @@ export class I18nService {
     }
 
     choiceLang() {
+        const lang = localStorage.getItem('locale');
+
+        if (lang) {
+            this._currentLang.set(lang);
+            return;
+        }
+
         if (this.currentLang() in this.langs()) {
         } else {
             Object.keys(this.langs()).forEach((k) => {

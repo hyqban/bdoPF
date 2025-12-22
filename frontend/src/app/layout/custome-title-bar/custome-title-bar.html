@@ -16,10 +16,9 @@
         <!-- <div class="app-name">bdoPF</div> -->
     </div>
 
-    @if (currentUrl() === "/home") {
-
     <!-- <div class="search-field"></div> -->
     <div class="search" style="widows: 1">
+        @if (currentUrl() === "/home") {
         <input type="text" [formControl]="searchControl" (focus)="showAuto()" />
         @if (this.search.searchResults().length > 0) {
         <mat-card appearance="outlined" #autoCompleteResult [class.hide]="isResultVisible()">
@@ -32,8 +31,8 @@
         </mat-card>
         }
         <!-- <mat-icon fontIcon="search" (click)="search()"></mat-icon> -->
+        }
     </div>
-    }
 
     <div class="right-part">
         <mat-icon

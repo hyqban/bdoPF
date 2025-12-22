@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+var CONFIG_PATH = "config.json"
+
 type Config struct {
 	DI      *DIContainer `json:"-"`
 	AppName string       `json:"appName"`
@@ -17,7 +19,7 @@ type Config struct {
 
 func NewConfig(di *DIContainer) *Config {
 
-	config, err := loadAndValidateConfig("config.json")
+	config, err := loadAndValidateConfig(CONFIG_PATH)
 
 	if err != nil {
 		panic(fmt.Sprintf("Fatal: failed to load configuration: %v", err))
@@ -68,6 +70,26 @@ func writeConfigToFile(cfg *Config, filePath string) error {
 		return fmt.Errorf("failed to write config file to %s: %w", filePath, err)
 	}
 	return nil
+}
+
+func (cfg *Config) ReeiveConfigUpdate(raw map[string]any) {
+
+	b, err := json.Marshal(raw)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var config Config
+	err = json.Unmarshal(b, &config)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	writeConfigToFile(&config, CONFIG_PATH)
 }
 
 func loadAndValidateConfig(filePath string) (*Config, error) {

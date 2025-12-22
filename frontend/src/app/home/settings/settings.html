@@ -1,9 +1,9 @@
 <mat-card appearance="outlined" class="mat-card">
     <div class="header">
         <div class="header-left">
-            <div>{{ config.appName() }}</div>
+            <div>{{ configService.config().appName }}</div>
             <div class="update">
-                <div>{{ config.version() }}</div>
+                <div>{{ configService.config().version }}</div>
                 <button>
                     <mat-icon>refresh</mat-icon>
                     {{ i18nService.t('settings.update') }}
@@ -55,6 +55,40 @@
                     </button>
                     }
                 </mat-menu>
+            </div>
+        </div>
+
+        <!-- default window size -->
+        <div class="row">
+            <div class="row-1">Default Window Size</div>
+            <div class="row-2">
+                {{ configService.config().window.width }} x
+                {{ configService.config().window.height }}
+            </div>
+        </div>
+
+        <!-- window maxsize -->
+        <div class="row">
+            <div class="row-1">Maximum window size</div>
+            <div class="row-2">
+                {{ configService.config().window.maxWidth }} x
+                {{ configService.config().window.maxHeight }}
+            </div>
+        </div>
+        <!-- window minsize -->
+        <div class="row">
+            <div class="row-1">Minimum window size</div>
+            <div class="row-2">
+                {{ configService.config().window.minWidth }} x
+                {{ configService.config().window.minHeight }}
+            </div>
+        </div>
+        <!-- widget size -->
+        <div class="row">
+            <div class="row-1">Widget Size</div>
+            <div class="row-2">
+                {{ configService.config().window.widgetWidth }} x
+                {{ configService.config().window.widgetHeight }}
             </div>
         </div>
     </div>

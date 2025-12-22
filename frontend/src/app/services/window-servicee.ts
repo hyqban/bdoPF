@@ -17,7 +17,7 @@ import { ConfigService } from './config-service';
     providedIn: 'root',
 })
 export class WindowServicee {
-    constructor(private config: ConfigService) {}
+    constructor(private configService: ConfigService) {}
     private isFullscreen: WritableSignal<boolean> = signal(false);
     private isWidgetMode: WritableSignal<boolean> = signal(false);
     private onTop: boolean = false;
@@ -40,7 +40,7 @@ export class WindowServicee {
         this.windowSizeChange.update((el) => {
             el.widthBeforeEnterWidget = res['w'];
             el.heightBeforeEnterWidget = res['h'];
-            return el;
+            return { ...el };
         });
     }
 
@@ -70,43 +70,43 @@ export class WindowServicee {
             this.windowSizeChange.update((el) => {
                 el.widthBeforeEnterWidget = res['w'];
                 el.heightBeforeEnterWidget = res['h'];
-                el.minWidthBeforeEnterWidget = this.config.window().minWidth;
-                el.minHeightBeforeEnterWidget = this.config.window().minHeight;
+                el.minWidthBeforeEnterWidget = this.configService.config().window.minWidth;
+                el.minHeightBeforeEnterWidget = this.configService.config().window.minHeight;
 
-                return el;
+                return { ...el };
             });
         });
-
-        // WindowSetMinSize().then(() => {})
     }
 
     async enterWidgetMode() {
         if (!this.isFullscreen()) {
             this.getWindowSize();
         }
-        // this.isWidgetMode.set(true);
         const res1 = await WindowGetSize();
-        // console.log(res1);
 
         this.windowSizeChange.update((el) => {
             el.widthBeforeEnterWidget = res1['w'];
             el.heightBeforeEnterWidget = res1['h'];
-            el.minWidthBeforeEnterWidget = this.config.window().minWidth;
-            el.minHeightBeforeEnterWidget = this.config.window().minWidth;
+            el.minWidthBeforeEnterWidget = this.configService.config().window.minWidth;
+            el.minHeightBeforeEnterWidget = this.configService.config().window.minWidth;
 
-            return el;
+            return { ...el };
         });
         this.isWidgetMode.update((value) => !value);
-        await WindowSetMinSize(this.config.window().widgetWidth, this.config.window().widgetHeight);
-        await WindowSetSize(this.config.window().widgetWidth, this.config.window().widgetHeight);
+        await WindowSetMinSize(
+            this.configService.config().window.widgetWidth,
+            this.configService.config().window.widgetHeight
+        );
+        await WindowSetSize(
+            this.configService.config().window.widgetWidth,
+            this.configService.config().window.widgetHeight
+        );
     }
 
     async exitWidgetMode() {
         this.isWidgetMode.set(false);
 
         if (this.isFullscreen()) {
-            // console.log('----', this.isFullscreen());
-
             this.isFullscreen.set(this.isFullscreen());
 
             await WindowSetSize(
@@ -117,12 +117,9 @@ export class WindowServicee {
                 this.windowSizeChange().minWidthBeforeEnterWidget,
                 this.windowSizeChange().minHeightBeforeEnterWidget
             );
-            // this.windowFullscreen();
             return;
         }
 
-        // console.log('++++', this.isFullscreen());
-        // WindowSetSize(500, 784).then(() => {});
         await WindowSetSize(
             this.windowSizeChange().widthBeforeEnterWidget,
             this.windowSizeChange().heightBeforeEnterWidget
