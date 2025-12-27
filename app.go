@@ -9,7 +9,7 @@ import (
 // App struct
 type App struct {
 	ctx context.Context
-	DI *service.DIContainer
+	DI  *service.DIContainer
 }
 
 // NewApp creates a new App application struct

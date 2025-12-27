@@ -1,5 +1,20 @@
 @use '../../../styles.scss' as *;
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.convert {
+}
+
+.convert.spin {
+    animation: spin 1s linear infinite;
+}
 .mat-card {
     max-width: 80%;
     min-width: 400px;
@@ -88,6 +103,12 @@
             justify-content: space-between;
             align-items: center;
             height: 3em;
+            // border: red 1px solid;
+
+            .defaultLang {
+                width: 2.5em;
+                padding: 0 0.5em;
+            }
         }
     }
 }

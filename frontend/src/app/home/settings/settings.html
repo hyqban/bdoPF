@@ -30,6 +30,19 @@
     <div class="app-settings">
         <div style="font-size: 1.3rem; margin-bottom: 0.5em">Application settings</div>
 
+        <!-- xml to json -->
+        <div class="row">
+            <div class="row-1">XML to JSON</div>
+            <div class="row-2">
+                <input class="defaultLang" type="text" value="en" #locale />
+                <button matButton (click)="xmlToJson(locale.value)">
+                    @if (convert()) {
+                    <mat-icon class="convert" [class.spin]="convert()">refresh</mat-icon>
+                    } Select & Convert
+                </button>
+                <!-- <button matButton="tonal">Convert</button> -->
+            </div>
+        </div>
         <!-- theme -->
         <div class="row">
             <div class="row-1">Theme</div>

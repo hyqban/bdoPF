@@ -62,7 +62,7 @@ func main() {
 		CSSDragProperty: "widows",
 		CSSDragValue:    "1",
 		Bind: []interface{}{
-			// app,
+			app,
 			di,
 			window,
 			fileHandler,

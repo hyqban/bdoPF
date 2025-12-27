@@ -1,4 +1,4 @@
-import { Component, computed, ViewChild } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,8 @@ import { SetLocale } from '../../../../wailsjs/go/service/DIContainer';
 import { ReeiveConfigUpdate } from '../../../../wailsjs/go/service/Config';
 import { SearchService } from '../../services/search-service';
 import { ConfigService } from '../../services/config-service';
+import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 type KeyValueComparator = (a: { key: any; value: any }, b: { key: any; value: any }) => number;
 
@@ -27,6 +29,9 @@ export class Settings {
     ) {}
 
     @ViewChild(MatMenuTrigger) trigger!: MatMenuTrigger;
+    folderPath: string = '';
+    private _snackBar = inject(MatSnackBar);
+    convert = signal(false);
 
     langs = computed(() => {
         return Object.entries(this.i18nService.langs());
@@ -42,6 +47,7 @@ export class Settings {
     });
     currentTheme = computed(() => this.themeService.getCurrentTheme());
     originalOrder: KeyValueComparator = (a, b) => 0;
+    readonly DEBOUNCE_TIME = 500;
 
     expand() {
         this.trigger.openMenu();
@@ -70,5 +76,28 @@ export class Settings {
 
         await ReeiveConfigUpdate(this.configService.submitFieldUpdate());
         localStorage.setItem('locale', str[idx]);
+    }
+
+    onFIlesSelected() {
+        OpenFolderDialog().then((res) => {
+            this.folderPath = res['folderPath'];
+        });
+    }
+
+    async xmlToJson(locale: string) {
+        console.log(locale);
+
+        this.convert.set(true);
+        const res = await OpenFolderDialog();
+        this.folderPath = res['folderPath'];
+
+        XmlToJson(this.folderPath, locale).then((res) => {
+            this.convert.set(false);
+
+            this._snackBar.open(res['msg'], 'Diss', {
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+            });
+        });
     }
 }

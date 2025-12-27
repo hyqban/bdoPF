@@ -5,12 +5,13 @@ Features:
     ✔ 4. Amount @done(25-12-08 01:43)
     ✔ 5. SWitch Language. @done(25-12-12 17:01)
     ☐ 6. add minwidth, minheight about nomal window and widget window.
-    ☐ 7. add config service
+    ✔ 7. add config service @done(25-12-23 13:08)
     ☐ 8. add update and download the latest version from github.
+    ☐ 9. add search history limit (maybe).
 
 Issues:
     ☐ 1. Mat-card will changed width when scroll is appear.
     ☐ 2. The input can be dragged.
-    ☐ 3. The color of the amount
+    ☐ 3. The color of the amount.
     ✔ 4. BreadCrumb was appeared after build. @done(25-12-08 02:19)
     ✔ 5. The search results didn't show below 50, and remove match.score > 50. @done(25-12-10 20:55)

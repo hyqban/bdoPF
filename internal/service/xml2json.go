@@ -51,7 +51,7 @@ func (gd *GameData) XmlToJson(xmlFolderPath string, defaultLang string) map[stri
 	fh := gd.Di.GetFileHandler()
 
 	response := make(map[string]string)
-	response["msg"] = "Failed"
+	response["msg"] = "Got a wrong during xml to json."
 
 	if fh == nil {
 		return response
@@ -60,7 +60,7 @@ func (gd *GameData) XmlToJson(xmlFolderPath string, defaultLang string) map[stri
 	exist := fh.pathExists(xmlFolderPath)
 
 	if !exist {
-		fmt.Println("Path is invalid.")
+		response["msg"] = "Selected path is invalid."
 		return response
 	}
 
@@ -76,6 +76,7 @@ func (gd *GameData) XmlToJson(xmlFolderPath string, defaultLang string) map[stri
 			err := os.MkdirAll(path, 0755)
 
 			if err != nil {
+				response["msg"] = "Failed to create json file."
 				return response
 			}
 		}
@@ -88,11 +89,11 @@ func (gd *GameData) XmlToJson(xmlFolderPath string, defaultLang string) map[stri
 		gd.run(configMap)
 	}
 
-	elapsed := time.Since(start)
+	elapsed := time.Since(start).Truncate(time.Second)
 	fmt.Printf("\n============================================\n")
 	fmt.Printf("Finished, cost: %s\n", elapsed)
 	fmt.Printf("============================================\n")
-	response["msg"] = "Successful"
+	response["msg"] = fmt.Sprintf("Finished, cost %s", elapsed)
 	return response
 }
 

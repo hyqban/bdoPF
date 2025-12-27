@@ -1,4 +1,4 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ThemeService } from '../../services/theme-service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 
-import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
 import { SearchService } from '../../services/search-service';
 import { ItemDetails } from '../../layout/item-details/item-details';
 import { GetResourcePath } from '../../../../wailsjs/go/service/DIContainer';
@@ -27,7 +26,6 @@ import { WindowResolution } from '../../../../wailsjs/go/service/Window';
     styleUrl: './home.scss',
 })
 export class Home {
-    folderPath: string = '';
     rootPath = signal('');
     assetPath = signal('');
 
@@ -40,18 +38,6 @@ export class Home {
 
     changeTheme(themeName: string) {
         this.themeService.setTheme(themeName);
-    }
-
-    onFIlesSelected() {
-        OpenFolderDialog().then((res) => {
-            this.folderPath = res['folderPath'];
-        });
-    }
-
-    xmlToJson() {
-        XmlToJson(this.folderPath, 'en').then((res) => {
-            console.log(res);
-        });
     }
 
     getDiplayResolution() {
