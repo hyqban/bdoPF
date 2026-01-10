@@ -64,7 +64,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	updater.appVersion = appVersion
 	updater.checkSystemType()
 	// url := "https://api.github.com/repos/Hyqban/bdoPF/releases/latest"
-	url := "https://api.github.com/repos/Hyqban/mp4_to_mov_converter/releases/latest"
+	url := "https://api.github.com/repos/hyqban/bdoPF/releases/latest"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
