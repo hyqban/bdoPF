@@ -4,6 +4,8 @@ import (
 	// hs "bdoPF/internal/httpserver"
 	service "bdoPF/internal/service"
 	"embed"
+	"os"
+	"os/exec"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -12,6 +14,24 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+func RunIfUpdaterMode() {
+	if len(os.Args) < 2 || os.Args[1] != "--update" {
+		return
+	}
+
+	oldEexe := os.Args[2]
+	newEexe := os.Args[3]
+
+	_ = os.Remove(oldEexe)
+
+	if err := os.Rename(newEexe, oldEexe); err != nil {
+		os.Exit(1)
+	}
+
+	_ = exec.Command(oldEexe).Start()
+	os.Exit(0)
+}
 
 func main() {
 	// Create an instance of the app structure
@@ -30,7 +50,7 @@ func main() {
 
 	config := service.NewConfig(di)
 	di.Register("config", config)
-	
+
 	window := service.NewWindow(di)
 	di.Register("window", window)
 
@@ -39,9 +59,11 @@ func main() {
 
 	// app.ReceivePoints(fileHandler)
 
-
 	gameData := service.NewGameData(di)
 	di.Register("gameData", gameData)
+
+	updater := service.NewUpdater(di)
+	di.Register("updater", updater)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -68,6 +90,7 @@ func main() {
 			fileHandler,
 			config,
 			gameData,
+			updater,
 		},
 	})
 

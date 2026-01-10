@@ -94,6 +94,13 @@ export interface Config {
     theme: string;
     locale: string;
     window: AppWindow;
+    newVersion: LatestApp;
+}
+
+export interface LatestApp {
+    version: string;
+    download: boolean;
+    downloadUrl: string;
 }
 
 export interface WindowSizeChange {

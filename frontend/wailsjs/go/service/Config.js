@@ -9,3 +9,7 @@ export function ReadConfig() {
 export function ReeiveConfigUpdate(arg1) {
   return window['go']['service']['Config']['ReeiveConfigUpdate'](arg1);
 }
+
+export function SaveConfig() {
+  return window['go']['service']['Config']['SaveConfig']();
+}

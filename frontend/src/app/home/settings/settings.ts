@@ -11,6 +11,11 @@ import { SearchService } from '../../services/search-service';
 import { ConfigService } from '../../services/config-service';
 import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+    CheckForUpdates,
+    DownloadUpdates,
+    StartUpdate,
+} from '../../../../wailsjs/go/service/Updater';
 
 type KeyValueComparator = (a: { key: any; value: any }, b: { key: any; value: any }) => number;
 
@@ -99,5 +104,49 @@ export class Settings {
                 verticalPosition: 'top',
             });
         });
+    }
+
+    checkForUpdates() {
+        CheckForUpdates(this.configService.config().version).then((res) => {
+            console.log(res);
+            if (res['code'] === '200' && res['url']) {
+                this.configService.config.update((state) => ({
+                    ...state,
+                    newVersion: {
+                        ...state.newVersion,
+                        downloadUrl: res['url'],
+                        version: res['version'],
+                    },
+                }));
+            }
+            this._snackBar.open(res['msg'], 'Diss', {
+                horizontalPosition: 'right',
+                verticalPosition: 'top',
+            });
+        });
+    }
+
+    downloadUpdates() {
+        console.log(this.configService.config().newVersion);
+
+        DownloadUpdates().then((res) => {
+            if (res['code'] === '200') {
+                this.configService.config.update((state) => ({
+                    ...state,
+                    newVersion: {
+                        ...state.newVersion,
+                        download: true,
+                    },
+                }));
+                this._snackBar.open(res['msg'], 'Diss', {
+                    horizontalPosition: 'right',
+                    verticalPosition: 'top',
+                });
+            }
+        });
+    }
+
+    startUpdate() {
+        StartUpdate().then(() => {});
     }
 }

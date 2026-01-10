@@ -6,6 +6,10 @@ export function EnsureDir(arg1) {
   return window['go']['service']['FileHandler']['EnsureDir'](arg1);
 }
 
+export function GetExePath() {
+  return window['go']['service']['FileHandler']['GetExePath']();
+}
+
 export function ListDir(arg1) {
   return window['go']['service']['FileHandler']['ListDir'](arg1);
 }

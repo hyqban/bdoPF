@@ -4,6 +4,8 @@ import {model} from '../models';
 
 export function EnsureDir(arg1:string):Promise<void>;
 
+export function GetExePath():Promise<string>;
+
 export function ListDir(arg1:string):Promise<Record<string, Array<string>>>;
 
 export function PathJoin(arg1:Array<string>):Promise<string>;

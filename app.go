@@ -33,6 +33,6 @@ func (a *App) startup(ctx context.Context) {
 	a.DI.SetAddr(addr)
 }
 
-func (a *App) GetAppCtx() context.Context {
-	return a.ctx
-}
+//	func (a *App) GetAppCtx() context.Context {
+//		return a.ctx
+//	}

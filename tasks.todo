@@ -4,10 +4,15 @@ Features:
     ✔ 3. Some func with breadCrumbs. @done(25-12-08 01:43)
     ✔ 4. Amount @done(25-12-08 01:43)
     ✔ 5. SWitch Language. @done(25-12-12 17:01)
-    ☐ 6. add minwidth, minheight about nomal window and widget window.
-    ✔ 7. add config service @done(25-12-23 13:08)
-    ☐ 8. add update and download the latest version from github.
-    ☐ 9. add search history limit (maybe).
+    ✔ 6. Add minwidth, minheight about nomal window and widget window. @done(26-01-10 16:01)
+    ✔ 7. Add config service @done(25-12-23 13:08)
+    ✔ 8. Add update and download the latest version from github. @done(26-01-10 16:01)
+    ☐ 9. Add search history limit (maybe).
+    ✔ 10. Add download and update. @done(26-01-10 16:01)
+    ☐ 11. Genereta locale files using go.
+    ☐ 12. Add calculator in craft notes page.
+
+    
 
 Issues:
     ☐ 1. Mat-card will changed width when scroll is appear.

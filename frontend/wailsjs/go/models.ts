@@ -183,6 +183,22 @@ export namespace model {
 
 export namespace service {
 	
+	export class LatestApp {
+	    version: string;
+	    download: boolean;
+	    downloadUrl: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new LatestApp(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.version = source["version"];
+	        this.download = source["download"];
+	        this.downloadUrl = source["downloadUrl"];
+	    }
+	}
 	export class Window {
 	    onTop: boolean;
 	    width: number;
@@ -225,6 +241,7 @@ export namespace service {
 	    window: Window;
 	    theme: string;
 	    locale: string;
+	    newVersion: LatestApp;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -237,6 +254,7 @@ export namespace service {
 	        this.window = this.convertValues(source["window"], Window);
 	        this.theme = source["theme"];
 	        this.locale = source["locale"];
+	        this.newVersion = this.convertValues(source["newVersion"], LatestApp);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -357,6 +375,7 @@ export namespace service {
 		    return a;
 		}
 	}
+	
 
 }
 

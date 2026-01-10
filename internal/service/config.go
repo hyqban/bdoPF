@@ -4,17 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var CONFIG_PATH = "config.json"
+var DEFAULT_VERSION = "1.0.0"
+
+type LatestApp struct {
+	Version     string `json:"version"`
+	Download    bool   `json:"download"`
+	DownloadUrl string `json:"downloadUrl"`
+}
 
 type Config struct {
-	DI      *DIContainer `json:"-"`
-	AppName string       `json:"appName"`
-	Version string       `json:"version"`
-	Window  Window       `json:"window"`
-	Theme   string       `json:"theme"`
-	Locale  string       `json:"locale"`
+	DI         *DIContainer `json:"-"`
+	AppName    string       `json:"appName"`
+	Version    string       `json:"version"`
+	Window     Window       `json:"window"`
+	Theme      string       `json:"theme"`
+	Locale     string       `json:"locale"`
+	NewVersion LatestApp    `json:"newVersion"`
 }
 
 func NewConfig(di *DIContainer) *Config {
@@ -35,9 +44,14 @@ func (cf *Config) ReadConfig() Config {
 func getDefaultConfig() *Config {
 	return &Config{
 		AppName: "bdoPF",
-		Version: "1.0",
+		Version: DEFAULT_VERSION,
 		Theme:   "lightskyblue",
 		Locale:  "en",
+		NewVersion: LatestApp{
+			Version:     "",
+			Download:    false,
+			DownloadUrl: "",
+		},
 		Window: Window{
 			OnTop:               false,
 			Width:               600,
@@ -57,7 +71,15 @@ func getDefaultConfig() *Config {
 }
 
 func enforceSystemFields(cfg *Config) {
-	cfg.Version = "1.0"
+	has := HasLatestVersion(strings.Split(cfg.NewVersion.Version, "."), strings.Split(DEFAULT_VERSION, "."))
+
+	if !has {
+		cfg.NewVersion.DownloadUrl = ""
+		cfg.NewVersion.Version = ""
+		cfg.NewVersion.Download = false
+	}
+
+	cfg.Version = DEFAULT_VERSION
 }
 
 func writeConfigToFile(cfg *Config, filePath string) error {
@@ -123,4 +145,22 @@ func loadAndValidateConfig(filePath string) (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func (cfg *Config) SaveConfig() bool {
+
+	fh := cfg.DI.GetFileHandler()
+
+	if fh == nil {
+		fmt.Println("Failed to Obtain fileHandler.")
+		return false
+	}
+
+	err := writeConfigToFile(cfg, CONFIG_PATH)
+
+	if err != nil {
+		return false
+	}
+
+	return true
 }

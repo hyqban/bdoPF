@@ -73,6 +73,12 @@ func (fh *FileHandler) ListDir(path string) (map[string][]string, error) {
 	return dir, nil
 }
 
+func (fh *FileHandler) GetExePath() string {
+	path, _ := os.Getwd()
+
+	return path
+}
+
 func (fh *FileHandler) PathJoin(elements ...string) string {
 	return filepath.Join(elements...)
 
@@ -302,6 +308,6 @@ func (fh *FileHandler) ReadDynamicStrings() map[string]interface{} {
 }
 
 // func (fh *FileHandler) createJsonFile(data interface{}, fileName string, path string) {
-// 	flag := os.O_WRONLY | os.O_CREATE | 
+// 	flag := os.O_WRONLY | os.O_CREATE |
 
 // }

@@ -11,6 +11,11 @@ export class ConfigService {
         version: '',
         theme: '',
         locale: '',
+        newVersion: {
+            version: "",
+            download: false,
+            downloadUrl: ""
+        },
         window: {
             onTop: false,
             width: 600,
@@ -32,27 +37,6 @@ export class ConfigService {
         ReadConfig().then((res: Config) => {
             localStorage.setItem('locale', res.locale);
             this.config.set(res);
-            // this.config.update((el) => {
-            //     el.appName = res.appName;
-            //     el.version = res.version;
-            //     el.theme = res.theme;
-            //     el.locale = res.locale;
-            //     el.window.onTop = res.window.onTop;
-            //     el.window.width = res.window.width;
-            //     el.window.height = res.window.height;
-            //     el.window.maxWidth = res.window.maxWidth;
-            //     el.window.maxHeight = res.window.maxWidth;
-            //     el.window.minWidth = res.window.minWidth;
-            //     el.window.minHeight = res.window.minHeight;
-            //     el.window.isFullScreen = res.window.isFullScreen;
-            //     el.window.isWidgetMode = res.window.isWidgetMode;
-            //     el.window.defaultWidgetWidth = res.window.defaultWidgetWidth;
-            //     el.window.defaultWidgetHeight = res.window.defaultWidgetHeight;
-            //     el.window.widgetWidth = res.window.widgetWidth;
-            //     el.window.widgetHeight = res.window.widgetHeight;
-
-            //     return { ...el };
-            // });
         });
     }
 
