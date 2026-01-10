@@ -81,7 +81,11 @@
                         @for (item of el.item; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
-                                <div style="color: green">x {{ item.count }}</div>
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
                                 @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
                                 } @if (this.search.breadCrumbs().length > 1) {
@@ -92,7 +96,7 @@
                                 <div style="color: red">
                                     x
                                     {{ search.totalAmout(item.count ?? '1') }}
-                                </div>
+                                </div> -->
                             </div>
                             <img
                                 class="icon"
@@ -138,7 +142,11 @@
                         @for (item of el; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
-                                <div style="color: green">x {{ item.count }}</div>
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
                                 @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
                                 } @if (this.search.breadCrumbs().length > 1) {
@@ -149,7 +157,7 @@
                                 <div style="color: red">
                                     x
                                     {{ search.totalAmout(item.count ?? '1') }}
-                                </div>
+                                </div> -->
                             </div>
                             <img
                                 class="icon"
@@ -182,7 +190,11 @@
                         @for (item of el; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
-                                <div style="color: green">x {{ item.count }}</div>
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
                                 @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
                                 } @if (this.search.breadCrumbs().length > 1) {
@@ -193,7 +205,7 @@
                                 <div style="color: red">
                                     x
                                     {{ search.totalAmout(item.count ?? '1') }}
-                                </div>
+                                </div> -->
                             </div>
                             <img
                                 class="icon"
@@ -229,7 +241,11 @@
                         @for (item of el.item; track item.id) {
                         <div class="item-3" (click)="search.nextQuery(item)">
                             <div class="count">
-                                <div style="color: green">x {{ item.count }}</div>
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
                                 @if (this.search.breadCrumbs().length === 1) {
                                 <div style="color: blue">x {{ item.count }}</div>
                                 } @if (this.search.breadCrumbs().length > 1) {
@@ -240,7 +256,7 @@
                                 <div style="color: red">
                                     x
                                     {{ search.totalAmout(item.count ?? '1') }}
-                                </div>
+                                </div> -->
                             </div>
                             <img
                                 class="icon"
