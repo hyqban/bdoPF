@@ -108,6 +108,7 @@ func (di *DIContainer) SetAssetsPath() {
 	}
 
 	rootPath := filepath.Dir(exePath)
+	os.MkdirAll(assetsPath[env], os.ModePerm)
 
 	resourcePath.RootPath = rootPath
 	resourcePath.AssetsPath = assetsPath[env]

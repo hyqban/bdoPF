@@ -2,139 +2,214 @@
 @use '@angular/material' as mat;
 
 :host {
-    .titleBar {
-        width: 100vw;
-        height: 2em;
-        display: flex;
-        flex: 1 1 1;
-        flex-direction: row;
-        justify-content: space-between;
-        -webkit-app-region: drag;
-        background-color: var(--mat-sys-inverse-primary);
-        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    display: block;
+    width: 100vw;
+    z-index: 1000;
+}
 
-        #sidebar {
-            z-index: 9;
-            position: absolute;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
-            -webkit-app-region: no-drag;
-        }
+.titleBar {
+    height: 36px; // Compact height
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    background-color: var(--mat-sys-surface-container); // Match sidebar theme
+    // background-color: var(--mat-sys-inverse-primary);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    -webkit-app-region: drag; // Essential for window dragging
+    user-select: none;
+    box-sizing: border-box;
 
-        #sidebar.open {
+    // Sidebar Slide-out Logic
+    #sidebar {
+        z-index: 50;
+        position: absolute;
+        top: 0; // Restore to top 0 to cover full height/titlebar if needed, matching previous logic
+        left: 0;
+        transform: translateX(-110%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-app-region: no-drag;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+
+        &.open {
             transform: translateX(0);
         }
+    }
 
-        .left-part {
-            @extend %flex-row-2c;
-            justify-content: space-between;
-            width: fit-content;
-            margin-left: 0.5em;
+    // Common Button Styles
+    .icon-button {
+        -webkit-app-region: no-drag;
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: var(--mat-sys-on-surface-variant);
+        transition: all 0.2s ease;
+        padding: 0;
 
-            .app-name {
-                margin-left: 0.5em;
-            }
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
         }
 
-        .search {
-            @extend %flex-column;
+        &:hover {
+            background-color: rgba(41, 39, 39, 0.1);
+        }
+
+        &.active {
+            color: var(--mat-sys-primary);
+            background-color: var(--mat-sys-primary-container);
+        }
+    }
+
+    // Left Section
+    .left-section {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        -webkit-app-region: no-drag; // Allows clicking the menu
+    }
+
+    // Center Section (Search)
+    .search-container {
+        height: 2em;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        // Reduce max-width significantly to ensure drag space in small windows
+        // max-width: 180px;
+        padding: 0 0.8rem;
+        -webkit-app-region: no-drag;
+        // border: red 1px solid;
+
+        .search-box {
+            position: relative;
             width: 100%;
-            justify-content: center;
+            // Keep input compact. User requested "not too big" for small window usage.
+            max-width: 180px;
+            height: 24px;
+            display: flex;
             align-items: center;
-            padding: 0 1.5em;
-            // border: red 1px solid;
-            // -webkit-app-region: no-drag;
 
-            & > :first-child {
-                box-sizing: border-box;
-                // width: 165px;
-                // width: 10rem;
-                // min-width: 5rem;
-                border-radius: 1%;
-                height: 20px;
-                border: 0px;
-                padding: 0 10px;
-            }
-
-            & > :first-child:focus {
-                // border: 1px solid var(--mat-sys-surface-container-highest);
+            input {
+                width: 100%;
+                height: 100%;
+                background-color: var(--mat-sys-surface-variant);
+                border: 1px solid transparent;
+                border-radius: 99px; // Pill shape
+                padding: 0 1rem 0 2rem; // Space for icon
+                color: var(--mat-sys-on-surface);
+                font-size: 0.85rem;
+                transition: all 0.2s ease;
                 outline: none;
+
+                &::placeholder {
+                    color: var(--mat-sys-outline);
+                }
+
+                &:focus {
+                    background-color: var(--mat-sys-surface);
+                    border-color: var(--mat-sys-primary);
+                    box-shadow: 0 0 0 2px var(--mat-sys-primary-container);
+                }
             }
 
-            & > :nth-child(2):hover {
-                // background-color: var(--mat-sys-surface-container-highest);
-                background-color: var(--bg-color);
-            }
-
-            & > :nth-child(2).hide {
-                display: none;
-                -webkit-app-region: no-drag;
-            }
-
-            & > :nth-child(2) {
-                -webkit-app-region: no-drag;
+            .search-icon {
                 position: absolute;
-                top: 2em;
-                z-index: 9;
-                background-color: var(--mat-sys-surface-container-high);
-                font-size: 14px;
+                left: 8px;
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+                color: var(--mat-sys-outline);
+                pointer-events: none;
+            }
+
+            .search-results {
+                position: absolute;
+                top: 130%; // Push it a bit down
+                left: 0;
+                min-width: 100%; // At least as wide as input
+                width: max-content; // Allow growing
+                max-width: 300px; // Cap width
+                max-height: 300px;
+                overflow-y: auto;
+                // background-color: var(--mat-sys-surface-container-high);
+                background-color: var(--mat-sys-background);
+                border-radius: 8px;
+                padding: 0.5rem;
+                z-index: 2;
+                display: flex;
+                flex-direction: column;
                 overflow-y: auto;
                 scrollbar-width: none;
-                // width: 13em;
-                max-width: 20em;
-                min-width: 14em;
-                max-height: 20em;
-                border: 1px solid #b0c4de;
+                gap: 2px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // Add shadow for depth
 
-                .searchResult:hover {
-                    background-color: var(--mat-sys-secondary-fixed-dim);
+                &.hide {
+                    display: none;
                 }
-                .searchResult {
-                    @extend %flex-row;
-                    padding: 0.5em 1em;
-                    align-items: center;
-                    gap: 1em;
 
-                    & > :first-child {
-                        width: 25px;
-                        height: 25px;
+                .result-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0.5rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: background-color 0.1s ease;
+
+                    &:hover {
+                        background-color: var(--mat-sys-secondary-container);
+                        color: var(--mat-sys-on-secondary-container);
+                    }
+
+                    img {
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 4px;
+                    }
+
+                    span {
+                        font-size: 0.9rem;
+                        color: var(--mat-sys-on-surface);
+                        white-space: normal;
+                        word-break: break-word;
+                        line-height: 1.4;
                     }
                 }
             }
         }
-
-        & > .right-part {
-            @extend %flex-row-2c;
-            width: fit-content;
-
-            mat-icon:hover {
-                // border: rgba(0, 0, 0, 0.1) 2px solid;
-                background-color: rgba(41, 39, 39, 0.1);
-                // box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.2);
-            }
-
-            mat-icon.top {
-                background-color: rgba(41, 39, 39, 0.1);
-            }
-            mat-icon {
-                width: 20px;
-                font-size: 18px;
-                padding: 5px 10px 0 10px;
-                border: rgba(255, 255, 255, 0) 2px solid;
-                box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0);
-                user-select: none;
-                // cursor: default;
-                cursor: pointer;
-            }
-        }
     }
-}
 
-@media (max-width: 500px) {
-    .search {
-        & > :first-child {
-            width: 7.5rem;
-            border: red 1px solid;
+    // Right Section (Window Controls)
+    .right-section {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        -webkit-app-region: no-drag;
+
+        .divider {
+            width: 1px;
+            height: 16px;
+            background-color: var(--mat-sys-outline-variant);
+            margin: 0 0.5rem;
+        }
+
+        .control-btn {
+            border-radius: 4px; // Square-ish for windows controls
+
+            &.close:hover {
+                background-color: #e81123; // Standard Windows close red
+                color: white;
+            }
         }
     }
 }

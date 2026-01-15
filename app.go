@@ -4,6 +4,8 @@ import (
 	"context"
 
 	service "bdoPF/internal/service"
+
+	"github.com/pkg/browser"
 )
 
 // App struct
@@ -31,8 +33,14 @@ func (a *App) startup(ctx context.Context) {
 	a.DI.Register("httpServer", httpserver)
 	addr := httpserver.Start()
 	a.DI.SetAddr(addr)
+
+	cfInterface, _ := a.DI.Resolve("config")
+
+	cfg := cfInterface.(*service.Config)
+
+	cfg.StartupPrepare(a.DI.ResourcePath.AssetsPath)
 }
 
-//	func (a *App) GetAppCtx() context.Context {
-//		return a.ctx
-//	}
+func (a *App) OpenWebsite(url string) {
+	_ = browser.OpenURL(url)
+}

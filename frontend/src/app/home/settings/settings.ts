@@ -16,6 +16,7 @@ import {
     DownloadUpdates,
     StartUpdate,
 } from '../../../../wailsjs/go/service/Updater';
+import { OpenWebsite } from '../../../../wailsjs/go/main/App';
 
 type KeyValueComparator = (a: { key: any; value: any }, b: { key: any; value: any }) => number;
 
@@ -53,6 +54,10 @@ export class Settings {
     currentTheme = computed(() => this.themeService.getCurrentTheme());
     originalOrder: KeyValueComparator = (a, b) => 0;
     readonly DEBOUNCE_TIME = 500;
+
+    openWebsite(url: string) {
+        OpenWebsite(url).then();
+    }
 
     expand() {
         this.trigger.openMenu();

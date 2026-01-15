@@ -84,6 +84,7 @@
                 // border: var(--mat-sys-on-secondary) 1px solid;
 
                 & > :first-child {
+                    color: var(--mat-sys-scrim);
                 }
 
                 & > :nth-child(2) {

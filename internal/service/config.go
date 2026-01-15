@@ -164,3 +164,94 @@ func (cfg *Config) SaveConfig() bool {
 
 	return true
 }
+
+func (cfg *Config) StartupPrepare(envPath string) {
+	// locales
+	// dynamic_string.json
+	fh := cfg.DI.GetFileHandler()
+
+	// dynamic_strings.json
+	// tpath := fh.PathJoin(envPath, "dynamic_strings.json")
+	somethingPrepare(fh, DynamicStringsMap, envPath, "dynamic_strings.json")
+
+	// de.json, en.json, fr.json, sp.json
+	os.MkdirAll(fh.PathJoin(cfg.DI.ResourcePath.AssetsPath, cfg.DI.ResourcePath.Locale), os.ModePerm)
+
+	for _, el := range LocalesMap {
+		temppath, _ := el["locale"].(string)
+		somethingPrepare(fh, el, envPath, cfg.DI.ResourcePath.Locale, temppath+".json")
+	}
+
+}
+
+func somethingPrepare(fh *FileHandler, tmap map[string]any, fPath ...string) {
+	tpath := fh.PathJoin(fPath...)
+	data, err := os.ReadFile(tpath)
+	if os.IsNotExist(err) {
+		// byt, _ := json.MarshalIndent(tmap, "", " ")
+		// err = os.WriteFile(tpath, byt, 0644)
+		f, err := os.Create(tpath)
+		if err != nil {
+			fmt.Println("write err:", err)
+			return
+		}
+		defer f.Close()
+
+		enc := json.NewEncoder(f)
+		enc.SetEscapeHTML(false)
+		enc.SetIndent("", "    ")
+
+		if err := enc.Encode(tmap); err != nil {
+			fmt.Println("encode err:", err)
+		}
+		return
+	}
+
+	var dsm map[string]any
+	err = json.Unmarshal(data, &dsm)
+	if err != nil {
+		fmt.Println("line 197: ", err)
+		return
+	}
+
+	changed := mergeDefault(dsm, tmap)
+	if changed {
+		fmt.Println("changed.")
+		f, err := os.Create(tpath)
+		if err != nil {
+			fmt.Println("write err:", err)
+			return
+		}
+		defer f.Close()
+
+		enc := json.NewEncoder(f)
+		enc.SetEscapeHTML(false)
+		enc.SetIndent("", "    ")
+
+		if err := enc.Encode(dsm); err != nil {
+			fmt.Println("encode err:", err)
+		}
+	}
+}
+
+func mergeDefault(dst, def map[string]any) (changed bool) {
+	for k, defVal := range def {
+		dstVal, exists := dst[k]
+
+		if !exists {
+			dst[k] = defVal
+			changed = true
+			continue
+		}
+
+		dstMap, ok1 := dstVal.(map[string]any)
+		defMap, ok2 := defVal.(map[string]any)
+
+		if ok1 && ok2 {
+			if mergeDefault(dstMap, defMap) {
+				changed = true
+			}
+		}
+	}
+	return
+}

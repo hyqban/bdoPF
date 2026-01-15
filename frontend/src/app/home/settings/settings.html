@@ -36,16 +36,18 @@
         </div>
 
         <div class="header-right">
-            <div class="link">
-                <div>Report a problem</div>
-                <div>Source Code</div>
+            <div class="link" (click)="openWebsite('https://github.com/hyqban/bdoPF/issues/new')">
+                <div>{{ i18nService.t('settings.report') }}</div>
+                <div>On GitHub or Discord</div>
             </div>
-            <div class="link">
-                <div>Github</div>
+            <div class="link" (click)="openWebsite('https://github.com/hyqban/bdoPF')">
+                <div>
+                    {{ i18nService.t('settings.github') }}
+                </div>
                 <div>Source code</div>
             </div>
-            <div class="link">
-                <div>Community</div>
+            <div class="link" (click)="openWebsite('https://discord.gg/EbJXEpNX')">
+                <div>{{ i18nService.t('settings.discord') }}</div>
                 <div>On discord</div>
             </div>
         </div>

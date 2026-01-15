@@ -1,13 +1,15 @@
 @if (search.breadCrumbs().data.length > 0) {
-<div class="bread-crumbs">
+<nav class="bread-crumbs" aria-label="Breadcrumb">
     @for (el of search.breadCrumbs().data; track $index) {
-    <img
-        class="icon"
-        [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
-        (click)="this.search.selectBreadCrumb($index)"
-        alt=""
-    />
-    <mat-icon class="mat-icon" fontIcon="trending_flat"></mat-icon>
+    <div class="crumb-item" (click)="this.search.selectBreadCrumb($index)">
+        <img
+            class="icon"
+            [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
+            alt="{{ el.name }}"
+        />
+        <!-- Optional: Add text label if desired later -->
+    </div>
+    <mat-icon class="separator" fontIcon="chevron_right"></mat-icon>
     }
-</div>
+</nav>
 }

@@ -13,3 +13,7 @@ export function ReeiveConfigUpdate(arg1) {
 export function SaveConfig() {
   return window['go']['service']['Config']['SaveConfig']();
 }
+
+export function StartupPrepare(arg1) {
+  return window['go']['service']['Config']['StartupPrepare'](arg1);
+}
