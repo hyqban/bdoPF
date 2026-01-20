@@ -6,7 +6,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ThemeService } from '../../services/theme-service';
 import { I18nService } from '../../services/i18n-service';
 import { SetLocale } from '../../../../wailsjs/go/service/DIContainer';
-import { ReeiveConfigUpdate } from '../../../../wailsjs/go/service/Config';
+import { ReceiveConfigUpdate } from '../../../../wailsjs/go/service/Config';
 import { SearchService } from '../../services/search-service';
 import { ConfigService } from '../../services/config-service';
 import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
@@ -31,7 +31,7 @@ export class Settings {
         private themeService: ThemeService,
         protected i18nService: I18nService,
         private searchService: SearchService,
-        protected configService: ConfigService
+        protected configService: ConfigService,
     ) {}
 
     @ViewChild(MatMenuTrigger) trigger!: MatMenuTrigger;
@@ -84,7 +84,7 @@ export class Settings {
             return { ...el };
         });
 
-        await ReeiveConfigUpdate(this.configService.submitFieldUpdate());
+        await ReceiveConfigUpdate(this.configService.submitFieldUpdate());
         localStorage.setItem('locale', str[idx]);
     }
 

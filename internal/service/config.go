@@ -94,7 +94,7 @@ func writeConfigToFile(cfg *Config, filePath string) error {
 	return nil
 }
 
-func (cfg *Config) ReeiveConfigUpdate(raw map[string]any) {
+func (cfg *Config) ReceiveConfigUpdate(raw map[string]any) {
 
 	b, err := json.Marshal(raw)
 

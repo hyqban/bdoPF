@@ -8,6 +8,9 @@
     @extend %flex-column;
     width: 100vw;
     height: 100vh;
+    // transition:
+    //     opacity 0.5s ease,
+    //     transform 0.5s ease;
 
     & > :first-child {
         // position: fixed;

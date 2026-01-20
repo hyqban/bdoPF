@@ -12,9 +12,9 @@ export class ConfigService {
         theme: '',
         locale: '',
         newVersion: {
-            version: "",
+            version: '',
             download: false,
-            downloadUrl: ""
+            downloadUrl: '',
         },
         window: {
             onTop: false,
@@ -36,7 +36,10 @@ export class ConfigService {
     loadConfig() {
         ReadConfig().then((res: Config) => {
             localStorage.setItem('locale', res.locale);
-            this.config.set(res);
+            this.config.update((el) => ({
+                ...el,
+            }));
+            // console.log(res);
         });
     }
 

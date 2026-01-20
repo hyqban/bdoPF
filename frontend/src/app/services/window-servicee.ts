@@ -10,8 +10,9 @@ import {
     WindowSetMinSize,
     WindowSetAlwaysOnTop,
 } from '../../../wailsjs/go/service/Window';
-import { WindowSize, WindowSizeChange } from '../shared/models/model';
+import { WindowSizeChange } from '../shared/models/model';
 import { ConfigService } from './config-service';
+import { ReceiveConfigUpdate } from '../../../wailsjs/go/service/Config';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +20,6 @@ import { ConfigService } from './config-service';
 export class WindowServicee {
     constructor(private configService: ConfigService) {}
     private isFullscreen: WritableSignal<boolean> = signal(false);
-    private isWidgetMode: WritableSignal<boolean> = signal(false);
     private onTop: boolean = false;
     private windowSizeChange: WritableSignal<WindowSizeChange> = signal<WindowSizeChange>({
         widthBeforeEnterWidget: 0,
@@ -58,12 +58,18 @@ export class WindowServicee {
     }
 
     getIsWidgetMode() {
-        return this.isWidgetMode;
+        return this.configService.config().window.isWidgetMode;
+        // return this.isWidgetMode;
     }
 
-    toggleIsWidgetMode(value: boolean) {
-        this.isWidgetMode.set(value);
-    }
+    // toggleIsWidgetMode(value: boolean) {
+    //     this.configService.config.update(el => {
+    //         window: {
+
+    //         }
+    //     });
+    //     this.isWidgetMode.set(value);
+    // }
 
     storeWindowSize() {
         WindowGetSize().then((res) => {
@@ -82,6 +88,9 @@ export class WindowServicee {
         if (!this.isFullscreen()) {
             this.getWindowSize();
         }
+        // this.configService.config().window.isWidgetMode = true;
+        // await ReceiveConfigUpdate(this.configService.config());
+
         const res1 = await WindowGetSize();
 
         this.windowSizeChange.update((el) => {
@@ -92,41 +101,63 @@ export class WindowServicee {
 
             return { ...el };
         });
-        this.isWidgetMode.update((value) => !value);
+        // this.isWidgetMode.update((value) => !value);
+
+        this.configService.config.update((el) => ({
+            ...el,
+            window: {
+                ...el.window,
+                isWidgetMode: true,
+            },
+        }));
+        console.log('enter: ', this.configService.config().window);
+        await ReceiveConfigUpdate(this.configService.config());
+
         await WindowSetMinSize(
             this.configService.config().window.widgetWidth,
-            this.configService.config().window.widgetHeight
+            this.configService.config().window.widgetHeight,
         );
         await WindowSetSize(
             this.configService.config().window.widgetWidth,
-            this.configService.config().window.widgetHeight
+            this.configService.config().window.widgetHeight,
         );
     }
 
     async exitWidgetMode() {
-        this.isWidgetMode.set(false);
+        // this.isWidgetMode.set(false);
+        this.configService.config.update((el) => ({
+            ...el,
+            window: {
+                ...el.window,
+                isWidgetMode: false,
+            },
+        }));
+
+        console.log('exit: ', this.configService.config().window);
+
+        await ReceiveConfigUpdate(this.configService.config());
 
         if (this.isFullscreen()) {
             this.isFullscreen.set(this.isFullscreen());
 
             await WindowSetSize(
                 this.windowSizeChange().widthBeforeEnterWidget,
-                this.windowSizeChange().heightBeforeEnterWidget
+                this.windowSizeChange().heightBeforeEnterWidget,
             );
             await WindowSetMinSize(
                 this.windowSizeChange().minWidthBeforeEnterWidget,
-                this.windowSizeChange().minHeightBeforeEnterWidget
+                this.windowSizeChange().minHeightBeforeEnterWidget,
             );
             return;
         }
 
         await WindowSetSize(
             this.windowSizeChange().widthBeforeEnterWidget,
-            this.windowSizeChange().heightBeforeEnterWidget
+            this.windowSizeChange().heightBeforeEnterWidget,
         );
         await WindowSetMinSize(
             this.windowSizeChange().minWidthBeforeEnterWidget,
-            this.windowSizeChange().minHeightBeforeEnterWidget
+            this.windowSizeChange().minHeightBeforeEnterWidget,
         );
     }
 

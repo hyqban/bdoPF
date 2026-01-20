@@ -71,7 +71,7 @@ export class CustomeTitleBar implements OnInit {
         private injector: Injector,
         protected windowService: WindowServicee,
         private elementRef: ElementRef,
-        protected search: SearchService
+        protected search: SearchService,
     ) {
         this.isFullscreen = this.windowService.getIsFullscreen();
         this.search.getAddr();

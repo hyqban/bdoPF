@@ -6,8 +6,8 @@ export function ReadConfig() {
   return window['go']['service']['Config']['ReadConfig']();
 }
 
-export function ReeiveConfigUpdate(arg1) {
-  return window['go']['service']['Config']['ReeiveConfigUpdate'](arg1);
+export function ReceiveConfigUpdate(arg1) {
+  return window['go']['service']['Config']['ReceiveConfigUpdate'](arg1);
 }
 
 export function SaveConfig() {

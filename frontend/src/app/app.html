@@ -1,7 +1,7 @@
 <div id="app" [class.hide]="isWidgetMode()">
     <app-custome-title-bar></app-custome-title-bar>
-    @if (currentUrl() === "/home") {
-    <app-bread-crumbs></app-bread-crumbs>
+    @if (currentUrl() === '/home') {
+        <app-bread-crumbs></app-bread-crumbs>
     }
     <!-- <div>{{ currentUrl() }}</div> -->
     <div id="body">
@@ -9,7 +9,8 @@
     </div>
 </div>
 
-<div style="widows: 1" id="widget" [class.hide]="!isWidgetMode()">
-    <span style="background-color: aqua">widget mode</span>
-    <button class="exit-widget" (click)="exitWidgetMode()">exit Widget</button>
+<div id="widget" [class.hide]="!isWidgetMode()">
+    <!-- <span style="background-color: aqua">widget mode</span>
+    <button class="exit-widget" (click)="exitWidgetMode()">exit Widget</button> -->
+    <widget-home></widget-home>
 </div>
