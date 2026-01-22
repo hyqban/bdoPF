@@ -3,8 +3,21 @@
 ## Setup Instructions
 
 1. Download the application from the releases page.
-2. Run the installer and follow the on-screen instructions.
-3. Launch the app.
+2. Open (https://drive.google.com/file/d/1IAxk5DSVRcPrBOytydtg3ionAIgVnM96/view?usp=sharing) & download.
+3. UNZIP and move files according to the file structure below.
+4. Launch the app.
+
+## File structure
+```
+|------- 
+|-- bdoPF.exe
+|-- config.json (auto-generated)
+|---- public/
+|------ gamecommondata
+|------ product_icon_png
+|------ locales (auto-generated)
+|------ dynamic_strings.json (auto-generated)
+```
 
 ## Using the Features
 

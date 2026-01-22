@@ -1,6 +1,6 @@
 # 🚀 bdoPF
 
-FIRST TIME USING: CHECK [Document](docs/document.md)
+FIRST TIME USING: CHECK [GUIDE](docs/guide.md)
 
 # ✨ Key Features
 - 🌳 Crafting Notes: Conveniently view recipes and quantities for crafting items.
@@ -15,3 +15,10 @@ FIRST TIME USING: CHECK [Document](docs/document.md)
 
 ## ⚠️ Regarding Windows Security Warning
 You might see a security warning from Windows, because this app isn't officially certified by Windows or its partners. Rest assured, the app is safe and works offline.
+
+# build
+```
+wails build -platform windows/amd64 -o bdoPF_amd64.exe
+
+wails build -platform windows/arm64 -o bdoPF_arm64.exe
+```
