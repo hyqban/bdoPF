@@ -1,7 +1,8 @@
 # 📜 Changelog
 All notable changes to this project will be documented in this file.
 
-## [v1.0.0] - 2025-11-12
+## [v1.0.0] - 2026-01-23
 ### 🎉 First push
-- Enable frameless.
-- We've added a better way to display the application when you don't need it: a compact widget mode.
+- Added item query functionality with automatic quantity calculation.
+- Added self-updating feature for the software.
+- Implemented automatic generation of configuration and localization files: `config.json`, `locales/en.json`, `locales/de.json`, `locales/fr.json`, `locales/sp.json`, and `dynamic_strings.json`.
