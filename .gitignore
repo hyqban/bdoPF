@@ -14,7 +14,7 @@ wails.buildlog
 /bin/
 *.test
 
-tasks.todo
+/tasks.todo
 config.json
 
 # ============================
