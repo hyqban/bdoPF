@@ -11,9 +11,10 @@
 ### Crafting Notes
 - Access the Crafting Notes section to view recipes and quantities for items.
 - Search for specific items to see their crafting requirements.
-- 
-[![](pngs/1.png)]
-[![](pngs/2.png)]
+- The `green` number shows how many items are required.
+- The `blue` number shows the current quantity multiplied by the previous item’s quantity.
+- The `red` number shows the total number crafted so far, starting from the first item.
+![](pngs/5.png)
 
 ### Boss Schedule
 - Check the Boss Schedule to see world boss spawn times.
