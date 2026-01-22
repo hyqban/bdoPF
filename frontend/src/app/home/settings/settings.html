@@ -1,0 +1,134 @@
+<mat-card appearance="outlined" class="mat-card">
+    <div class="header">
+        <div class="header-left">
+            <div>{{ configService.config().appName }}</div>
+            <div class="update">
+                <div>
+                    {{ configService.config().version }}
+                    @if(configService.config().newVersion.version){
+                    <!-- <mat-icon>arrow_right_alt</mat-icon> -->
+                    (
+                    <span style="color: red; font-size: 1.1rem">
+                        {{ configService.config().newVersion.version }}</span
+                    >
+                    ) }
+                </div>
+                @if(configService.config().newVersion.downloadUrl === "" ||
+                configService.config().newVersion.version === ""){
+                <button (click)="checkForUpdates()">
+                    <mat-icon>refresh</mat-icon>
+                    {{ i18nService.t('settings.update') }}
+                </button>
+                } @else if (configService.config().newVersion.version &&
+                configService.config().newVersion.downloadUrl &&
+                configService.config().newVersion.download === false) {
+                <button (click)="downloadUpdates()">
+                    <mat-icon>download</mat-icon>
+                    {{ i18nService.t('settings.download') }}
+                </button>
+                } @else if(configService.config().newVersion.download){
+                <button (click)="startUpdate()">
+                    <!-- <mat-icon>download</mat-icon> -->
+                    {{ i18nService.t('settings.install') }}
+                </button>
+                }
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="link" (click)="openWebsite('https://github.com/hyqban/bdoPF/issues/new')">
+                <div>{{ i18nService.t('settings.report') }}</div>
+                <div>On GitHub or Discord</div>
+            </div>
+            <div class="link" (click)="openWebsite('https://github.com/hyqban/bdoPF')">
+                <div>
+                    {{ i18nService.t('settings.github') }}
+                </div>
+                <div>Source code</div>
+            </div>
+            <div class="link" (click)="openWebsite('https://discord.gg/EbJXEpNX')">
+                <div>{{ i18nService.t('settings.discord') }}</div>
+                <div>On discord</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-settings">
+        <div style="font-size: 1.3rem; margin-bottom: 0.5em">Application settings</div>
+
+        <!-- xml to json -->
+        <div class="row">
+            <div class="row-1">XML to JSON</div>
+            <div class="row-2">
+                <input class="defaultLang" type="text" value="en" #locale />
+                <button matButton (click)="xmlToJson(locale.value)">
+                    @if (convert()) {
+                    <mat-icon class="convert" [class.spin]="convert()">refresh</mat-icon>
+                    } Select & Convert
+                </button>
+                <!-- <button matButton="tonal">Convert</button> -->
+            </div>
+        </div>
+        <!-- theme -->
+        <div class="row">
+            <div class="row-1">Theme</div>
+            <div class="row-2">
+                <button matButton [matMenuTriggerFor]="themeMenu">{{ currentTheme() }}</button>
+                <mat-menu #themeMenu="matMenu">
+                    <button mat-menu-item (click)="changeTheme('lightskyblue')">
+                        lightskyblue
+                    </button>
+                    <button mat-menu-item (click)="changeTheme('gainsboro')">gainsboro</button>
+                </mat-menu>
+            </div>
+        </div>
+        <!-- Language -->
+        <div class="row">
+            <div class="row-1">Language</div>
+            <div class="row-2">
+                <button matButton [matMenuTriggerFor]="languageMenu">{{ currentLang() }}</button>
+                <mat-menu #languageMenu="matMenu">
+                    @for (el of langs(); track $index) {
+                    <button mat-menu-item (click)="changeLocale(el, 0)">
+                        {{ spliteLang(el, 1) }}
+                    </button>
+                    }
+                </mat-menu>
+            </div>
+        </div>
+
+        <!-- default window size -->
+        <div class="row">
+            <div class="row-1">Default Window Size</div>
+            <div class="row-2">
+                {{ configService.config().window.width }} x
+                {{ configService.config().window.height }}
+            </div>
+        </div>
+
+        <!-- window maxsize -->
+        <div class="row">
+            <div class="row-1">Maximum window size</div>
+            <div class="row-2">
+                {{ configService.config().window.maxWidth }} x
+                {{ configService.config().window.maxHeight }}
+            </div>
+        </div>
+        <!-- window minsize -->
+        <div class="row">
+            <div class="row-1">Minimum window size</div>
+            <div class="row-2">
+                {{ configService.config().window.minWidth }} x
+                {{ configService.config().window.minHeight }}
+            </div>
+        </div>
+        <!-- widget size -->
+        <div class="row">
+            <div class="row-1">Widget Size</div>
+            <div class="row-2">
+                {{ configService.config().window.widgetWidth }} x
+                {{ configService.config().window.widgetHeight }}
+            </div>
+        </div>
+    </div>
+</mat-card>

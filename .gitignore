@@ -1,51 +1,41 @@
-# Angular specific
-dist/
-out-tsc/
-tmp/
-coverage/
-e2e/test-output/
-.angular/
-.angular/
+# ============================
+# Go / Wails Ignore Rules
+# ============================
 
-# Node modules and dependency files
+# Build output
+/build/
+*.exe
+*.dll
+*.log
+*.tmp
+wails.buildlog
+
+# Go module cache
+/bin/
+*.test
+
+tasks.todo
+config.json
+
+# ============================
+# Angular / Node Ignore Rules
+# ============================
+
+# Angular build output
+/frontend/dist/
+/frontend/out-tsc/
+/frontend/tmp/
+/frontend/coverage/
+/frontend/.angular/
+/frontend/.cache/
+
+# Node modules
+/frontend/node_modules/
 node_modules/
-package-lock.json
-yarn.lock
 
-# Environment files
-.env
-
-# Angular CLI and build artefacts
-.angular-cli.json
-.ng/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Compiled output
-dist
-tmp
-out-tsc
-bazel-out
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# ============================
+# Editor / IDE Ignore Rules
+# ============================
 
 # Visual Studio Code
 .vscode/*
@@ -53,22 +43,19 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
 
-# Miscellaneous
-frontend/.angular/cache
-.sass-cache/
-frontend/connect.lock
-frontend/coverage
-frontend/libpeerconnection.log
-testem.log
-frontend/typings
-__screenshots__/
+# JetBrains IDE
+.idea/
 
 # System files
 .DS_Store
 Thumbs.db
 
-frontend/public/*
-!frontend/public/favicon.ico
-!frontend/public/locale
+# ============================
+# Public assets handling
+# ============================
+
+# 忽略 public 下的大部分资源，但保留 favicon.ico 和 locale
+/frontend/public/*
+!/frontend/public/favicon.ico
+!/frontend/public/locale/

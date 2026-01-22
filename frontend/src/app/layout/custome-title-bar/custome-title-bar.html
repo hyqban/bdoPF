@@ -1,0 +1,83 @@
+<header class="titleBar">
+    <!-- Sidebar Component (remains strictly functional) -->
+    <app-sidebar
+        id="sidebar"
+        [class.open]="isSidebarVisible"
+        (mouseenter)="showSidebar()"
+        (mouseleave)="hideSidebar()"
+    ></app-sidebar>
+
+    <div class="left-section">
+        <button
+            mat-icon-button
+            class="icon-button menu-btn"
+            (mouseenter)="showSidebar()"
+            (mouseleave)="hideSidebar()"
+        >
+            <mat-icon fontIcon="menu"></mat-icon>
+        </button>
+        <!-- App Name/Icon placeholder can go here -->
+    </div>
+
+    <div class="center-section search-container" style="widows: 1">
+        @if (currentUrl() === "/home") {
+        <div class="search-box">
+            <mat-icon fontIcon="search" class="search-icon"></mat-icon>
+            <input
+                type="text"
+                [formControl]="searchControl"
+                (focus)="showAuto()"
+                placeholder="Search..."
+            />
+
+            @if (this.search.searchResults().length > 0) {
+            <mat-card appearance="outlined" class="search-results" [class.hide]="isResultVisible()">
+                @for (el of this.itemSearchResults(); track el.id) {
+                <div class="result-item" (click)="searchItemById(el)">
+                    <img
+                        [src]="this.search.imgPathJoin(this.search.imgPath['png'], el.icon)"
+                        alt=""
+                    />
+                    <span>{{ el.name }}</span>
+                </div>
+                }
+            </mat-card>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="right-section window-controls">
+        <button class="icon-button" (click)="enterWidgetMode()" title="Widget Mode">
+            <mat-icon fontIcon="widgets"></mat-icon>
+        </button>
+        <button
+            class="icon-button"
+            [class.active]="this.isOnTop()"
+            (click)="OnTop()"
+            title="Always on Top"
+        >
+            <mat-icon fontIcon="push_pin"></mat-icon>
+        </button>
+        <!-- <div class="divider"></div> -->
+        <button class="icon-button control-btn minimize" (click)="windowMinimise()">
+            <mat-icon fontIcon="remove"></mat-icon>
+        </button>
+
+        @if (!isFullscreen()) {
+        <button class="icon-button control-btn" (click)="windowFullscreen()">
+            <mat-icon fontIcon="crop_square"></mat-icon>
+            <!-- modernized icon -->
+        </button>
+        } @else {
+        <button class="icon-button control-btn" (click)="windowUnfullscreen()">
+            <mat-icon fontIcon="filter_none"></mat-icon>
+            <!-- modernized icon -->
+        </button>
+        }
+
+        <button class="icon-button control-btn close" (click)="windowClose()">
+            <mat-icon fontIcon="close"></mat-icon>
+        </button>
+    </div>
+</header>

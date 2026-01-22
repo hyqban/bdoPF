@@ -22,8 +22,16 @@ export function WindowMinimise() {
   return window['go']['service']['Window']['WindowMinimise']();
 }
 
+export function WindowResolution() {
+  return window['go']['service']['Window']['WindowResolution']();
+}
+
 export function WindowSetAlwaysOnTop(arg1) {
   return window['go']['service']['Window']['WindowSetAlwaysOnTop'](arg1);
+}
+
+export function WindowSetMinSize(arg1, arg2) {
+  return window['go']['service']['Window']['WindowSetMinSize'](arg1, arg2);
 }
 
 export function WindowSetSize(arg1, arg2) {

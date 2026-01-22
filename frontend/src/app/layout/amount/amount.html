@@ -1,0 +1,6 @@
+<div style="color: green">x {{ itemCount }}</div>
+@if(breadCrumbLength >= 3){
+<div style="color: blue">x {{ search.calculateDeltaAmount(itemCount) }}</div>
+} @if(breadCrumbLength >=2 ){
+<div style="color: red">x {{ search.totalAmout(itemCount) }}</div>
+}

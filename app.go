@@ -2,25 +2,23 @@ package main
 
 import (
 	"context"
-	"os"
-	"path/filepath"
 
-	// service "bdoPF/internal/service"
+	service "bdoPF/internal/service"
 
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/pkg/browser"
 )
 
 // App struct
 type App struct {
-	ctx        context.Context
-	// window     *service.Window
-	rootPath   string
-	assetsPath string
+	ctx context.Context
+	DI  *service.DIContainer
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(di *service.DIContainer) *App {
+	return &App{
+		DI: di,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -28,32 +26,21 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
-	a.AppPath()
-	// window := service.NewWindow(a)
+	a.DI.SetAppCtx(&a.ctx)
+	a.DI.SetAssetsPath()
 
-	// a.window = window
+	httpserver := service.NewHttpServer(a.DI)
+	a.DI.Register("httpServer", httpserver)
+	addr := httpserver.Start()
+	a.DI.SetAddr(addr)
+
+	cfInterface, _ := a.DI.Resolve("config")
+
+	cfg := cfInterface.(*service.Config)
+
+	cfg.StartupPrepare(a.DI.ResourcePath.AssetsPath)
 }
 
-func (a *App) GetAppCtx() context.Context {
-	return a.ctx
-}
-
-func (a *App) AppPath() {
-	assets_path := map[string]string{"dev": "frontend/public", "production": "public"}
-
-	// dev & production
-	env := runtime.Environment(a.ctx).BuildType
-
-	// bdoPF/build/bin
-	exePath, _ := os.Executable()
-
-	if env == "dev" {
-		exePath = filepath.Dir(exePath)
-		exePath = filepath.Dir(exePath)
-	}
-
-	appDir := filepath.Dir(exePath)
-
-	a.rootPath = appDir
-	a.assetsPath = filepath.Join(appDir, assets_path[env])
+func (a *App) OpenWebsite(url string) {
+	_ = browser.OpenURL(url)
 }

@@ -1,0 +1,310 @@
+@if (this.search.currentItem().itemKey) {
+<mat-card appearance="outlined" class="mat-card">
+    <div>
+        <div class="header">
+            <div mat-card-avatar class="avatar">
+                <img
+                    [src]="
+                        this.search.imgPathJoin(
+                            this.search.imgPath['png'],
+                            this.search.currentItem().itemIcon
+                        )
+                    "
+                    alt=""
+                />
+            </div>
+            <div class="title">
+                <div>{{ this.search.currentItem().itemName }}</div>
+                <div>{{ this.search.currentItem().itemKey }}</div>
+            </div>
+        </div>
+        <mat-card-content class="desc">
+            <div>
+                {{ this.search.currentItem().itemDesc }}
+            </div>
+        </mat-card-content>
+        <hr class="hr" />
+
+        <mat-tab-group class="mat-tab-group">
+            @if (search.currentItem().fishing) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'fishing') }}">
+                <div class="mat-tab">
+                    <div class="tab1">
+                        <div class="item-1">
+                            <div class="item-name">
+                                {{ this.i18n.getDinamicString('apporach', 'fishing') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+            }
+            <!-- shop -->
+            @if (search.currentItem().shop) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'shop') }}">
+                <div class="mat-tab">
+                    <div class="tab1">
+                        @for (item of search.currentItem().shop; track $index) {
+                        <div class="item-1">
+                            <div class="item-name">{{ item }}</div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </mat-tab>
+            }
+            <!-- node -->
+            @if (search.currentItem().node) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'node') }}">
+                <div class="mat-tab">
+                    <div class="tab1">
+                        @for (item of search.currentItem().node; track $index) {
+                        <div class="item-1">
+                            <div class="item-name">{{ item }}</div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </mat-tab>
+            }
+            <!-- houseCraft -->
+            @if (search.currentItem().house) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'house') }}">
+                <div class="mat-tab">
+                    @for (el of search.currentItem().house; track $index) {
+                    <div class="tab1">
+                        <div class="action">
+                            {{ i18n.t('craft.recipe') }}
+                            {{ $index + 1 }} -
+                            {{ i18n.getDinamicString('workshop', el.type) }}
+                        </div>
+                        @for (item of el.item; track item.id) {
+                        <div class="item-3" (click)="search.nextQuery(item)">
+                            <div class="count">
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
+                                <div style="color: blue">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div> -->
+                            </div>
+                            <img
+                                class="icon"
+                                [src]="
+                                    this.search.imgPathJoin(this.search.imgPath['png'], item.icon)
+                                "
+                                alt=""
+                            />
+                            <div class="item-name">
+                                {{ item.name }}
+                                @if(item.desc){
+                                <div class="item-desc">{{ item.desc }}</div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </mat-tab>
+            }
+            <!-- gathering -->
+            @if (search.currentItem().gathering) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'gathering') }}">
+                <div class="mat-tab">
+                    <div class="tab1">
+                        @for (item of search.currentItem().gathering; track $index) {
+                        <div class="item-1">
+                            <div class="item-name">{{ item }}</div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </mat-tab>
+            }
+            <!-- cooking -->
+            @if (search.currentItem().cooking) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'cooking') }}">
+                <div class="mat-tab">
+                    @for (el of search.currentItem().cooking; track $index) {
+                    <div class="tab1">
+                        <div class="action">{{ i18n.t('craft.recipe') }} {{ $index + 1 }}</div>
+                        @for (item of el; track item.id) {
+                        <div class="item-3" (click)="search.nextQuery(item)">
+                            <div class="count">
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
+                                <div style="color: blue">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div> -->
+                            </div>
+                            <img
+                                class="icon"
+                                [src]="
+                                    this.search.imgPathJoin(this.search.imgPath['png'], item.icon)
+                                "
+                                alt=""
+                            />
+                            <div class="item-name">
+                                {{ item.name }}
+                                @if(item.desc){
+                                <div class="item-desc">{{ item.desc }}</div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </mat-tab>
+            }
+            <!-- alchemy -->
+            @if (search.currentItem().alchemy) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'alchemy') }}">
+                <div class="mat-tab">
+                    @for (el of search.currentItem().alchemy; track $index) {
+                    <!-- <div>{{ el }}</div> -->
+                    <div class="tab1">
+                        <div class="action">{{ i18n.t('craft.recipe') }} {{ $index + 1 }}</div>
+                        @for (item of el; track item.id) {
+                        <div class="item-3" (click)="search.nextQuery(item)">
+                            <div class="count">
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
+                                <div style="color: blue">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div> -->
+                            </div>
+                            <img
+                                class="icon"
+                                [src]="
+                                    this.search.imgPathJoin(this.search.imgPath['png'], item.icon)
+                                "
+                                alt=""
+                            />
+                            <div class="item-name">
+                                {{ item.name }}
+                                @if(item.desc){
+                                <div class="item-desc">{{ item.desc }}</div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </mat-tab>
+            }
+            <!-- processing -->
+            @if (search.currentItem().processing) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'processing') }}">
+                <div class="mat-tab">
+                    @for (el of search.currentItem().processing; track $index) {
+                    <div class="tab1">
+                        <div class="action">
+                            {{ i18n.t('craft.recipe') }}
+                            {{ $index + 1 }} -
+                            {{ i18n.getDinamicString('manufacture', el.action) }}
+                        </div>
+                        @for (item of el.item; track item.id) {
+                        <div class="item-3" (click)="search.nextQuery(item)">
+                            <div class="count">
+                                <app-amount
+                                    [breadCrumbLength]="search.breadCrumbs().length"
+                                    [itemCount]="item.count ?? '1'"
+                                ></app-amount>
+                                <!-- <div style="color: green">x {{ item.count }}</div>
+                                @if (this.search.breadCrumbs().length === 1) {
+                                <div style="color: blue">x {{ item.count }}</div>
+                                } @if (this.search.breadCrumbs().length > 1) {
+                                <div style="color: blue">
+                                    x {{ search.calculateDeltaAmount(item.count ?? '1') }}
+                                </div>
+                                }
+                                <div style="color: red">
+                                    x
+                                    {{ search.totalAmout(item.count ?? '1') }}
+                                </div> -->
+                            </div>
+                            <img
+                                class="icon"
+                                [src]="
+                                    this.search.imgPathJoin(this.search.imgPath['png'], item.icon)
+                                "
+                                alt=""
+                            />
+                            <div class="item-name">
+                                {{ item.name }}
+                                @if(item.desc){
+                                <div class="item-desc">{{ item.desc }}</div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </mat-tab>
+            }
+            <!-- makelist -->
+            @if (search.currentItem().makelist) {
+            <mat-tab label="{{ this.i18n.getDinamicString('apporach', 'makelist') }}">
+                <div class="mat-tab">
+                    <div class="tab1">
+                        @for (item of search.currentItem().makelist; track $index) {
+                        <div class="item-2">
+                            <img
+                                class="icon"
+                                [src]="
+                                    this.search.imgPathJoin(this.search.imgPath['png'], item.icon)
+                                "
+                                alt=""
+                            />
+                            <div class="item-name">
+                                {{ item.name }}
+                                @if(item.desc){
+                                <div class="item-desc-usage">{{ item.desc }}</div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </mat-tab>
+            }
+        </mat-tab-group>
+    </div>
+</mat-card>
+}

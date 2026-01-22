@@ -1,6 +1,8 @@
 package interfaces
 
-import "context"
+import (
+	"context"
+)
 
 type ContextProvider interface {
 	GetAppCtx() context.Context

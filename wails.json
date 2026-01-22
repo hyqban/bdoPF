@@ -6,8 +6,9 @@
     "frontend:install": "npm install",
     "frontend:dev:watcher": "npx ng serve",
     "frontend:dev:serverUrl": "http://localhost:4200",
+    "frontend:dev:tidy": false,
     "author": {
         "name": "lucas",
-        "email": "onlyuzard@gmail.com"
+        "email": ""
     }
 }

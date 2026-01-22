@@ -4,37 +4,15 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@use './app/themes/themes.scss' as theme-manager;
 
-html {
-    @include mat.theme(
-        (
-            color: (
-                primary: mat.$azure-palette,
-                tertiary: mat.$blue-palette,
-            ),
-            typography: Roboto,
-            density: 0,
-        )
-    );
-}
-
-body {
-    // Default the application to a light color theme. This can be changed to
-    // `dark` to enable the dark color theme, or to `light dark` to defer to the
-    // user's system settings.
-    color-scheme: light;
-
-    // Set a default background, font and text colors for the application using
-    // Angular Material's system-level CSS variables. Learn more about these
-    // variables at https://material.angular.dev/guide/system-variables
-    background-color: var(--mat-sys-surface);
-    color: var(--mat-sys-on-surface);
-    font: var(--mat-sys-body-medium);
-
-    // Reset the user agent margin.
-    margin: 0;
-}
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --bg-color: #f3f4f6;
+    --border: #e5e7eb;
+    --border-hover: #3b82f6;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -42,12 +20,20 @@ body {
 }
 html,
 body {
+    height: 100%;
+}
+body {
     margin: 0;
-    padding: 0;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    // background-color: var(--mat-sys-surface);
+    background-color: var(--bg-color);
+    color: var(--mat-sys-on-surface);
+    margin: 0;
 }
 
-// Custome scss
+// $bg-color: #f3f4f6;
 
+// Custome scss
 %flex-row {
     display: flex;
     flex-direction: row;
@@ -69,6 +55,13 @@ body {
     align-items: center;
 }
 
+@mixin div-bg($bgc: var(--bg-color), $pad: 1rem, $bd: var(--border)) {
+    background-color: $bgc;
+    padding: $pad;
+    // border: var(--boder) 1px solid;
+    border: $bd 1px solid;
+}
+
 @mixin modern_div(
     $border: (
         rgba(0, 0, 0, 0.1) 2px solid,
@@ -87,12 +80,7 @@ body {
     padding: $padding;
 }
 
-@mixin grid-columns(
-    $gap: 0.3rem,
-    $col: repeat(auto, 1fr),
-    $justify-items: center,
-    $align-items: center
-) {
+@mixin grid-columns($gap: 0.3rem, $col: auto 1fr, $justify-items: center, $align-items: center) {
     display: grid;
     grid-template-columns: $col;
     gap: $gap;
@@ -100,11 +88,10 @@ body {
     align-content: $align-items;
 }
 
-html,
-body {
-    height: 100%;
-}
-body {
-    margin: 0;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+@mixin grid-rows($gap: 0.3rem, $row: auto 1fr, $justify-items: center, $align-items: center) {
+    display: grid;
+    grid-template-rows: $row;
+    gap: $gap;
+    // justify-content: $justify-items;
+    align-content: $align-items;
 }

@@ -1,0 +1,37 @@
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <!-- Optional: Add Logo or Title here if needed later -->
+    </div>
+
+    <a
+        class="nav-item"
+        routerLink="/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+    >
+        <mat-icon fontIcon="handyman"></mat-icon>
+        <span class="label">{{ i18n.t('nav.crafting') }}</span>
+    </a>
+
+    <a class="nav-item" routerLink="/home/boss" routerLinkActive="active">
+        <mat-icon fontIcon="calendar_month"></mat-icon>
+        <span class="label">{{ i18n.t('nav.bossSchedule') }}</span>
+    </a>
+
+    <div class="nav-item" routerLinkActive="active">
+        <mat-icon fontIcon="edit_note"></mat-icon>
+        <span class="label">{{ i18n.t('nav.quicklyNotes') }}</span>
+    </div>
+
+    <div class="nav-item" routerLinkActive="active">
+        <mat-icon fontIcon="language"></mat-icon>
+        <span class="label">{{ i18n.t('nav.sites') }}</span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <a class="nav-item" routerLink="/home/settings" routerLinkActive="active">
+        <mat-icon fontIcon="settings"></mat-icon>
+        <span class="label">{{ i18n.t('nav.settings') }}</span>
+    </a>
+</nav>

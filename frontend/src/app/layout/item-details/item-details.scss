@@ -1,0 +1,198 @@
+@use '../../../styles.scss' as *;
+.mat-card {
+    max-width: 80%;
+    min-width: 400px;
+    padding: 2em 2.5rem;
+    margin: 1em auto;
+    background-color: var(--mat-sys-on-secondary);
+
+    .header {
+        @include grid-columns($gap: 1em);
+        // display: grid;
+        // grid-template-columns: auto 1fr;
+        // border: blue 1px solid;
+
+        .avatar {
+            border-radius: 0;
+            width: auto;
+            height: auto;
+            // border: red 1px solid;
+
+            img {
+                width: 55px;
+                height: 55px;
+                border: var(--mat-sys-outline-variant) 1px solid;
+            }
+        }
+
+        .title {
+            width: fit-content;
+            // border: red 1px solid;
+
+            & > :first-child {
+                font-size: 2rem;
+            }
+        }
+    }
+    .desc {
+        @include div-bg($pad: 1.5rem);
+        margin-top: 0.8rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        border-radius: 0.5rem;
+    }
+
+    .hr {
+        margin: 2em 0 1em 0;
+    }
+
+    .mat-tab-group {
+        .mat-tab {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1em 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            // background-color: aqua;
+
+            .tab1 {
+                @extend %flex-column;
+                // @include div-bg($pad: 1.5rem);
+                width: 20rem;
+                max-width: 20rem;
+                background-color: var(--bg-color);
+                padding: 1em;
+                margin: 0 auto;
+                gap: 0.7em;
+                border-radius: 1rem;
+                // border: red 1px solid;
+
+                .action {
+                    margin: 0 0.4em;
+                    font-weight: 600;
+                    background: linear-gradient(to right, red, blue);
+                    color: transparent;
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    // background: linear-gradient(to right, skyblue, blue);
+                }
+
+                .item-3:hover {
+                    border: var(--border-hover) 1px solid;
+                    transform: scale(0.98);
+                }
+                .item-2:hover {
+                    border: var(--border-hover) 1px solid;
+                    transform: scale(0.98);
+                }
+                .item-1:hover {
+                    border: var(--border-hover) 1px solid;
+                    transform: scale(0.98);
+                }
+
+                .item-3 {
+                    @include grid-columns($col: 3rem 35px 1fr);
+                    align-items: center;
+                    background-color: var(--mat-sys-on-secondary);
+                    border: var(--border) 1px solid;
+                    border-radius: 0.5rem;
+                    padding: 0.6em 0.8em;
+                    // margin: 0 1em;
+                }
+                .item-2 {
+                    @include grid-columns($col: 35px 1fr);
+                    align-items: center;
+                    background-color: var(--mat-sys-on-secondary);
+                    border: var(--border) 1px solid;
+                    border-radius: 0.5rem;
+                    padding: 0.6em 0.8em;
+                }
+                .item-1 {
+                    @include grid-columns($col: 1fr);
+                    align-items: center;
+                    background-color: var(--mat-sys-on-secondary);
+                    border: var(--border) 1px solid;
+                    border-radius: 0.5rem;
+                    padding: 0.6em 0.8em;
+                }
+
+                .count {
+                    width: 3rem;
+                    font-weight: bold;
+                    font-size: small;
+                }
+
+                .icon {
+                    width: 35px;
+                    height: 35px;
+                }
+
+                .item-name {
+                    width: fit-content;
+                    margin-left: 0.5rem;
+                    // width: fit-content;
+                }
+
+                .item-desc-usage,
+                .item-desc {
+                    display: none;
+                    background-color: var(--mat-sys-secondary-container);
+                    border: var(--border) 1px solid;
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                    font-size: 0.9rem;
+                }
+
+                .item-name:hover .item-desc-usage,
+                .item-name:hover .item-desc {
+                    overflow-y: auto;
+                    scrollbar-width: thin;
+                    position: absolute;
+                    display: block;
+                    transform: translateX(-20%);
+                    transform: translateY(1px);
+                    padding: 0.8em;
+                    max-height: 10em;
+                }
+
+                &:last-child {
+                    // makelist
+                    .item-2:nth-last-child(-n + 2) {
+                        .item-name:hover .item-desc-usage {
+                            max-height: 5rem;
+                            transform: translateY(-80%);
+                        }
+                    }
+
+                    // makelist
+                    .item-2:first-child {
+                        .item-name:hover .item-desc-usage {
+                            max-height: 3rem;
+                            transform: translateY(-50%);
+                        }
+                    }
+
+                    .item-3:first-child {
+                        .item-name:hover .item-desc {
+                            transform: translateY(1px);
+                        }
+                    }
+
+                    .item-3:nth-last-child(-n + 2) {
+                        .item-name:hover .item-desc {
+                            transform: translateY(-110%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// @media (min-width: 550px) {
+//     .mat-card {
+//         max-width: 450px;
+//     }
+// }
