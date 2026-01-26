@@ -37,8 +37,6 @@ func (updater *Updater) checkSystemType() {
 		updater.systemType = "amd64"
 	case "arm64":
 		updater.systemType = "arm64"
-	case "386":
-		updater.systemType = "386"
 	default:
 		updater.systemType = "Unknown"
 	}
@@ -56,7 +54,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	// }
 	respData := map[string]any{
 		"code":    200,
-		"msg":     "",
+		"msg":     "This version is up to date",
 		"url":     "",
 		"version": "",
 	}
@@ -80,6 +78,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	client := &http.Client{}
 
 	resp, err := client.Do(req)
+
 	if err != nil {
 		respData["code"] = "100"
 		respData["msg"] = "HTTP request failed"
@@ -88,6 +87,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
+
 	if err != nil {
 		respData["code"] = "100"
 		respData["msg"] = "Failed to read response body"
@@ -97,6 +97,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	var res map[string]any
 
 	err = json.Unmarshal(body, &res)
+
 	if err != nil {
 		respData["code"] = "100"
 		respData["msg"] = "Failed to unmarshal response body"
@@ -110,11 +111,19 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 	}
 
 	status, ok := res["status"]
+	fmt.Println("ok: ", ok)
+
 	// Can be obtain release latest
 	if !ok {
 		updater.parseResponse(res)
 
-		if updater.appVersion != updater.latestVersion && updater.downloadUrl != "" {
+		fmt.Println("===============")
+		if updater.appVersion == updater.latestVersion {
+			return respData
+		}
+
+		if updater.downloadUrl != "" {
+			fmt.Println("-----------")
 			configInterface, _ := updater.Di.Resolve("config")
 
 			cf := configInterface.(*Config)
@@ -128,6 +137,7 @@ func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
 			respData["msg"] = "New version available"
 			respData["url"] = updater.downloadUrl
 			respData["version"] = updater.latestVersion
+			return respData
 		}
 	}
 
@@ -145,7 +155,9 @@ func (updater *Updater) DownloadUpdates() map[string]any {
 		"msg":  "",
 	}
 
-	filePath := filepath.Join("tmp", "bdoPF.exe")
+	updater.checkSystemType()
+	updater.CurrentExe = "bdoPF_" + updater.systemType + ".exe"
+	filePath := filepath.Join("tmp", updater.CurrentExe)
 
 	if updater.systemType == "Unknown" {
 		respData["code"] = "100"
@@ -232,6 +244,7 @@ func (updater *Updater) parseResponse(resp map[string]any) {
 	tag_name, ok := resp["tag_name"].(string)
 	if !ok {
 		fmt.Println("Failed to parse tag_name")
+		return
 	}
 
 	tagNameSlice := strings.Split(tag_name[1:], ".")
@@ -240,26 +253,32 @@ func (updater *Updater) parseResponse(resp map[string]any) {
 	has := HasLatestVersion(tagNameSlice, appVersionSlice)
 	if !has {
 		fmt.Println("This version is up to date")
+		return
 	}
 
 	assets, ok := resp["assets"].([]any)
 
 	if !ok {
 		fmt.Println("Failed to parse response assets")
+		return
 	}
 
 	for _, v := range assets {
 		body := v.(map[string]any)
-		// bdoPF_amd64_1.0.rar
+		// bdoPF_amd64.rar
 		infoSlice := strings.Split(body["name"].(string), "_")
+		// [bdoPF amd64.exe]
 
-		if infoSlice[1] == updater.systemType {
+		if strings.Split(infoSlice[1], ".")[0] == updater.systemType {
+
 			downloadUrl := body["browser_download_url"].(string)
 
-			if downloadUrl != "" {
-				updater.downloadUrl = downloadUrl
-				updater.latestVersion = tag_name[1:]
-			}
+			updater.downloadUrl = downloadUrl
+			updater.latestVersion = tag_name[1:]
+			break
+			// updater.CurrentExe = body["name"].(string)
+			// if downloadUrl != "" {
+			// }
 		}
 	}
 }
@@ -300,11 +319,18 @@ func (updater *Updater) StartUpdate() {
 		return
 	}
 
-	oldExe := filepath.Join(excutePath, "bdoPF.exe")
+	updater.checkSystemType()
+
+	if updater.systemType != "Unknown" {
+	}
+
+	updater.CurrentExe = "bdoPF_" + updater.systemType + ".exe"
+
+	oldExe := filepath.Join(excutePath, updater.CurrentExe)
 
 	// 2. Path to the downloaded new EXE (assumed in tmp directory)
 	// Use filepath.Abs if you need absolute path resolution
-	newExe := filepath.Join(excutePath, "tmp", "bdoPF.exe")
+	newExe := filepath.Join(excutePath, "tmp", updater.CurrentExe)
 
 	// 3. Build the CMD batch script to replace the running exe:
 	// - loop until the old EXE is deletable (ensures main process exited)

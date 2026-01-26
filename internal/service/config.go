@@ -8,7 +8,8 @@ import (
 )
 
 var CONFIG_PATH = "config.json"
-var DEFAULT_VERSION = "1.0.0"
+var DEFAULT_VERSION = "1.0.1"
+// var DEFAULT_VERSION = "0.0.9"
 
 type LatestApp struct {
 	Version     string `json:"version"`

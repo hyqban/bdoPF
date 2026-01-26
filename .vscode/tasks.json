@@ -14,7 +14,7 @@
         {
             "label": "wails build",
             "type": "shell",
-            "command": "wails build",
+            "command": "wails build -platform windows/amd64 -o bdoPF_amd64.exe",
             "problemMatcher": [],
             "icon": {
                 "id": "tools",
