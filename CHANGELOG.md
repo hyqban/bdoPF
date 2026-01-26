@@ -1,6 +1,9 @@
 # 📜 Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.1] - 2026-01-27
+- Improved the app update process.
+
 ## [v1.0.0] - 2026-01-23
 ### 🎉 First push
 - Added item query functionality with automatic quantity calculation.
