@@ -36,10 +36,9 @@ export class ConfigService {
     loadConfig() {
         ReadConfig().then((res: Config) => {
             localStorage.setItem('locale', res.locale);
-            this.config.update((el) => ({
-                ...el,
+            this.config.update(() => ({
+                ...res,
             }));
-            // console.log(res);
         });
     }
 
