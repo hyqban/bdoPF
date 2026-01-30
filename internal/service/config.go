@@ -1,41 +1,35 @@
 package service
 
 import (
+	"bdoPF/internal/model"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 )
 
 var CONFIG_PATH = "config.json"
-var DEFAULT_VERSION = "1.0.1"
+var DEFAULT_VERSION = "1.0.0"
+
 // var DEFAULT_VERSION = "0.0.9"
 
-type LatestApp struct {
-	Version     string `json:"version"`
-	Download    bool   `json:"download"`
-	DownloadUrl string `json:"downloadUrl"`
-}
-
 type Config struct {
-	DI         *DIContainer `json:"-"`
-	AppName    string       `json:"appName"`
-	Version    string       `json:"version"`
-	Window     Window       `json:"window"`
-	Theme      string       `json:"theme"`
-	Locale     string       `json:"locale"`
-	NewVersion LatestApp    `json:"newVersion"`
+	DI         *DIContainer    `json:"-"`
+	AppName    string          `json:"appName"`
+	Version    string          `json:"version"`
+	Window     Window          `json:"window"`
+	Theme      string          `json:"theme"`
+	Locale     string          `json:"locale"`
+	NewVersion model.LatestApp `json:"newVersion"`
 }
 
 func NewConfig(di *DIContainer) *Config {
+	cf := loadAndValidateConfig(di)
 
-	config, err := loadAndValidateConfig(CONFIG_PATH)
-
-	if err != nil {
-		panic(fmt.Sprintf("Fatal: failed to load configuration: %v", err))
+	if cf == nil {
+		panic(fmt.Sprintln("Fatal: failed to load configuration."))
 	}
-	config.DI = di
-	return config
+
+	return cf
 }
 
 func (cf *Config) ReadConfig() Config {
@@ -48,15 +42,15 @@ func getDefaultConfig() *Config {
 		Version: DEFAULT_VERSION,
 		Theme:   "lightskyblue",
 		Locale:  "en",
-		NewVersion: LatestApp{
+		NewVersion: model.LatestApp{
 			Version:     "",
 			Download:    false,
 			DownloadUrl: "",
 		},
 		Window: Window{
 			OnTop:               false,
-			Width:               600,
-			Height:              768,
+			Width:               420,
+			Height:              668,
 			MaxWidth:            1920,
 			MaxHeight:           1080,
 			MinWidth:            420,
@@ -71,16 +65,14 @@ func getDefaultConfig() *Config {
 	}
 }
 
-func enforceSystemFields(cfg *Config) {
-	has := HasLatestVersion(strings.Split(cfg.NewVersion.Version, "."), strings.Split(DEFAULT_VERSION, "."))
-
-	if !has {
-		cfg.NewVersion.DownloadUrl = ""
-		cfg.NewVersion.Version = ""
-		cfg.NewVersion.Download = false
+func (cf *Config) enforceSystemFields() {
+	if cf.Version == cf.NewVersion.Version {
+		cf.NewVersion.DownloadUrl = ""
+		cf.NewVersion.Version = ""
+		cf.NewVersion.Download = false
 	}
 
-	cfg.Version = DEFAULT_VERSION
+	cf.Version = DEFAULT_VERSION
 }
 
 func writeConfigToFile(cfg *Config, filePath string) error {
@@ -115,55 +107,53 @@ func (cfg *Config) ReceiveConfigUpdate(raw map[string]any) {
 	writeConfigToFile(&config, CONFIG_PATH)
 }
 
-func loadAndValidateConfig(filePath string) (*Config, error) {
-	cfg := getDefaultConfig()
+func loadAndValidateConfig(di *DIContainer) *Config {
+	cf := getDefaultConfig()
+	cf.DI = di
 
-	data, err := os.ReadFile(filePath)
+	content, err := os.ReadFile(CONFIG_PATH)
 
 	if os.IsNotExist(err) {
-		fmt.Printf("Config file does not exist, creating default: %s\n", filePath)
+		fmt.Printf("Config file does not exist, creating default: %s\n", CONFIG_PATH)
 
-		if err := writeConfigToFile(cfg, filePath); err != nil {
-			return nil, fmt.Errorf("failed to create default config file: %w", err)
+		if err := cf.SaveConfig(); err != nil {
+			return nil
 		}
-		return cfg, nil
+		return cf
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to read config file: %w", err)
+		return nil
 	}
 
-	err = json.Unmarshal(data, cfg)
+	err = json.Unmarshal(content, cf)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse config JSON or invalid format: %w", err)
+		return nil
 	}
 
-	enforceSystemFields(cfg)
-
-	err = writeConfigToFile(cfg, filePath)
+	cf.enforceSystemFields()
+	err = cf.SaveConfig()
 	if err != nil {
 		fmt.Printf("Warning: failed to update config file with missing fields: %v\n", err)
 	}
 
-	return cfg, nil
+	return cf
 }
 
-func (cfg *Config) SaveConfig() bool {
+func (cf *Config) SaveConfig() error {
+	fh := Resolve[*FileHandler](cf.DI, "fileHandler")
 
-	fh := cfg.DI.GetFileHandler()
-
-	if fh == nil {
-		fmt.Println("Failed to Obtain fileHandler.")
-		return false
-	}
-
-	err := writeConfigToFile(cfg, CONFIG_PATH)
+	content, err := json.MarshalIndent(cf, "", "	")
 
 	if err != nil {
-		return false
+		return fmt.Errorf("failed to marshal config: %w", err)
 	}
 
-	return true
+	fpath := fh.PathJoin(CONFIG_PATH)
+	if err := os.WriteFile(fpath, content, 0644); err != nil {
+		return fmt.Errorf("failed to write config file to %s: %w", fpath, err)
+	}
+	return nil
 }
 
 func (cfg *Config) StartupPrepare(envPath string) {

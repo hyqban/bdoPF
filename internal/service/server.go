@@ -1,7 +1,9 @@
 package service
 
 import (
+	"bdoPF/internal/model"
 	"encoding/json"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -95,4 +97,90 @@ func (hs *HttpServer) corsMiddleware(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func NewRequest(resp *model.ResponseMsg, method string, url string, header map[string]string) (map[string]any, bool) {
+	var responseBody map[string]any
+
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "Failed to create HTTP request"
+		return responseBody, false
+	}
+
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+
+	client := &http.Client{}
+
+	response, err := client.Do(req)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "HTTP request failed"
+		return responseBody, false
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "Failed to read response body"
+		return responseBody, false
+	}
+
+	err = json.Unmarshal(body, &responseBody)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "Failed to unmarshal response body"
+		return responseBody, false
+	}
+
+	status, ok := responseBody["status"]
+
+	if ok || status == "404" {
+		resp.Code = "100"
+		resp.Msg = "No response data; please try checking for updates again"
+		return responseBody, false
+	}
+
+	resp.Code = "200"
+
+	return responseBody, true
+}
+
+func NewRequestForDownload(resp *model.ResponseMsg, method string, url string, header map[string]string) ([]byte, bool) {
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "Failed to create HTTP request"
+		return nil, false
+	}
+
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+
+	client := &http.Client{}
+
+	response, err := client.Do(req)
+
+	if err != nil {
+		resp.Code = "100"
+		resp.Msg = "HTTP request failed"
+		return nil, false
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, false
+	}
+	return body, true
 }

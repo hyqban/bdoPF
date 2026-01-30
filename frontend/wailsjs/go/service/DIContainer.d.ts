@@ -22,8 +22,6 @@ export function ListIndependencies():Promise<Record<string, any>>;
 
 export function Register(arg1:string,arg2:any):Promise<void>;
 
-export function Resolve(arg1:string):Promise<any|boolean>;
-
 export function SetAddr(arg1:string):Promise<void>;
 
 export function SetAppCtx(arg1:context.Context):Promise<void>;

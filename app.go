@@ -34,11 +34,9 @@ func (a *App) startup(ctx context.Context) {
 	addr := httpserver.Start()
 	a.DI.SetAddr(addr)
 
-	cfInterface, _ := a.DI.Resolve("config")
+	cf := service.Resolve[*service.Config](a.DI, "config")
 
-	cfg := cfInterface.(*service.Config)
-
-	cfg.StartupPrepare(a.DI.ResourcePath.AssetsPath)
+	cf.StartupPrepare(a.DI.ResourcePath.AssetsPath)
 }
 
 func (a *App) OpenWebsite(url string) {

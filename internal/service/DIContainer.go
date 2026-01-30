@@ -15,25 +15,25 @@ type DIContainer struct {
 	Env            string
 	locale         string
 	ResourcePath   model.ResourcePath
-	Independencies map[string]interface{}
+	independencies map[string]interface{}
 }
 
 func NewDiContainer() *DIContainer {
-	return &DIContainer{Independencies: make(map[string]interface{})}
+	return &DIContainer{independencies: make(map[string]interface{})}
 }
 
 func (di *DIContainer) Register(name string, instance interface{}) {
-	di.Independencies[name] = instance
+	di.independencies[name] = instance
 }
 
-func (di *DIContainer) Resolve(name string) (ind interface{}, exist bool) {
-	instance, ok := di.Independencies[name]
+func Resolve[T any](di *DIContainer, name string) T {
+	instance, ok := di.independencies[name]
 
 	if !ok {
-		return nil, false
+		var zero T
+		return zero
 	}
-
-	return instance, true
+	return instance.(T)
 }
 
 func (di *DIContainer) SetLocale(locale string) {
@@ -74,7 +74,7 @@ func (di *DIContainer) GetImgPath() map[string]string {
 func (di *DIContainer) ListIndependencies() map[string]interface{} {
 	temp := make(map[string]interface{})
 
-	for k, v := range di.Independencies {
+	for k, v := range di.independencies {
 		temp[k] = v
 	}
 	return temp
@@ -120,23 +120,9 @@ func (di *DIContainer) SetAssetsPath() {
 }
 
 func (di *DIContainer) GetFileHandler() *FileHandler {
-	fhInterface, found := di.Resolve("fileHandler")
-
-	if !found {
-		return nil
-	}
-
-	fh := fhInterface.(*FileHandler)
-	return fh
+	return Resolve[*FileHandler](di, "fileHandler")
 }
 
 func (di *DIContainer) GetHttpServer() *HttpServer {
-	hsInterface, found := di.Resolve("httpServer")
-
-	if !found {
-		return nil
-	}
-
-	fh := hsInterface.(*HttpServer)
-	return fh
+	return Resolve[*HttpServer](di, "httpServer")
 }

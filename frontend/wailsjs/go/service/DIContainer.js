@@ -38,10 +38,6 @@ export function Register(arg1, arg2) {
   return window['go']['service']['DIContainer']['Register'](arg1, arg2);
 }
 
-export function Resolve(arg1) {
-  return window['go']['service']['DIContainer']['Resolve'](arg1);
-}
-
 export function SetAddr(arg1) {
   return window['go']['service']['DIContainer']['SetAddr'](arg1);
 }

@@ -6,6 +6,6 @@ export function ReadConfig():Promise<service.Config>;
 
 export function ReceiveConfigUpdate(arg1:Record<string, any>):Promise<void>;
 
-export function SaveConfig():Promise<boolean>;
+export function SaveConfig():Promise<void>;
 
 export function StartupPrepare(arg1:string):Promise<void>;

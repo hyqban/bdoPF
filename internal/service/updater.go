@@ -1,10 +1,10 @@
 package service
 
 import (
-	"encoding/json"
+	"bdoPF/internal/model"
+	"bytes"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,323 +15,185 @@ import (
 )
 
 type Updater struct {
-	Di            *DIContainer
+	DI            *DIContainer
 	systemType    string
 	appVersion    string
 	latestVersion string
 	downloadUrl   string
 	changeLog     string
 	CurrentExe    string
-	NewExe        string
+	newExe        string
 }
 
 func NewUpdater(di *DIContainer) *Updater {
-	return &Updater{
-		Di: di,
+	up := Updater{}
+	up.DI = di
+	up.checkSystemType()
+
+	return &up
+}
+
+func (up *Updater) checkSystemType() {
+	up.systemType = runtime.GOARCH
+}
+
+func (up *Updater) HasLatestVersion(newVersion, appVersion string) {
+	newv := strings.Split(newVersion, ".")
+	appv := strings.Split(appVersion, ".")
+
+	for i := 0; i < 3; i++ {
+		nv, _ := strconv.Atoi(newv[i])
+		av, _ := strconv.Atoi(appv[i])
+
+		if av > nv {
+			return
+		}
+
+		if nv > av {
+			up.latestVersion = newVersion
+			return
+		}
 	}
 }
 
-func (updater *Updater) checkSystemType() {
-	switch runtime.GOARCH {
-	case "amd64":
-		updater.systemType = "amd64"
-	case "arm64":
-		updater.systemType = "arm64"
-	default:
-		updater.systemType = "Unknown"
+func (up *Updater) parseResponse(body map[string]any, resp *model.ResponseMsg) {
+	tag_name, ok := body["tag_name"].(string)
+
+	if !ok {
+		return
+	}
+
+	up.HasLatestVersion(tag_name[1:], up.appVersion)
+
+	if up.latestVersion == "" {
+		resp.Code = "100"
+		resp.Msg = "This version is up to date."
+		return
+	}
+
+	assets, _ := body["assets"].([]any)
+
+	for _, v := range assets {
+		info := v.(map[string]any)
+		// [bdoPF amd64.ex]
+		exeSlice := strings.Split(info["name"].(string), "_")
+
+		// [amd64 exe]
+		if strings.Split(exeSlice[1], ".")[0] == up.systemType {
+			up.downloadUrl = info["browser_download_url"].(string)
+			break
+		}
 	}
 }
 
-func (updater *Updater) CheckForUpdates(appVersion string) map[string]any {
+func (up *Updater) AppCheckForUpdates() model.ResponseMsg {
 	// {
 	// 	"message":"Not Found",
 	// 	"documentation_url":"https://docs.github.com/rest/releases/releases#get-the-latest-release",
 	// 	"status":"404"
 	// }
-	// responseMsg := map[string]string{
-	// 	"code": "200",
-	// 	"msg":  "",
-	// }
-	respData := map[string]any{
-		"code":    200,
-		"msg":     "This version is up to date",
-		"url":     "",
-		"version": "",
-	}
-
-	updater.appVersion = appVersion
-	updater.checkSystemType()
-	// url := "https://api.github.com/repos/Hyqban/bdoPF/releases/latest"
 	url := "https://api.github.com/repos/hyqban/bdoPF/releases/latest"
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		respData["code"] = "100"
-		respData["msg"] = "Failed to create HTTP request"
-		return respData
+	header := map[string]string{
+		"X-GitHub-Api-Version": "2022-11-28",
+		"Accept":               "application/vnd.github+json",
 	}
+	var responseMsg model.ResponseMsg
+	responseBody, ok := NewRequest(&responseMsg, "GET", url, header)
 
-	req.Header.Set("Accept", "application/vnd.github+json")
-	req.Header.Set("User-Agent", "go-debug-client")
-	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-
-	if err != nil {
-		respData["code"] = "100"
-		respData["msg"] = "HTTP request failed"
-		return respData
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-
-	if err != nil {
-		respData["code"] = "100"
-		respData["msg"] = "Failed to read response body"
-		return respData
-	}
-
-	var res map[string]any
-
-	err = json.Unmarshal(body, &res)
-
-	if err != nil {
-		respData["code"] = "100"
-		respData["msg"] = "Failed to unmarshal response body"
-		return respData
-	}
-
-	if len(res) == 0 {
-		respData["code"] = "100"
-		respData["msg"] = "No response data; please try checking for updates again"
-		return respData
-	}
-
-	status, ok := res["status"]
-	fmt.Println("ok: ", ok)
-
-	// Can be obtain release latest
 	if !ok {
-		updater.parseResponse(res)
-
-		fmt.Println("===============")
-		if updater.appVersion == updater.latestVersion {
-			return respData
-		}
-
-		if updater.downloadUrl != "" {
-			fmt.Println("-----------")
-			configInterface, _ := updater.Di.Resolve("config")
-
-			cf := configInterface.(*Config)
-
-			cf.NewVersion.DownloadUrl = updater.downloadUrl
-			cf.NewVersion.Version = updater.latestVersion
-			fmt.Println("version: ", cf.NewVersion.Version)
-			_ = cf.SaveConfig()
-
-			respData["code"] = "200"
-			respData["msg"] = "New version available"
-			respData["url"] = updater.downloadUrl
-			respData["version"] = updater.latestVersion
-			return respData
-		}
+		return responseMsg
 	}
 
-	// Nothing
-	if status == "404" {
-		respData["code"] = "100"
-		respData["msg"] = "Repository has no releases"
+	up.parseResponse(responseBody, &responseMsg)
+
+	if up.downloadUrl != "" && up.latestVersion != "" {
+		cf := Resolve[*Config](up.DI, "config")
+		cf.NewVersion.Version = up.latestVersion
+		cf.NewVersion.DownloadUrl = up.downloadUrl
+
+		_ = cf.SaveConfig()
+
+		responseMsg.Code = "200"
+		responseMsg.Msg = "New version available."
+		responseMsg.Data = map[string]string{
+			"downloadUrl": cf.NewVersion.DownloadUrl,
+			"newVersion":  cf.NewVersion.Version,
+		}
 	}
-	return respData
+	return responseMsg
 }
 
-func (updater *Updater) DownloadUpdates() map[string]any {
-	respData := map[string]any{
-		"code": 200,
-		"msg":  "",
+func (up *Updater) DownloadUpdates() model.ResponseMsg {
+	var responseMsg model.ResponseMsg
+
+	cf := Resolve[*Config](up.DI, "config")
+	up.CurrentExe = cf.AppName + "_" + up.systemType + ".exe"
+	latestAppPath := filepath.Join("tmp", up.CurrentExe)
+
+	header := map[string]string{
+		"X-GitHub-Api-Version": "2022-11-28",
+		"Accept-Encoding":      "gzip, deflate",
+	}
+	bodyBytes, ok := NewRequestForDownload(&responseMsg, "GET", cf.NewVersion.DownloadUrl, header)
+
+	fmt.Println("ok: ", ok)
+	if !ok {
+		return responseMsg
 	}
 
-	updater.checkSystemType()
-	updater.CurrentExe = "bdoPF_" + updater.systemType + ".exe"
-	filePath := filepath.Join("tmp", updater.CurrentExe)
+	dir := filepath.Dir(latestAppPath)
+	fmt.Println("latestAppPath: ", latestAppPath)
+	fmt.Println("dir: ", dir)
 
-	if updater.systemType == "Unknown" {
-		respData["code"] = "100"
-		respData["msg"] = "Unknown system type; cannot download updates"
-		return respData
-	}
-
-	// if updater.downloadUrl == "" {
-	// 	respData["code"] = "100"
-	// 	respData["msg"] = "No download URL available"
-	// 	return respData
-	// }
-
-	durl := ""
-	configInterface, _ := updater.Di.Resolve("config")
-
-	cf := configInterface.(*Config)
-	durl = cf.NewVersion.DownloadUrl
-
-	if durl == "" {
-		respData["code"] = "100"
-		respData["msg"] = "No download URL available"
-		return respData
-	}
-
-	req, err := http.NewRequest("GET", durl, nil)
-	if err != nil {
-		respData["code"] = "100"
-		respData["msg"] = fmt.Sprintf("Failed to create HTTP request: %v", err)
-		return respData
-	}
-
-	// req.Header.Set("Accept", "application/vnd.github+json")
-	// req.Header.Set("User-Agent", "go-debug-client")
-	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Set("Accept-Encoding", "gzip, deflate")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		// fmt.Println("HTTP GET failed:", err)
-		respData["code"] = "100"
-		respData["msg"] = fmt.Sprintf("Failed to download update: %v", err)
-		return respData
-	}
-	defer resp.Body.Close()
-
-	dir := filepath.Dir(filePath)
 	if dir != "" && dir != "." {
-		if err := os.MkdirAll(dir, 0o755); err != nil {
-			// fmt.Println("Failed to create directory:", err)
-			respData["code"] = "100"
-			respData["msg"] = fmt.Sprintf("Failed to create directory for download: %v", err)
-			return respData
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			responseMsg.Code = "100"
+			responseMsg.Msg = fmt.Sprintf("Failed to create directory for download: %v", err)
 		}
 	}
 
-	out, err := os.Create(filePath)
+	out, err := os.Create(latestAppPath)
 	if err != nil {
-		// fmt.Println("Failed to create file:", err)
-		respData["code"] = "100"
-		respData["msg"] = fmt.Sprintf("Failed to create file for download: %v", err)
-		return respData
+		responseMsg.Code = "100"
+		responseMsg.Msg = fmt.Sprintf("Failed to create file for download: %v", err)
 	}
 	defer out.Close()
 
-	if _, err = io.Copy(out, resp.Body); err != nil {
-		// fmt.Println("Download failed:", err)
-		respData["code"] = "100"
-		respData["msg"] = fmt.Sprintf("Download failed: %v", err)
-		return respData
+	if _, err = io.Copy(out, bytes.NewReader(bodyBytes)); err != nil {
+		responseMsg.Code = "100"
+		responseMsg.Msg = fmt.Sprintln("Download failed.")
 	}
 
 	cf.NewVersion.Download = true
 	_ = cf.SaveConfig()
 
-	respData["code"] = "200"
-	respData["msg"] = "Download completed successfully."
-
-	return respData
+	responseMsg.Code = "200"
+	responseMsg.Msg = "Download completed successfully."
+	return responseMsg
 }
 
-func (updater *Updater) parseResponse(resp map[string]any) {
-	tag_name, ok := resp["tag_name"].(string)
-	if !ok {
-		fmt.Println("Failed to parse tag_name")
-		return
-	}
-
-	tagNameSlice := strings.Split(tag_name[1:], ".")
-	appVersionSlice := strings.Split(updater.appVersion, ".")
-
-	has := HasLatestVersion(tagNameSlice, appVersionSlice)
-	if !has {
-		fmt.Println("This version is up to date")
-		return
-	}
-
-	assets, ok := resp["assets"].([]any)
-
-	if !ok {
-		fmt.Println("Failed to parse response assets")
-		return
-	}
-
-	for _, v := range assets {
-		body := v.(map[string]any)
-		// bdoPF_amd64.rar
-		infoSlice := strings.Split(body["name"].(string), "_")
-		// [bdoPF amd64.exe]
-
-		if strings.Split(infoSlice[1], ".")[0] == updater.systemType {
-
-			downloadUrl := body["browser_download_url"].(string)
-
-			updater.downloadUrl = downloadUrl
-			updater.latestVersion = tag_name[1:]
-			break
-			// updater.CurrentExe = body["name"].(string)
-			// if downloadUrl != "" {
-			// }
-		}
-	}
-}
-
-func HasLatestVersion(newVersionSlice, appVersionSlice []string) bool {
-	respVersionLength := len(newVersionSlice)
-	appVersionLength := len(appVersionSlice)
-
-	if respVersionLength >= appVersionLength {
-		for i := 0; i < respVersionLength; i++ {
-			if i <= appVersionLength && newVersionSlice[i] != appVersionSlice[i] {
-				rv, err := strconv.Atoi(newVersionSlice[i])
-				if err != nil {
-					fmt.Println("Failed to convert version string to int:", err)
-				}
-
-				av, err := strconv.Atoi(appVersionSlice[i])
-				if err != nil {
-					fmt.Println("Failed to convert app version string to int:", err)
-				}
-
-				// has lateste version
-				if rv > av {
-					return true
-				}
-			}
-		}
-	}
-	return false
-}
-
-func (updater *Updater) StartUpdate() {
+func (up *Updater) StartUpdate() {
 	// 1. Get the absolute path of the currently running executable (working directory)
-	excutePath, err := os.Getwd()
+	fh := Resolve[*FileHandler](up.DI, "fileHandler")
 
-	if err != nil {
-		fmt.Println("Failed to get current working directory:", err)
-		return
-	}
+	exeCutePath := fh.GetExePath()
 
-	updater.checkSystemType()
+	up.CurrentExe = "bdoPF_" + up.systemType + ".exe"
 
-	if updater.systemType != "Unknown" {
-	}
-
-	updater.CurrentExe = "bdoPF_" + updater.systemType + ".exe"
-
-	oldExe := filepath.Join(excutePath, updater.CurrentExe)
+	oldExe := filepath.Join(exeCutePath, up.CurrentExe)
 
 	// 2. Path to the downloaded new EXE (assumed in tmp directory)
 	// Use filepath.Abs if you need absolute path resolution
-	newExe := filepath.Join(excutePath, "tmp", updater.CurrentExe)
+	newExe := filepath.Join(exeCutePath, "tmp", up.CurrentExe)
 
+	// if the latest app not exsit, but newVersion had downloadUrl and download=true
+	isExist := fh.pathExists(newExe)
+
+	if !isExist {
+		_ = up.AppCheckForUpdates()
+		_ = up.DownloadUpdates()
+	}
 	// 3. Build the CMD batch script to replace the running exe:
 	// - loop until the old EXE is deletable (ensures main process exited)
 	// - move the new EXE into place
@@ -340,50 +202,42 @@ func (updater *Updater) StartUpdate() {
 	batPath := filepath.Join(os.TempDir(), "update_script.bat")
 
 	installDir := filepath.Dir(oldExe)
-	batContent := fmt.Sprintf(`@echo off
-set "oldExe=%s"
-set "newExe=%s"
-set "installDir=%s"
+	batContent := fmt.Sprintf(`
+	@echo off
+	set "oldExe=%s"
+	set "newExe=%s"
+	set "installDir=%s"
 
-:loop
-del /f /q "%%oldExe%%"
-if exist "%%oldExe%%" (
-	timeout /t 1 >nul
-	goto loop
-)
+	:loop
+	del /f /q "%%oldExe%%"
+	if exist "%%oldExe%%" (
+		timeout /t 1 >nul
+		goto loop
+	)
 
-move /y "%%newExe%%" "%%oldExe%%"
+	move /y "%%newExe%%" "%%oldExe%%"
 
-rem Change back to the install directory before starting, to avoid config path issues
-cd /d "%%installDir%%"
-start "" "%%oldExe%%"
+	rem Change back to the install directory before starting, to avoid config path issues
+	cd /d "%%installDir%%"
+	start "" "%%oldExe%%"
 
-rem Self-delete the script
-del "%%~f0"
-`, oldExe, newExe, installDir)
+	rem Self-delete the script
+	del "%%~f0"
+	`, oldExe, newExe, installDir)
 
-	err = os.WriteFile(batPath, []byte(batContent), 0644)
-	if err != nil {
-		fmt.Println("Failed to create update script:", err)
+	if err := os.WriteFile(batPath, []byte(batContent), 0644); err != nil {
 		return
 	}
 
-	// 4. Execute the batch file using cmd
 	cmd := exec.Command("cmd", "/c", batPath)
 
-	// 5. Important: hide the cmd window on Windows and detach from parent process
 	cmd.SysProcAttr = &syscall.SysProcAttr{
-		HideWindow:    true,                             // hide console window for silent update
-		CreationFlags: syscall.CREATE_NEW_PROCESS_GROUP, // CREATE_NO_WINDOW
+		HideWindow:    true,
+		CreationFlags: syscall.CREATE_NEW_PROCESS_GROUP, // create no window
 	}
 
-	err = cmd.Start()
-	if err != nil {
-		fmt.Println("Failed to start update command:", err)
+	if err := cmd.Start(); err != nil {
 		return
 	}
-
-	// 6. Exit immediately so the batch script can replace the executable
-	fmt.Println("Application shutting down to apply update...")
 	os.Exit(0)
 }

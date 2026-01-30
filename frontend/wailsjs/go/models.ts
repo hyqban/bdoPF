@@ -155,6 +155,22 @@ export namespace model {
 	        this.icon = source["icon"];
 	    }
 	}
+	export class LatestApp {
+	    version: string;
+	    download: boolean;
+	    downloadUrl: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new LatestApp(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.version = source["version"];
+	        this.download = source["download"];
+	        this.downloadUrl = source["downloadUrl"];
+	    }
+	}
 	
 	export class ResourcePath {
 	    RootPath: string;
@@ -178,27 +194,27 @@ export namespace model {
 	        this.Png = source["Png"];
 	    }
 	}
+	export class ResponseMsg {
+	    code: string;
+	    msg: string;
+	    data: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ResponseMsg(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.code = source["code"];
+	        this.msg = source["msg"];
+	        this.data = source["data"];
+	    }
+	}
 
 }
 
 export namespace service {
 	
-	export class LatestApp {
-	    version: string;
-	    download: boolean;
-	    downloadUrl: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new LatestApp(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.version = source["version"];
-	        this.download = source["download"];
-	        this.downloadUrl = source["downloadUrl"];
-	    }
-	}
 	export class Window {
 	    onTop: boolean;
 	    width: number;
@@ -241,7 +257,7 @@ export namespace service {
 	    window: Window;
 	    theme: string;
 	    locale: string;
-	    newVersion: LatestApp;
+	    newVersion: model.LatestApp;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -254,7 +270,7 @@ export namespace service {
 	        this.window = this.convertValues(source["window"], Window);
 	        this.theme = source["theme"];
 	        this.locale = source["locale"];
-	        this.newVersion = this.convertValues(source["newVersion"], LatestApp);
+	        this.newVersion = this.convertValues(source["newVersion"], model.LatestApp);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -280,7 +296,6 @@ export namespace service {
 	    Addr: string;
 	    Env: string;
 	    ResourcePath: model.ResourcePath;
-	    Independencies: Record<string, any>;
 	
 	    static createFrom(source: any = {}) {
 	        return new DIContainer(source);
@@ -292,7 +307,6 @@ export namespace service {
 	        this.Addr = source["Addr"];
 	        this.Env = source["Env"];
 	        this.ResourcePath = this.convertValues(source["ResourcePath"], model.ResourcePath);
-	        this.Independencies = source["Independencies"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -375,7 +389,6 @@ export namespace service {
 		    return a;
 		}
 	}
-	
 
 }
 

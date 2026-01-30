@@ -12,7 +12,7 @@ import { ConfigService } from '../../services/config-service';
 import { OpenFolderDialog, XmlToJson } from '../../../../wailsjs/go/service/GameData';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-    CheckForUpdates,
+    AppCheckForUpdates,
     DownloadUpdates,
     StartUpdate,
 } from '../../../../wailsjs/go/service/Updater';
@@ -112,15 +112,15 @@ export class Settings {
     }
 
     checkForUpdates() {
-        CheckForUpdates(this.configService.config().version).then((res) => {
+        AppCheckForUpdates().then((res) => {
             console.log(res);
-            if (res['code'] === '200' && res['url']) {
+            if (res['code'] === '200') {
                 this.configService.config.update((state) => ({
                     ...state,
                     newVersion: {
                         ...state.newVersion,
-                        downloadUrl: res['url'],
-                        version: res['version'],
+                        downloadUrl: res['data']['downloadUrl'],
+                        version: res['data']['newVersion'],
                     },
                 }));
             }
