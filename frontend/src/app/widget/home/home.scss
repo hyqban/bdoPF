@@ -1,4 +1,4 @@
-@use '../../../styles.scss' as *;
+@use '../../../styles.scss' as st;
 
 .icon-button {
     -webkit-app-region: no-drag;
@@ -41,13 +41,13 @@
 }
 :host {
     .widget {
-        @extend %flex-column;
+        @include st.flex-column();
         width: 100%;
         height: 100%;
         background-color: var(--mat-sys-background);
 
         .title {
-            @extend %flex-row;
+            @include st.flex-row();
             justify-content: space-between;
             align-items: center;
 

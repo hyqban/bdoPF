@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="title">
+        <button class="icon-button control-bth close">
+            <mat-icon fontIcon="close" (click)="close()"></mat-icon>
+        </button>
+    </div>
+    <div class="content">
+        <form class="input" [formGroup]="form">
+            <input type="text" placeholder="unit" class="input" />
+            <input type="text" placeholder="average yield" class="input" />
+            <!-- <button></button> -->
+            <!-- <mat-icon fontIcon="functions"></mat-icon> -->
+        </form>
+        <div class="items">
+            @for (item of recipeAmount().items; track $index) {
+                <div class="row">
+                    <span>x {{ item.count }}</span>
+                    <img
+                        [src]="this.search.imgPathJoin(this.search.imgPath['png'], item.icon)"
+                        alt=""
+                    />
+                    <div>{{ item.name }}</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

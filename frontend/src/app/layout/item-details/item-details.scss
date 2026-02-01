@@ -1,4 +1,5 @@
-@use '../../../styles.scss' as *;
+@use '../../../styles.scss' as st;
+
 .mat-card {
     max-width: 80%;
     min-width: 400px;
@@ -7,7 +8,7 @@
     background-color: var(--mat-sys-on-secondary);
 
     .header {
-        @include grid-columns($gap: 1em);
+        @include st.grid-columns($gap: 1em);
         // display: grid;
         // grid-template-columns: auto 1fr;
         // border: blue 1px solid;
@@ -35,7 +36,7 @@
         }
     }
     .desc {
-        @include div-bg($pad: 1.5rem);
+        @include st.div-bg($pad: 1.5rem);
         margin-top: 0.8rem;
         word-wrap: break-word;
         white-space: pre-wrap;
@@ -57,7 +58,7 @@
             // background-color: aqua;
 
             .tab1 {
-                @extend %flex-column;
+                @include st.flex-column();
                 // @include div-bg($pad: 1.5rem);
                 width: 20rem;
                 max-width: 20rem;
@@ -68,7 +69,20 @@
                 border-radius: 1rem;
                 // border: red 1px solid;
 
+                .tab11 {
+                    @include st.flex-row();
+                    align-items: center;
+
+                    & > :nth-child(2) {
+                        padding: 0.3rem;
+                    }
+                    & > :nth-child(2):hover {
+                        @include st.hover();
+                    }
+                }
+
                 .action {
+                    // border: red 1px solid;
                     margin: 0 0.4em;
                     font-weight: 600;
                     background: linear-gradient(to right, red, blue);
@@ -93,7 +107,7 @@
                 }
 
                 .item-3 {
-                    @include grid-columns($col: 3rem 35px 1fr);
+                    @include st.grid-columns($col: 3rem 35px 1fr);
                     align-items: center;
                     background-color: var(--mat-sys-on-secondary);
                     border: var(--border) 1px solid;
@@ -102,7 +116,7 @@
                     // margin: 0 1em;
                 }
                 .item-2 {
-                    @include grid-columns($col: 35px 1fr);
+                    @include st.grid-columns($col: 35px 1fr);
                     align-items: center;
                     background-color: var(--mat-sys-on-secondary);
                     border: var(--border) 1px solid;
@@ -110,7 +124,7 @@
                     padding: 0.6em 0.8em;
                 }
                 .item-1 {
-                    @include grid-columns($col: 1fr);
+                    @include st.grid-columns($col: 1fr);
                     align-items: center;
                     background-color: var(--mat-sys-on-secondary);
                     border: var(--border) 1px solid;

@@ -11,6 +11,7 @@
     --bg-color: #f3f4f6;
     --border: #e5e7eb;
     --border-hover: #3b82f6;
+    --hover: rgba(41, 39, 39, 0.1);
 }
 
 * {
@@ -34,25 +35,31 @@ body {
 // $bg-color: #f3f4f6;
 
 // Custome scss
-%flex-row {
+@mixin flex-row {
     display: flex;
     flex-direction: row;
 }
-%flex-column {
+@mixin flex-column {
     display: flex;
     flex-direction: column;
 }
-%flex-row-2c {
+@mixin flex-row-2c {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
-%flex-column-2c {
+@mixin flex-column-2c {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+@mixin hover($bgc: var(--hover), $padding: 0.3rem, $borr: 0.5rem) {
+    background-color: $bgc;
+    padding: $padding;
+    border-radius: $borr;
 }
 
 @mixin div-bg($bgc: var(--bg-color), $pad: 1rem, $bd: var(--border)) {
@@ -60,6 +67,29 @@ body {
     padding: $pad;
     // border: var(--boder) 1px solid;
     border: $bd 1px solid;
+}
+
+@mixin input($w: 5rem, $h: 2rem) {
+    width: $w;
+    height: $h;
+    background-color: var(--mat-sys-surface-variant);
+    border: 1px solid transparent;
+    border-radius: 99px; // Pill shape
+    padding: 0 1rem 0 2rem; // Space for icon
+    color: var(--mat-sys-on-surface);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    outline: none;
+
+    &::placeholder {
+        color: var(--mat-sys-outline);
+    }
+
+    &:focus {
+        background-color: var(--mat-sys-surface);
+        border-color: var(--mat-sys-primary);
+        box-shadow: 0 0 0 2px var(--mat-sys-primary-container);
+    }
 }
 
 @mixin modern_div(
@@ -94,4 +124,45 @@ body {
     gap: $gap;
     // justify-content: $justify-items;
     align-content: $align-items;
+}
+
+// button
+.icon-button {
+    -webkit-app-region: no-drag;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--mat-sys-on-surface-variant);
+    transition: all 0.2s ease;
+    padding: 0;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    &:hover {
+        background-color: rgba(41, 39, 39, 0.1);
+    }
+
+    &.active {
+        color: var(--mat-sys-primary);
+        background-color: var(--mat-sys-primary-container);
+    }
+}
+
+.control-btn {
+    border-radius: 4px; // Square-ish for windows controls
+
+    &.close:hover {
+        background-color: #e81123; // Standard Windows close red
+        color: white;
+    }
 }

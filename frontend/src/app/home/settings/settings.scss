@@ -1,4 +1,4 @@
-@use '../../../styles.scss' as *;
+@use '../../../styles.scss' as st;
 
 @keyframes spin {
     from {
@@ -23,7 +23,7 @@
     background-color: var(--mat-sys-on-secondary);
 
     .header {
-        @extend %flex-row;
+        @include st.flex-row();
         justify-content: space-between;
 
         .header-left {
@@ -37,7 +37,7 @@
             }
 
             .update {
-                @extend %flex-column;
+                @include st.flex-column();
                 gap: 0.5rem;
                 margin-top: 0.4rem;
 
@@ -58,7 +58,7 @@
                 }
 
                 button {
-                    @extend %flex-row-2c;
+                    @include st.flex-row-2c();
                     background-color: var(--mat-sys-inverse-primary);
                     width: fit-content;
                     margin-top: 0.5rem;
@@ -70,7 +70,7 @@
         }
 
         .header-right {
-            @extend %flex-column;
+            @include st.flex-column();
             gap: 0.8em;
             width: fit-content;
             // background-color: antiquewhite;
@@ -100,7 +100,7 @@
 
         .row {
             // border: red 1px solid;
-            @extend %flex-row;
+            @include st.flex-row();
             justify-content: space-between;
             align-items: center;
             height: 3em;

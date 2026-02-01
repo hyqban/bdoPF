@@ -1,11 +1,11 @@
-@use '../styles.scss' as *;
+@use '../styles.scss' as st;
 
 #app.hide {
     display: none;
 }
 
 #app {
-    @extend %flex-column;
+    @include st.flex-column();
     width: 100vw;
     height: 100vh;
     // transition:

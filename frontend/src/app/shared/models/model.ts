@@ -109,3 +109,10 @@ export interface WindowSizeChange {
     minWidthBeforeEnterWidget: number;
     minHeightBeforeEnterWidget: number;
 }
+
+export interface RecipeAmountInterface {
+    open: boolean;
+    items: Item[];
+    amount: number;
+    averageYield: number;
+}

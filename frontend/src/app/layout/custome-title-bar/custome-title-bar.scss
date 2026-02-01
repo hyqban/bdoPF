@@ -59,7 +59,7 @@
         }
 
         &:hover {
-            background-color: rgba(41, 39, 39, 0.1);
+            background-color: var(--hover);
         }
 
         &.active {
